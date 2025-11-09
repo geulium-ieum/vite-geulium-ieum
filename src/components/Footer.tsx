@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Heart } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import type { Page } from '@/App';
+import type { Page } from '@/types';
 
 interface FooterProps {
   onNavigate: (page: Page) => void;

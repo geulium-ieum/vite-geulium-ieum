@@ -5,7 +5,7 @@ import {
   NotebookPen,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import type { User as UserType, Page } from "@/App";
+import type { User as UserType, Page } from "@/types";
 import { Footer } from "@/components/Footer";
 import { Card } from "@/components/ui/card";
 

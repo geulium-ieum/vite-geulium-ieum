@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'sonner';
-import type { Page } from '@/App';
+import type { Page } from '@/types';
 
 interface RegisterProps {
   onRegister: () => void;

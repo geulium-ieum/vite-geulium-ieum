@@ -1,7 +1,7 @@
 import { Bell, Heart, MessageSquare, Users, Calendar, FileText, Check, CheckCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import type { User as UserType, Notification, Page } from '@/App';
+import type { User as UserType, Notification, Page } from '@/types';
 import { Footer } from '@/components/Footer';
 
 interface NotificationCenterProps {

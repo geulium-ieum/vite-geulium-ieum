@@ -12,7 +12,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Card } from "./ui/card";
-import type { Page, User as UserType } from "@/App";
+import type { Page, User as UserType } from "@/types";
 import { Footer } from "./Footer";
 import {
   Dialog,
