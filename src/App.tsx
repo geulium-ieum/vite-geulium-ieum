@@ -51,14 +51,16 @@ export default function App() {
 
   const handleLogin = (email: string, role: UserRole) => {
     const newUser: User = {
-      id: Math.random().toString(36).substr(2, 9),
+      id: Math.floor(Math.random() * 1000000),
       name: email.split('@')[0],
       email,
-      role: role || 'user',
+      role: role || "USER",
+      phone: "",
+      isActive: true,
     };
     setUser(newUser);
     
-    if (role === 'admin' || role === 'super-admin') {
+    if (role === "ADMIN" || role === "SUPER_ADMIN") {
       setCurrentPage('admin-dashboard');
     } else {
       setCurrentPage('home');
@@ -124,14 +126,13 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       {currentPage !== 'login' && currentPage !== 'register' && (
         <header className="bg-white shadow-sm border-b sticky top-0 z-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div className="flex items-center justify-between">
               <div 
                 className="flex items-center gap-3 cursor-pointer"
-                onClick={() => setCurrentPage(user?.role === 'admin' || user?.role === 'super-admin' ? 'admin-dashboard' : 'home')}
+                onClick={() => setCurrentPage(user?.role === "ADMIN" || user?.role === "SUPER_ADMIN" ? 'admin-dashboard' : 'home')}
               >
                 <div className="w-10 h-10 bg-linear-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
                   <span className="text-white">🕊️</span>
@@ -142,7 +143,7 @@ export default function App() {
               <nav className="flex items-center gap-6">
                 {user && (
                   <>
-                    {(user.role === 'user' || !user.role) && (
+                    {(user.role === "USER" || !user.role) && (
                       <>
                         <button onClick={() => setCurrentPage('home')} className="text-gray-700 hover:text-gray-900 transition-colors">
                           홈
@@ -155,7 +156,7 @@ export default function App() {
                         </button>
                       </>
                     )}
-                    {(user.role === 'admin' || user.role === 'super-admin') && (
+                    {(user.role === "ADMIN" || user.role === "SUPER_ADMIN") && (
                       <>
                         <button onClick={() => setCurrentPage('admin-dashboard')} className="text-gray-700 hover:text-gray-900 transition-colors">
                           대시보드
@@ -186,7 +187,7 @@ export default function App() {
                     </div>
 
                     <button 
-                      onClick={() => setCurrentPage(user.role === 'admin' || user.role === 'super-admin' ? 'admin-mypage' : 'mypage')} 
+                      onClick={() => setCurrentPage(user.role === "ADMIN" || user.role === "SUPER_ADMIN" ? 'admin-mypage' : 'mypage')} 
                       className="text-gray-700 hover:text-gray-900 transition-colors"
                     >
                       마이페이지

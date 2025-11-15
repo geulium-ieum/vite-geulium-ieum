@@ -1,4 +1,7 @@
-export type Page = 
+import * as v from 'valibot';
+import { UserSchema } from '@/constants/user';
+
+export type Page =
   | 'home'
   | 'login'
   | 'register'
@@ -11,15 +14,6 @@ export type Page =
   | 'notifications'
   | 'announcements';
 
-export type UserRole = 'user' | 'admin' | 'super-admin' | null;
-
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: UserRole;
-}
-
 export interface Notification {
   id: string;
   type: 'memorial' | 'offering' | 'family-invite' | 'anniversary' | 'announcement';
@@ -29,3 +23,8 @@ export interface Notification {
   read: boolean;
   relatedId?: string;
 }
+
+export type Children = React.ReactNode | React.ReactNode[];
+
+export type User = v.InferOutput<typeof UserSchema>;
+export type UserRole = "USER" | "ADMIN" | "SUPER_ADMIN";
