@@ -11,10 +11,9 @@ import { FamilyGroups } from '@/components/FamilyGroups';
 import { NotificationCenter } from '@/components/NotificationCenter';
 import { Announcements } from '@/components/Announcements';
 import { Toaster } from '@/components/ui/sonner';
-import { Bell } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import type { Notification, Page, User, UserRole } from '@/types';
+import { Route, Routes } from 'react-router-dom';
+import Header from '@/components/organisms/Header';
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState<Page>('home');
@@ -47,7 +46,7 @@ export default function App() {
     },
   ]);
 
-  const unreadCount = notifications.filter(n => !n.read).length;
+  // const unreadCount = notifications.filter(n => !n.read).length;
 
   const handleLogin = (email: string, role: UserRole) => {
     const newUser: User = {
@@ -87,135 +86,121 @@ export default function App() {
     setNotifications(prev => prev.map(n => ({ ...n, read: true })));
   };
 
-  const renderPage = () => {
-    switch (currentPage) {
-      case 'home':
-        return <Home user={user} onNavigate={setCurrentPage} onViewMemorial={handleViewMemorial} />;
-      case 'login':
-        return <Login onLogin={handleLogin} onNavigate={setCurrentPage} />;
-      case 'register':
-        return <Register onRegister={() => setCurrentPage('login')} onNavigate={setCurrentPage} />;
-      case 'search':
-        return <SearchDeceased user={user} onNavigate={setCurrentPage} onViewMemorial={handleViewMemorial} />;
-      case 'memorial':
-        return <MemorialPage user={user} memorialId={selectedMemorialId} onNavigate={setCurrentPage} />;
-      case 'mypage':
-        return <UserMyPage user={user} onNavigate={setCurrentPage} onLogout={handleLogout} onViewMemorial={handleViewMemorial} />;
-      case 'admin-dashboard':
-        return <AdminDashboard />;
-      case 'admin-mypage':
-        return <AdminMyPage user={user} onLogout={handleLogout} />;
-      case 'family-groups':
-        return <FamilyGroups user={user} onNavigate={setCurrentPage} />;
-      case 'notifications':
-        return (
-          <NotificationCenter 
-            user={user}
-            notifications={notifications}
-            onNavigate={setCurrentPage}
-            onMarkAsRead={markNotificationAsRead}
-            onMarkAllAsRead={markAllAsRead}
-          />
-        );
-      case 'announcements':
-        return <Announcements user={user} onNavigate={setCurrentPage} />;
-      default:
-        return <Home user={user} onNavigate={setCurrentPage} onViewMemorial={handleViewMemorial} />;
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gray-50">
       {currentPage !== 'login' && currentPage !== 'register' && (
-        <header className="bg-white shadow-sm border-b sticky top-0 z-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div className="flex items-center justify-between">
-              <div 
-                className="flex items-center gap-3 cursor-pointer"
-                onClick={() => setCurrentPage(user?.role === "ADMIN" || user?.role === "SUPER_ADMIN" ? 'admin-dashboard' : 'home')}
-              >
-                <div className="w-10 h-10 bg-linear-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
-                  <span className="text-white">🕊️</span>
-                </div>
-                <h1 className="text-xl text-gray-900">그리움 이음</h1>
-              </div>
-
-              <nav className="flex items-center gap-6">
-                {user && (
-                  <>
-                    {(user.role === "USER" || !user.role) && (
-                      <>
-                        <button onClick={() => setCurrentPage('home')} className="text-gray-700 hover:text-gray-900 transition-colors">
-                          홈
-                        </button>
-                        <button onClick={() => setCurrentPage('search')} className="text-gray-700 hover:text-gray-900 transition-colors">
-                          고인 검색
-                        </button>
-                        <button onClick={() => setCurrentPage('family-groups')} className="text-gray-700 hover:text-gray-900 transition-colors">
-                          가족 그룹
-                        </button>
-                      </>
-                    )}
-                    {(user.role === "ADMIN" || user.role === "SUPER_ADMIN") && (
-                      <>
-                        <button onClick={() => setCurrentPage('admin-dashboard')} className="text-gray-700 hover:text-gray-900 transition-colors">
-                          대시보드
-                        </button>
-                        <button onClick={() => setCurrentPage('announcements')} className="text-gray-700 hover:text-gray-900 transition-colors">
-                          공지사항 관리
-                        </button>
-                      </>
-                    )}
-                    
-                    <div className="relative">
-                      <Button 
-                        variant="ghost" 
-                        size="icon"
-                        className="relative"
-                        onClick={() => setCurrentPage('notifications')}
-                      >
-                        <Bell className="h-5 w-5" />
-                        {unreadCount > 0 && (
-                          <Badge 
-                            variant="destructive" 
-                            className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
-                          >
-                            {unreadCount}
-                          </Badge>
-                        )}
-                      </Button>
-                    </div>
-
-                    <button 
-                      onClick={() => setCurrentPage(user.role === "ADMIN" || user.role === "SUPER_ADMIN" ? 'admin-mypage' : 'mypage')} 
-                      className="text-gray-700 hover:text-gray-900 transition-colors"
-                    >
-                      마이페이지
-                    </button>
-                  </>
-                )}
-                {!user && (
-                  <>
-                    <button onClick={() => setCurrentPage('login')} className="text-gray-700 hover:text-gray-900 transition-colors">
-                      로그인
-                    </button>
-                    <Button onClick={() => setCurrentPage('register')}>
-                      회원가입
-                    </Button>
-                  </>
-                )}
-              </nav>
-            </div>
-          </div>
-        </header>
+        <Header />
       )}
 
-      {/* Main Content */}
       <main>
-        {renderPage()}
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <Home
+                user={user}
+                onNavigate={setCurrentPage}
+                onViewMemorial={handleViewMemorial}
+              />
+            }
+          />
+          <Route
+            path="/login"
+            element={
+              <Login
+                onLogin={handleLogin}
+                onNavigate={setCurrentPage}
+              />
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <Register
+                onRegister={() => setCurrentPage('login')}
+                onNavigate={setCurrentPage}
+              />
+            }
+          />
+          <Route
+            path="/search"
+            element={
+              <SearchDeceased
+                user={user}
+                onNavigate={setCurrentPage}
+                onViewMemorial={handleViewMemorial}
+              />
+            }
+          />
+          <Route
+            path="/memorial/:id"
+            element={
+              <MemorialPage
+                user={user}
+                memorialId={selectedMemorialId}
+                onNavigate={setCurrentPage}
+              />
+            }
+          />
+          <Route
+            path="/mypage"
+            element={
+              <UserMyPage
+                user={user}
+                onNavigate={setCurrentPage}
+                onLogout={handleLogout}
+                onViewMemorial={handleViewMemorial}
+              />
+            }
+          />
+          <Route
+            path="/admin-dashboard"
+            element={
+              <AdminDashboard />
+            }
+          />
+          <Route
+            path="/admin-mypage"
+            element={
+              <AdminMyPage
+                user={user}
+                onLogout={handleLogout}
+              />
+            }
+          />
+          <Route
+            path="/family-groups"
+            element={
+              <FamilyGroups
+                user={user}
+                onNavigate={setCurrentPage}
+              />
+            }
+          />
+          <Route
+            path="/notifications"
+            element={
+              <NotificationCenter
+                user={user}
+                notifications={notifications}
+                onNavigate={setCurrentPage}
+                onMarkAsRead={markNotificationAsRead}
+                onMarkAllAsRead={markAllAsRead}
+              />
+            }
+          />
+          <Route
+            path="/announcements"
+            element={
+              <Announcements
+                user={user}
+                onNavigate={setCurrentPage}
+              />
+            }
+          />
+        </Routes>
       </main>
-
       <Toaster />
     </div>
-  );
+  )
 }

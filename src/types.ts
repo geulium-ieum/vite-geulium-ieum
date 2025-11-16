@@ -28,3 +28,10 @@ export type Children = React.ReactNode | React.ReactNode[];
 
 export type User = v.InferOutput<typeof UserSchema>;
 export type UserRole = "USER" | "ADMIN" | "SUPER_ADMIN";
+
+export type FooterDialogType = 'faq' | 'inquiry' | 'guide' | 'terms' | 'privacy' | 'accessibility';
+
+export interface FooterDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}

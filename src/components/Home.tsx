@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import type { User as UserType, Page } from "@/types";
 import { Footer } from "@/components/Footer";
 import { Card } from "@/components/ui/card";
+import { Link } from "react-router-dom";
 
 interface HomeProps {
   user: UserType | null;
@@ -94,71 +95,55 @@ export function Home({
             주요 기능
           </h2>
           <div className="grid md:grid-cols-4 gap-8 max-w-4xl mx-auto">
-            <Card
-              className="p-6 text-center hover:shadow-lg transition-shadow cursor-pointer"
-              onClick={() => onNavigate("search")}
-            >
-              <div className="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Search className="w-7 h-7 text-blue-600" />
-              </div>
-              <h3 className="text-lg mb-2">간편한 검색</h3>
-              <p className="text-gray-600 text-sm">
-                고인명, 생년월일 등으로 쉽게 추모관을 찾을 수
-                있습니다
-              </p>
-            </Card>
+            <Link to="/search">
+              <Card className="h-full p-6 text-center hover:shadow-lg transition-shadow cursor-pointer">
+                <div className="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Search className="w-7 h-7 text-blue-600" />
+                </div>
+                <h3 className="text-lg mb-2">간편한 검색</h3>
+                <p className="text-gray-600 text-sm">
+                  고인명, 생년월일 등으로 쉽게 추모관을 찾을 수
+                  있습니다
+                </p>
+              </Card>
+            </Link>
 
-            <Card
-              className="p-6 text-center hover:shadow-lg transition-shadow cursor-pointer"
-              onClick={() =>
-                user
-                  ? onNavigate("family-groups")
-                  : onNavigate("login")
-              }
-            >
-              <div className="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Users className="w-7 h-7 text-green-600" />
-              </div>
-              <h3 className="text-lg mb-2">가족 그룹</h3>
-              <p className="text-gray-600 text-sm">
-                가족 구성원과 함께 추억을 공유하고 관리할 수
-                있습니다
-              </p>
-            </Card>
+            <Link to={user ? "/family-groups" : "/login"}>
+              <Card className="h-full p-6 text-center hover:shadow-lg transition-shadow cursor-pointer">
+                <div className="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Users className="w-7 h-7 text-green-600" />
+                </div>
+                <h3 className="text-lg mb-2">가족 그룹</h3>
+                <p className="text-gray-600 text-sm">
+                  가족 구성원과 함께 추억을 공유하고 관리할 수
+                  있습니다
+                </p>
+              </Card>
+            </Link>
 
-            <Card
-              className="p-6 text-center hover:shadow-lg transition-shadow cursor-pointer"
-              onClick={() =>
-                user
-                  ? onNavigate("mypage")
-                  : onNavigate("login")
-              }
-            >
-              <div className="w-14 h-14 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Calendar className="w-7 h-7 text-orange-600" />
-              </div>
-              <h3 className="text-lg mb-2">기일 알림</h3>
-              <p className="text-gray-600 text-sm">
-                소중한 날을 잊지 않도록 알림을 받을 수 있습니다
-              </p>
-            </Card>
+            <Link to={user ? "/mypage" : "/login"}>
+              <Card className="h-full p-6 text-center hover:shadow-lg transition-shadow cursor-pointer">
+                <div className="w-14 h-14 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Calendar className="w-7 h-7 text-orange-600" />
+                </div>
+                <h3 className="text-lg mb-2">기일 알림</h3>
+                <p className="text-gray-600 text-sm">
+                  소중한 날을 잊지 않도록 알림을 받을 수 있습니다
+                </p>
+              </Card>
+            </Link>
 
-            <Card
-              className="p-6 text-center hover:shadow-lg transition-shadow cursor-pointer"
-              onClick={() =>
-                user
-                  ? onNavigate("mypage")
-                  : onNavigate("login")
-              }
-            >
-              <div className="w-14 h-14 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <NotebookPen className="w-7 h-7 text-orange-600" />
-              </div>
-              <h3 className="text-lg mb-2">추모글 작성</h3>
-              <p className="text-gray-600 text-sm">
-                고인을 향한 마음을 글로 남겨보세요.
-              </p>
-            </Card>
+            <Link to={user ? "/mypage" : "/login"}>
+              <Card className="h-full p-6 text-center hover:shadow-lg transition-shadow cursor-pointer">
+                <div className="w-14 h-14 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <NotebookPen className="w-7 h-7 text-orange-600" />
+                </div>
+                <h3 className="text-lg mb-2">추모글 작성</h3>
+                <p className="text-gray-600 text-sm">
+                  고인을 향한 마음을 글로 남겨보세요.
+                </p>
+              </Card>
+            </Link>
           </div>
         </div>
       </section>
@@ -222,17 +207,16 @@ export function Home({
               무료로 회원가입하고 소중한 분들을 위한 추모 공간을
               만들어보세요
             </p>
-            <Button
-              size="lg"
-              onClick={() => onNavigate("register")}
-            >
-              무료 회원가입
-            </Button>
+            <Link to="/register">
+              <Button size="lg">
+                무료 회원가입
+              </Button>
+            </Link>
           </div>
         </section>
       )}
 
-      <Footer onNavigate={onNavigate} />
+      <Footer />
     </div>
   );
 }
