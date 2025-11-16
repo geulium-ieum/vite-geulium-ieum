@@ -25,7 +25,7 @@ export function Login({ onLogin, onNavigate }: LoginProps) {
       return;
     }
     toast.success('로그인되었습니다');
-    onLogin(email, 'user');
+    onLogin(email, 'USER');
   };
 
   const handleAdminLogin = (e: React.FormEvent) => {
@@ -36,14 +36,14 @@ export function Login({ onLogin, onNavigate }: LoginProps) {
     }
     
     // Super Admin 구분 (데모용)
-    const role: UserRole = adminEmail === 'superadmin@admin.com' ? 'super-admin' : 'admin';
+    const role: UserRole = adminEmail === 'superadmin@admin.com' ? 'SUPER_ADMIN' : 'ADMIN';
     toast.success('관리자 로그인되었습니다');
     onLogin(adminEmail, role);
   };
 
   const handleSocialLogin = (provider: string) => {
     toast.success(`${provider} 로그인 (데모)`);
-    onLogin(`user@${provider.toLowerCase()}.com`, 'user');
+    onLogin(`user@${provider.toLowerCase()}.com`, 'USER');
   };
 
   return (
@@ -70,7 +70,7 @@ export function Login({ onLogin, onNavigate }: LoginProps) {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="example@email.com"
+                  placeholder="이메일"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
@@ -81,7 +81,7 @@ export function Login({ onLogin, onNavigate }: LoginProps) {
                 <Input
                   id="password"
                   type="password"
-                  placeholder="••••••••"
+                  placeholder="비밀번호"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
@@ -92,7 +92,7 @@ export function Login({ onLogin, onNavigate }: LoginProps) {
                   <input type="checkbox" className="rounded" />
                   <span className="text-gray-600">로그인 유지</span>
                 </label>
-                <a href="#" className="text-purple-600 hover:underline">
+                <a href="/find-password" className="text-purple-600 hover:underline">
                   비밀번호 찾기
                 </a>
               </div>
@@ -114,7 +114,7 @@ export function Login({ onLogin, onNavigate }: LoginProps) {
                 <Button 
                   type="button" 
                   variant="outline" 
-                  className="w-full"
+                  className="w-full bg-[#FEE500] text-black"
                   onClick={() => handleSocialLogin('Kakao')}
                 >
                   <span className="mr-2">💬</span>
@@ -123,7 +123,7 @@ export function Login({ onLogin, onNavigate }: LoginProps) {
                 <Button 
                   type="button" 
                   variant="outline" 
-                  className="w-full"
+                  className="w-full bg-[#2DB400] text-white"
                   onClick={() => handleSocialLogin('Naver')}
                 >
                   <span className="mr-2">N</span>
@@ -151,7 +151,7 @@ export function Login({ onLogin, onNavigate }: LoginProps) {
                 <Input
                   id="admin-email"
                   type="email"
-                  placeholder="admin@example.com"
+                  placeholder="이메일"
                   value={adminEmail}
                   onChange={(e) => setAdminEmail(e.target.value)}
                 />
@@ -162,7 +162,7 @@ export function Login({ onLogin, onNavigate }: LoginProps) {
                 <Input
                   id="admin-password"
                   type="password"
-                  placeholder="••••••••"
+                  placeholder="비밀번호"
                   value={adminPassword}
                   onChange={(e) => setAdminPassword(e.target.value)}
                 />
