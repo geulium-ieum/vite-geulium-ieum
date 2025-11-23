@@ -5,51 +5,52 @@ import {
   NotebookPen,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import type { User as UserType, Page } from "@/types";
+import type { User as UserType } from "@/types";
 import { Footer } from "@/components/Footer";
 import { Card } from "@/components/ui/card";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import FlexDiv from "@/components/FlexDiv";
 
 interface HomeProps {
   user: UserType | null;
-  onNavigate: (page: Page) => void;
   onViewMemorial: (memorialId: string) => void;
 }
 
+const featuredMemorials = [
+  {
+    id: "1",
+    name: "김철수",
+    birthDate: "1945.03.15",
+    deathDate: "2024.08.20",
+    image:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop",
+    recentActivity: "2일 전 추모글",
+  },
+  {
+    id: "2",
+    name: "이영희",
+    birthDate: "1950.07.22",
+    deathDate: "2024.09.10",
+    image:
+      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=300&h=300&fit=crop",
+    recentActivity: "5일 전 헌화",
+  },
+  {
+    id: "3",
+    name: "박민수",
+    birthDate: "1960.11.30",
+    deathDate: "2024.10.01",
+    image:
+      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300&h=300&fit=crop",
+    recentActivity: "1주 전 방명록",
+  },
+];
+
 export function Home({
   user,
-  onNavigate,
   onViewMemorial,
 }: HomeProps) {
-  const featuredMemorials = [
-    {
-      id: "1",
-      name: "김철수",
-      birthDate: "1945.03.15",
-      deathDate: "2024.08.20",
-      image:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop",
-      recentActivity: "2일 전 추모글",
-    },
-    {
-      id: "2",
-      name: "이영희",
-      birthDate: "1950.07.22",
-      deathDate: "2024.09.10",
-      image:
-        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=300&h=300&fit=crop",
-      recentActivity: "5일 전 헌화",
-    },
-    {
-      id: "3",
-      name: "박민수",
-      birthDate: "1960.11.30",
-      deathDate: "2024.10.01",
-      image:
-        "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300&h=300&fit=crop",
-      recentActivity: "1주 전 방명록",
-    },
-  ];
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen">
@@ -66,20 +67,20 @@ export function Home({
               추억을 영원히 간직하세요
             </p>
             {!user && (
-              <div className="flex gap-4 justify-center">
+              <FlexDiv className="gap-4 justify-center">
                 <Button
                   size="lg"
                   variant="secondary"
-                  onClick={() => onNavigate("register")}
+                  onClick={() => navigate("/register")}
                 >
                   시작하기
                 </Button>
-              </div>
+              </FlexDiv>
             )}
             {user && (
               <Button
                 size="lg"
-                onClick={() => onNavigate("search")}
+                onClick={() => navigate("/search")}
               >
                 고인 검색하기
               </Button>
@@ -158,7 +159,7 @@ export function Home({
               </h2>
               <Button
                 variant="ghost"
-                onClick={() => onNavigate("search")}
+                onClick={() => navigate("/search")}
               >
                 전체보기
               </Button>

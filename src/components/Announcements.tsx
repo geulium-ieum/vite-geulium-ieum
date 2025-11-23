@@ -6,14 +6,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import type { Page, User as UserType } from '@/types';
+import type { User as UserType } from '@/types';
 import { toast } from 'sonner';
 import { Footer } from '@/components/Footer';
 import { Switch } from '@/components/ui/switch';
 
 interface AnnouncementsProps {
   user: UserType | null;
-  onNavigate: (page: Page) => void;
 }
 
 interface Announcement {
@@ -25,8 +24,8 @@ interface Announcement {
   author: string;
 }
 
-export function Announcements({ user, onNavigate }: AnnouncementsProps) {
-  const isAdmin = user?.role === 'admin' || user?.role === 'super-admin';
+export function Announcements({ user }: AnnouncementsProps) {
+  const isAdmin = user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN';
 
   const [announcements, setAnnouncements] = useState<Announcement[]>([
     {
@@ -303,7 +302,7 @@ export function Announcements({ user, onNavigate }: AnnouncementsProps) {
         </Dialog>
       </div>
 
-      <Footer onNavigate={onNavigate} />
+      <Footer />
     </div>
   );
 }

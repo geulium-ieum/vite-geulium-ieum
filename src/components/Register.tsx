@@ -5,15 +5,9 @@ import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'sonner';
-import type { Page } from '@/types';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
-interface RegisterProps {
-  onRegister: () => void;
-  onNavigate: (page: Page) => void;
-}
-
-export function Register({ onRegister, onNavigate }: RegisterProps) {
+export function Register() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -26,6 +20,8 @@ export function Register({ onRegister, onNavigate }: RegisterProps) {
     privacy: false,
     marketing: false,
   });
+
+  const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,7 +42,7 @@ export function Register({ onRegister, onNavigate }: RegisterProps) {
     }
 
     toast.success('회원가입이 완료되었습니다');
-    onRegister();
+    navigate('/login');
   };
 
   const handleInputChange = (field: string, value: string) => {

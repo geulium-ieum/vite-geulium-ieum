@@ -8,33 +8,32 @@ import {
   Globe,
   Lock,
 } from "lucide-react";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { Label } from "./ui/label";
-import { Card } from "./ui/card";
-import type { Page, User as UserType } from "@/types";
-import { Footer } from "./Footer";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card } from "@/components/ui/card";
+import type { User as UserType } from "@/types";
+import { Footer } from "@/components/Footer";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "./ui/dialog";
-import { Textarea } from "./ui/textarea";
+} from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "./ui/select";
+} from "@/components/ui/select";
 import { toast } from "sonner";
-import { Badge } from "./ui/badge";
+import { Badge } from "@/components/ui/badge";
 
 interface SearchDeceasedProps {
   user: UserType | null;
-  onNavigate: (page: Page) => void;
   onViewMemorial: (memorialId: string) => void;
 }
 
@@ -87,7 +86,6 @@ const mockDeceasedList = [
 
 export function SearchDeceased({
   user,
-  onNavigate,
   onViewMemorial,
 }: SearchDeceasedProps) {
   const [searchParams, setSearchParams] = useState({
@@ -519,7 +517,7 @@ export function SearchDeceased({
         </DialogContent>
       </Dialog>
 
-      <Footer onNavigate={onNavigate} />
+      <Footer />
     </div>
   );
 }
