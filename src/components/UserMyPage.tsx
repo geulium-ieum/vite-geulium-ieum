@@ -6,30 +6,31 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Switch } from '@/components/ui/switch';
-import type { Page, User as UserType } from '@/types';
+import type { User as UserType } from '@/types';
 import { toast } from 'sonner';
 import { Footer } from '@/components/Footer';
+import { useNavigate } from 'react-router-dom';
 
 interface UserMyPageProps {
   user: UserType | null;
-  onNavigate: (page: Page) => void;
   onLogout: () => void;
   onViewMemorial: (memorialId: string) => void;
 }
 
-export function UserMyPage({ user, onNavigate, onLogout, onViewMemorial }: UserMyPageProps) {
+export function UserMyPage({ user, onLogout, onViewMemorial }: UserMyPageProps) {
   const [profileData, setProfileData] = useState({
     name: user?.name || '',
     email: user?.email || '',
     phone: '010-1234-5678',
   });
-
   const [notifications, setNotifications] = useState({
     newTribute: true,
     offering: true,
     familyInvite: true,
     anniversary: true,
   });
+
+  const navigate = useNavigate();
 
   const myMemorials = [
     {
@@ -127,7 +128,7 @@ export function UserMyPage({ user, onNavigate, onLogout, onViewMemorial }: UserM
             <Card className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl">관리 중인 추모관</h2>
-                <Button onClick={() => onNavigate('search')}>
+                <Button onClick={() => navigate('/search')}>
                   새 추모관 등록
                 </Button>
               </div>
@@ -341,7 +342,7 @@ export function UserMyPage({ user, onNavigate, onLogout, onViewMemorial }: UserM
         </Tabs>
       </div>
 
-      <Footer onNavigate={onNavigate} />
+      <Footer />
     </div>
   );
 }

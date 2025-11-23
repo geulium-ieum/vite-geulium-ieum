@@ -5,18 +5,17 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import type { Page, User as UserType } from '@/types';
+import type { User as UserType } from '@/types';
 import { toast } from 'sonner';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Footer } from '@/components/Footer';
 
 interface FamilyGroupsProps {
   user: UserType | null;
-  onNavigate: (page: Page) => void;
 }
 
 interface FamilyGroup {
-  id: string;
+  id: number;
   name: string;
   description: string;
   createdDate: Date;
@@ -27,17 +26,17 @@ interface FamilyGroup {
 }
 
 interface GroupMember {
-  id: string;
+  id: number;
   name: string;
   email: string;
   role: 'admin' | 'member';
   joinDate: Date;
 }
 
-export function FamilyGroups({ user, onNavigate }: FamilyGroupsProps) {
+export function FamilyGroups({ user }: FamilyGroupsProps) {
   const [groups, setGroups] = useState<FamilyGroup[]>([
     {
-      id: '1',
+      id: 1,
       name: '김씨 가문',
       description: '김철수님과 이영희님을 추모하는 가족 그룹입니다',
       createdDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
@@ -45,13 +44,31 @@ export function FamilyGroups({ user, onNavigate }: FamilyGroupsProps) {
       memorialCount: 2,
       role: 'admin',
       members: [
-        { id: '1', name: '김영수', email: 'kim@example.com', role: 'admin', joinDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) },
-        { id: '2', name: '김민지', email: 'mj@example.com', role: 'member', joinDate: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000) },
-        { id: '3', name: '김준호', email: 'junho@example.com', role: 'member', joinDate: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000) },
+        {
+          id: 1,
+          name: '김영수',
+          email: 'kim@example.com',
+          role: 'admin',
+          joinDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+        },
+        {
+          id: 2,
+          name: '김민지',
+          email: 'mj@example.com',
+          role: 'member',
+          joinDate: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000)
+        },
+        {
+          id: 3,
+          name: '김준호',
+          email: 'junho@example.com',
+          role: 'member',
+          joinDate: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000)
+        },
       ],
     },
     {
-      id: '2',
+      id: 2,
       name: '이씨 가문',
       description: '이씨 가문 추모 그룹',
       createdDate: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000),
@@ -59,8 +76,20 @@ export function FamilyGroups({ user, onNavigate }: FamilyGroupsProps) {
       memorialCount: 1,
       role: 'member',
       members: [
-        { id: '4', name: '이영희', email: 'lee@example.com', role: 'admin', joinDate: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000) },
-        { id: '5', name: user?.name || '', email: user?.email || '', role: 'member', joinDate: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000) },
+        {
+          id: 4,
+          name: '이영희',
+          email: 'lee@example.com',
+          role: 'admin',
+          joinDate: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000)
+        },
+        {
+          id: 5,
+          name: user?.name || '',
+          email: user?.email || '',
+          role: 'member',
+          joinDate: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000)
+        },
       ],
     },
   ]);
@@ -79,7 +108,7 @@ export function FamilyGroups({ user, onNavigate }: FamilyGroupsProps) {
     }
 
     const newGroup: FamilyGroup = {
-      id: Date.now().toString(),
+      id: Date.now(),
       name: newGroupName,
       description: newGroupDescription,
       createdDate: new Date(),
@@ -88,7 +117,7 @@ export function FamilyGroups({ user, onNavigate }: FamilyGroupsProps) {
       role: 'admin',
       members: [
         {
-          id: user?.id || '1',
+          id: user?.id || 1,
           name: user?.name || '',
           email: user?.email || '',
           role: 'admin',
@@ -115,7 +144,7 @@ export function FamilyGroups({ user, onNavigate }: FamilyGroupsProps) {
     setIsInviteDialogOpen(false);
   };
 
-  const handleDeleteGroup = (groupId: string) => {
+  const handleDeleteGroup = (groupId: number) => {
     if (confirm('정말로 이 그룹을 삭제하시겠습니까?')) {
       setGroups(groups.filter(g => g.id !== groupId));
       setSelectedGroup(null);
@@ -123,7 +152,7 @@ export function FamilyGroups({ user, onNavigate }: FamilyGroupsProps) {
     }
   };
 
-  const handleRemoveMember = (groupId: string, memberId: string) => {
+  const handleRemoveMember = (groupId: number, memberId: number) => {
     if (confirm('이 멤버를 그룹에서 제거하시겠습니까?')) {
       setGroups(groups.map(g => {
         if (g.id === groupId) {
@@ -384,7 +413,7 @@ export function FamilyGroups({ user, onNavigate }: FamilyGroupsProps) {
         )}
       </div>
 
-      <Footer onNavigate={onNavigate} />
+      <Footer />
     </div>
   );
 }

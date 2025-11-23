@@ -4,15 +4,15 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import type { Page, UserRole } from '@/types';
+import type { UserRole } from '@/types';
 import { toast } from 'sonner';
+import { Link } from 'react-router-dom';
 
 interface LoginProps {
   onLogin: (email: string, role: UserRole) => void;
-  onNavigate: (page: Page) => void;
 }
 
-export function Login({ onLogin, onNavigate }: LoginProps) {
+export function Login({ onLogin }: LoginProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [adminEmail, setAdminEmail] = useState('');
@@ -133,13 +133,9 @@ export function Login({ onLogin, onNavigate }: LoginProps) {
 
               <div className="text-center text-sm text-gray-600 mt-6">
                 계정이 없으신가요?{' '}
-                <button 
-                  type="button"
-                  onClick={() => onNavigate('register')} 
-                  className="text-purple-600 hover:underline"
-                >
+                <Link to="/register" className="text-purple-600 hover:underline">
                   회원가입
-                </button>
+                </Link>
               </div>
             </form>
           </TabsContent>
@@ -179,13 +175,9 @@ export function Login({ onLogin, onNavigate }: LoginProps) {
               </Button>
 
               <div className="text-center text-sm text-gray-600 mt-6">
-                <button 
-                  type="button"
-                  onClick={() => onNavigate('home')} 
-                  className="text-purple-600 hover:underline"
-                >
+                <Link to="/" className="text-purple-600 hover:underline">
                   메인으로 돌아가기
-                </button>
+                </Link>
               </div>
             </form>
           </TabsContent>

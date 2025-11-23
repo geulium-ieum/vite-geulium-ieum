@@ -1,22 +1,20 @@
 import { Bell, Heart, MessageSquare, Users, Calendar, FileText, Check, CheckCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import type { User as UserType, Notification, Page } from '@/types';
+import type { User as UserType, Notification } from '@/types';
 import { Footer } from '@/components/Footer';
 
 interface NotificationCenterProps {
   user: UserType | null;
   notifications: Notification[];
-  onNavigate: (page: Page) => void;
   onMarkAsRead: (notificationId: string) => void;
   onMarkAllAsRead: () => void;
 }
 
 export function NotificationCenter({
-  notifications, 
-  onNavigate, 
-  onMarkAsRead, 
-  onMarkAllAsRead 
+  notifications,
+  onMarkAsRead,
+  onMarkAllAsRead
 }: NotificationCenterProps) {
   const getNotificationIcon = (type: Notification['type']) => {
     switch (type) {
@@ -154,7 +152,7 @@ export function NotificationCenter({
         )}
       </div>
 
-      <Footer onNavigate={onNavigate} />
+      <Footer />
     </div>
   );
 }

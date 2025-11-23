@@ -5,14 +5,9 @@ import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'sonner';
-import type { Page } from '@/types';
+import { Link, useNavigate } from 'react-router-dom';
 
-interface RegisterProps {
-  onRegister: () => void;
-  onNavigate: (page: Page) => void;
-}
-
-export function Register({ onRegister, onNavigate }: RegisterProps) {
+export function Register() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -26,9 +21,11 @@ export function Register({ onRegister, onNavigate }: RegisterProps) {
     marketing: false,
   });
 
+  const navigate = useNavigate();
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.name || !formData.email || !formData.password) {
       toast.error('필수 항목을 모두 입력해주세요');
       return;
@@ -45,7 +42,7 @@ export function Register({ onRegister, onNavigate }: RegisterProps) {
     }
 
     toast.success('회원가입이 완료되었습니다');
-    onRegister();
+    navigate('/login');
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -184,13 +181,12 @@ export function Register({ onRegister, onNavigate }: RegisterProps) {
 
           <div className="text-center text-sm text-gray-600">
             이미 계정이 있으신가요?{' '}
-            <button 
-              type="button"
-              onClick={() => onNavigate('login')} 
+            <Link
+              to="/login"
               className="text-purple-600 hover:underline"
             >
               로그인
-            </button>
+            </Link>
           </div>
         </form>
       </Card>

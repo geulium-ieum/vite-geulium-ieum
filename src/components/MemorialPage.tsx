@@ -6,15 +6,15 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import type { Page, User as UserType } from '@/types';
+import type { User as UserType } from '@/types';
 import { toast } from 'sonner';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
+import { useNavigate } from 'react-router-dom';
 
 interface MemorialPageProps {
   user: UserType | null;
   memorialId: string | null;
-  onNavigate: (page: Page) => void;
 }
 
 const offeringOptions = {
@@ -30,7 +30,7 @@ const offeringOptions = {
   ],
 };
 
-export function MemorialPage({ user, memorialId, onNavigate }: MemorialPageProps) {
+export function MemorialPage({ user, memorialId }: MemorialPageProps) {
   const [tributeText, setTributeText] = useState('');
   const [tributeVisibility, setTributeVisibility] = useState<'public' | 'private'>('public');
   const [tributes, setTributes] = useState([
@@ -49,6 +49,8 @@ export function MemorialPage({ user, memorialId, onNavigate }: MemorialPageProps
       isPublic: true,
     },
   ]);
+
+  const navigate = useNavigate();
 
   // Mock memorial data - in real app, this would be fetched based on memorialId
   const memorialData = {
@@ -82,7 +84,7 @@ export function MemorialPage({ user, memorialId, onNavigate }: MemorialPageProps
   
   // Check if user has access to private memorial
   const hasAccess = memorial.visibility === 'public' || 
-    (memorial.visibility === 'private' && user && memorial.members.includes(user.id));
+    (memorial.visibility === 'private' && user && memorial.members.includes(user.id.toString()));
 
   const handleOffering = (item: Record<string, string>) => {
     if (!user) {
@@ -123,7 +125,7 @@ export function MemorialPage({ user, memorialId, onNavigate }: MemorialPageProps
           <Button 
             variant="ghost" 
             className="mb-6"
-            onClick={() => onNavigate('search')}
+            onClick={() => navigate('/search')}
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             검색으로 돌아가기
@@ -141,11 +143,11 @@ export function MemorialPage({ user, memorialId, onNavigate }: MemorialPageProps
                   추모관 관리자에게 초대를 요청하시거나 로그인 후 다시 시도해주세요.
                 </p>
                 <div className="flex gap-3 justify-center">
-                  <Button variant="outline" onClick={() => onNavigate('search')}>
+                  <Button variant="outline" onClick={() => navigate('/search')}>
                     검색으로 돌아가기
                   </Button>
                   {!user && (
-                    <Button onClick={() => onNavigate('login')}>
+                    <Button onClick={() => navigate('/login')}>
                       로그인
                     </Button>
                   )}
@@ -164,7 +166,7 @@ export function MemorialPage({ user, memorialId, onNavigate }: MemorialPageProps
         <Button 
           variant="ghost" 
           className="mb-6"
-          onClick={() => onNavigate('search')}
+          onClick={() => navigate('/search')}
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           검색으로 돌아가기

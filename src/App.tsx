@@ -11,13 +11,12 @@ import { FamilyGroups } from '@/components/FamilyGroups';
 import { NotificationCenter } from '@/components/NotificationCenter';
 import { Announcements } from '@/components/Announcements';
 import { Toaster } from '@/components/ui/sonner';
-import type { Notification, Page, User, UserRole } from '@/types';
-import { Route, Routes } from 'react-router-dom';
+import type { Notification, User, UserRole } from '@/types';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import Header from '@/components/organisms/Header';
+import { useAuth } from '@/context/AuthContext';
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState<Page>('home');
-  const [user, setUser] = useState<User | null>(null);
   const [selectedMemorialId, setSelectedMemorialId] = useState<string | null>(null);
   const [notifications, setNotifications] = useState<Notification[]>([
     {
@@ -46,6 +45,11 @@ export default function App() {
     },
   ]);
 
+  const { user, setUser } = useAuth();
+
+  const pathname = useLocation().pathname;
+  const navigate = useNavigate();
+
   // const unreadCount = notifications.filter(n => !n.read).length;
 
   const handleLogin = (email: string, role: UserRole) => {
@@ -60,20 +64,20 @@ export default function App() {
     setUser(newUser);
     
     if (role === "ADMIN" || role === "SUPER_ADMIN") {
-      setCurrentPage('admin-dashboard');
+      navigate('/admin-dashboard');
     } else {
-      setCurrentPage('home');
+      navigate('/');
     }
   };
 
   const handleLogout = () => {
     setUser(null);
-    setCurrentPage('home');
+    navigate('/');
   };
 
   const handleViewMemorial = (memorialId: string) => {
     setSelectedMemorialId(memorialId);
-    setCurrentPage('memorial');
+    navigate(`/memorial/${memorialId}`);
   };
 
   const markNotificationAsRead = (notificationId: string) => {
@@ -88,7 +92,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {currentPage !== 'login' && currentPage !== 'register' && (
+      {pathname !== '/login' && pathname !== '/register' && (
         <Header />
       )}
 
@@ -99,7 +103,6 @@ export default function App() {
             element={
               <Home
                 user={user}
-                onNavigate={setCurrentPage}
                 onViewMemorial={handleViewMemorial}
               />
             }
@@ -107,19 +110,13 @@ export default function App() {
           <Route
             path="/login"
             element={
-              <Login
-                onLogin={handleLogin}
-                onNavigate={setCurrentPage}
-              />
+              <Login onLogin={handleLogin} />
             }
           />
           <Route
             path="/register"
             element={
-              <Register
-                onRegister={() => setCurrentPage('login')}
-                onNavigate={setCurrentPage}
-              />
+              <Register />
             }
           />
           <Route
@@ -127,7 +124,6 @@ export default function App() {
             element={
               <SearchDeceased
                 user={user}
-                onNavigate={setCurrentPage}
                 onViewMemorial={handleViewMemorial}
               />
             }
@@ -138,7 +134,6 @@ export default function App() {
               <MemorialPage
                 user={user}
                 memorialId={selectedMemorialId}
-                onNavigate={setCurrentPage}
               />
             }
           />
@@ -147,7 +142,6 @@ export default function App() {
             element={
               <UserMyPage
                 user={user}
-                onNavigate={setCurrentPage}
                 onLogout={handleLogout}
                 onViewMemorial={handleViewMemorial}
               />
@@ -171,10 +165,7 @@ export default function App() {
           <Route
             path="/family-groups"
             element={
-              <FamilyGroups
-                user={user}
-                onNavigate={setCurrentPage}
-              />
+              <FamilyGroups user={user} />
             }
           />
           <Route
@@ -183,7 +174,6 @@ export default function App() {
               <NotificationCenter
                 user={user}
                 notifications={notifications}
-                onNavigate={setCurrentPage}
                 onMarkAsRead={markNotificationAsRead}
                 onMarkAllAsRead={markAllAsRead}
               />
@@ -192,10 +182,7 @@ export default function App() {
           <Route
             path="/announcements"
             element={
-              <Announcements
-                user={user}
-                onNavigate={setCurrentPage}
-              />
+              <Announcements user={user} />
             }
           />
         </Routes>
