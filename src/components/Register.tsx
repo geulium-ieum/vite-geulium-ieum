@@ -6,6 +6,7 @@ import { Card } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'sonner';
 import type { Page } from '@/types';
+import { Link } from 'react-router-dom';
 
 interface RegisterProps {
   onRegister: () => void;
@@ -29,7 +30,7 @@ export function Register({ onRegister, onNavigate }: RegisterProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.name || !formData.email || !formData.password) {
+    if (!formData.name || !formData.email || !formData.password || !formData.phone) {
       toast.error('필수 항목을 모두 입력해주세요');
       return;
     }
@@ -98,7 +99,7 @@ export function Register({ onRegister, onNavigate }: RegisterProps) {
           </div>
 
           <div>
-            <Label htmlFor="phone">휴대폰 번호</Label>
+            <Label htmlFor="phone">휴대폰 번호 *</Label>
             <Input
               id="phone"
               type="tel"
@@ -184,13 +185,12 @@ export function Register({ onRegister, onNavigate }: RegisterProps) {
 
           <div className="text-center text-sm text-gray-600">
             이미 계정이 있으신가요?{' '}
-            <button 
-              type="button"
-              onClick={() => onNavigate('login')} 
+            <Link 
+              to="/login" 
               className="text-purple-600 hover:underline"
             >
               로그인
-            </button>
+            </Link>
           </div>
         </form>
       </Card>
