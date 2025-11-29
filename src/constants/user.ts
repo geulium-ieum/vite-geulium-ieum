@@ -8,3 +8,11 @@ export const UserSchema = v.object({
     role: v.picklist(['USER', 'ADMIN', 'SUPER_ADMIN']),
     isActive: v.boolean(),
 });
+
+export const TokenSchema = v.object({
+    tokenType: v.string(),
+    accessToken: v.string(),
+    accessTokenExpiresIn: v.number(),
+    refreshToken: v.string(),
+    refreshTokenExpiresIn: v.number(),
+});

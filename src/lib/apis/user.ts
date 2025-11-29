@@ -1,6 +1,7 @@
 import { http } from "@/lib/utils"
 import * as v from 'valibot';
-import { UserSchema } from "@/constants/user";
+import { TokenSchema, UserSchema } from "@/constants/user";
+import type { PostVerifyEmailParams } from "@/types";
 
 export async function getUser(token: string) {
     try {
@@ -10,6 +11,23 @@ export async function getUser(token: string) {
             }
         }).json();
         return v.parse(UserSchema, response);
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function postVerifyEmail({
+    email,
+    code
+}: PostVerifyEmailParams) {
+    try {
+        const response = await http.post('/auth/verify-email', {
+            json: {
+                email,
+                code
+            }
+        }).json();
+        return v.parse(TokenSchema, response);
     } catch (error) {
         throw error;
     }

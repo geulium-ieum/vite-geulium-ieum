@@ -1,4 +1,5 @@
-import { getUser } from "@/lib/apis/user";
+import { getUser, postVerifyEmail } from "@/lib/apis/user";
+import type { PostVerifyEmailParams } from "@/types";
 
 class UserService {
     private requireToken(): string {
@@ -12,6 +13,16 @@ class UserService {
             try {
                 const token = this.requireToken();
                 return await getUser(token);
+            } catch (error) {
+                throw error;
+            }
+        }
+    }
+    
+    public post = {
+        verifyEmail: async ({ email, code }: PostVerifyEmailParams) => {
+            try {
+                return await postVerifyEmail({ email, code });
             } catch (error) {
                 throw error;
             }

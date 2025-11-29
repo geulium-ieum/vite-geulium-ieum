@@ -1,5 +1,5 @@
 import * as v from 'valibot';
-import { UserSchema } from '@/constants/user';
+import { TokenSchema, UserSchema } from '@/constants/user';
 
 export type Page =
   | 'home'
@@ -28,10 +28,16 @@ export type Children = React.ReactNode | React.ReactNode[];
 
 export type User = v.InferOutput<typeof UserSchema>;
 export type UserRole = "USER" | "ADMIN" | "SUPER_ADMIN";
+export type Token = v.InferOutput<typeof TokenSchema>;
 
 export type FooterDialogType = 'faq' | 'inquiry' | 'guide' | 'terms' | 'privacy' | 'accessibility';
 
 export interface FooterDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+}
+
+export interface PostVerifyEmailParams {
+  email: string;
+  code: string;
 }
