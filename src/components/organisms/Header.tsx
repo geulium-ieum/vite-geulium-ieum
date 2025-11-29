@@ -17,7 +17,7 @@ export default function Header() {
                             user?.role === "SUPER_ADMIN" ?
                             '/admin-dashboard'
                             :
-                            '/home'
+                            '/'
                     }>
                         <FlexDiv className="items-center gap-3 cursor-pointer">
                             <div className="w-10 h-10 bg-linear-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
@@ -32,7 +32,7 @@ export default function Header() {
                             <>
                                 {(user.role === "USER" || !user.role) && (
                                     <>
-                                        <Link to="/home">
+                                        <Link to="/">
                                             <Button
                                                 variant="ghost"
                                                 className="text-gray-700 hover:text-gray-900 transition-colors"
