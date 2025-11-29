@@ -15,6 +15,7 @@ import type { Notification, User, UserRole } from '@/types';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import Header from '@/components/organisms/Header';
 import { useAuth } from '@/context/AuthContext';
+import HelpBoard from '@/components/HelpBoard';
 
 export default function App() {
   const [selectedMemorialId, setSelectedMemorialId] = useState<string | null>(null);
@@ -92,7 +93,9 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {pathname !== '/login' && pathname !== '/register' && (
+      { pathname !== '/login' && 
+        pathname !== '/register' && 
+        pathname !== '/auth/verify-email' && (
         <Header />
       )}
 
@@ -183,6 +186,12 @@ export default function App() {
             path="/announcements"
             element={
               <Announcements user={user} />
+            }
+          />
+          <Route
+            path="/help-board"
+            element={
+              <HelpBoard />
             }
           />
         </Routes>
