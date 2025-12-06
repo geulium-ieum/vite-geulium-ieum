@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Bell } from "lucide-react";
 // import { Badge } from "@/components/ui/badge";
 import FlexDiv from "@/components/FlexDiv";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { useAuth } from "@/context/AuthContext";
 
 export default function Header() {

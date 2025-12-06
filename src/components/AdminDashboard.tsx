@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 
-export function AdminDashboard() {
+export default function AdminDashboard() {
   const [pendingApprovals, setPendingApprovals] = useState([
     {
       id: '1',

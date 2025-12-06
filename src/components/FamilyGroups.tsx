@@ -33,7 +33,7 @@ interface GroupMember {
   joinDate: Date;
 }
 
-export function FamilyGroups({ user }: FamilyGroupsProps) {
+export default function FamilyGroups({ user }: FamilyGroupsProps) {
   const [groups, setGroups] = useState<FamilyGroup[]>([
     {
       id: 1,

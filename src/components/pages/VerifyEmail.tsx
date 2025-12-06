@@ -2,7 +2,7 @@ import Loading from "@/components/atoms/Loading";
 import FlexDiv from "@/components/FlexDiv";
 import { userService } from "@/lib/services/user";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router";
 
 export default function VerifyEmail() {
     const [email, setEmail] = useState<string | null>(null);

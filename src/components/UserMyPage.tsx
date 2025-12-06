@@ -9,7 +9,7 @@ import { Switch } from '@/components/ui/switch';
 import type { User as UserType } from '@/types';
 import { toast } from 'sonner';
 import { Footer } from '@/components/Footer';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 interface UserMyPageProps {
   user: UserType | null;
@@ -17,7 +17,7 @@ interface UserMyPageProps {
   onViewMemorial: (memorialId: string) => void;
 }
 
-export function UserMyPage({ user, onLogout, onViewMemorial }: UserMyPageProps) {
+export default function UserMyPage({ user, onLogout, onViewMemorial }: UserMyPageProps) {
   const [profileData, setProfileData] = useState({
     name: user?.name || '',
     email: user?.email || '',

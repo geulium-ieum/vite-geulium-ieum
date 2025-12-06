@@ -5,9 +5,9 @@ import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'sonner';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router';
 
-export function Register() {
+export default function Register() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',

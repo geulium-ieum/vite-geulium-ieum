@@ -6,13 +6,13 @@ import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import type { UserRole } from '@/types';
 import { toast } from 'sonner';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 interface LoginProps {
   onLogin: (email: string, role: UserRole) => void;
 }
 
-export function Login({ onLogin }: LoginProps) {
+export default function Login({ onLogin }: LoginProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [adminEmail, setAdminEmail] = useState('');

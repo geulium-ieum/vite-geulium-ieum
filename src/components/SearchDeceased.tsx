@@ -84,7 +84,7 @@ const mockDeceasedList = [
   },
 ];
 
-export function SearchDeceased({
+export default function SearchDeceased({
   user,
   onViewMemorial,
 }: SearchDeceasedProps) {
