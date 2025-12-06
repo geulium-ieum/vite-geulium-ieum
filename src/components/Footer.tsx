@@ -64,13 +64,12 @@ export function Footer() {
               <h3 className="text-white mb-4">고객지원</h3>
               <ul className="space-y-2 text-sm">
                 <li>
-                  <Button
-                    variant="ghost"
-                    className="h-fit hover:text-white hover:bg-transparent transition-colors p-0"
-                    onClick={() => setActiveDialog('faq')}
+                  <Link
+                    to="/help-board"
+                    className="font-medium hover:text-white transition-colors"
                   >
-                    자주 묻는 질문
-                  </Button>
+                    고객센터
+                  </Link>
                 </li>
                 <li>
                   <Button
