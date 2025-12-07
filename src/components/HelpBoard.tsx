@@ -2,6 +2,8 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
+import { Link } from 'react-router';
 
 const content = [
     {
@@ -23,25 +25,28 @@ const content = [
 ]
 
 export default function HelpBoard() {
+    const { user } = useAuth();
     return (
         <div
             className="bg-gray-50 max-w-7xl mx-auto"
         >
-            <div className="px-4 sm:px-6 lg:px-8 py-16">
-                <div className="mb-8 w-full">
-                    <h1 className="text-3xl text-gray-900 mb-2">
-                고객센터
-            </h1>
-            <div className="max-w-7xl mx-auto flex items-center gap-2 mb-8">
+            <div className="pt-4 mb-4">
+                <h1 className="text-3xl text-gray-900">
+                    고객센터
+                </h1>
+            </div>
+            <div className="max-w-7xl mx-auto flex items-center gap-2 mb-4">
                 <Input
                     placeholder="검색어를 입력해주세요."
                 />
                 <Button>
-                    <Search />
+                    <Search className="w-4 h-4" />
                 </Button>
             </div>
             <div className="flex flex-col gap-4">
-                <Card className="p-6">
+                <Card 
+                    className="p-6"
+                >
                     <h2 className="text-lg font-bold">
                         자주 묻는 질문
                     </h2>
@@ -55,19 +60,25 @@ export default function HelpBoard() {
                             <p className="text-gray-600 text-sm">
                                 {item.answer}
                             </p>
-                    </div>
+                        </div>
                     ))}
                     </div>
                 </Card>
             </div>
             <div className="flex py-4">
-                <Button 
-                    className="w-full"
-                >
-                    1:1 문의
-                </Button>
-            </div>
-            </div>
+                <Link to={
+                    user?.role === undefined ?
+                        '/login'
+                        :
+                        '/inquiry'
+                    }  
+                    className="w-full">
+                    <Button 
+                        className="font-bold w-full"
+                    >
+                        1:1 문의
+                    </Button>
+                </Link>
             </div>
         </div>
     )
