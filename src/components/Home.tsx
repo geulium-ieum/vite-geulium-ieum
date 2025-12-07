@@ -5,16 +5,11 @@ import {
   NotebookPen,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import type { User as UserType } from "@/types";
 import { Footer } from "@/components/Footer";
 import { Card } from "@/components/ui/card";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import FlexDiv from "@/components/FlexDiv";
-
-interface HomeProps {
-  user: UserType | null;
-  onViewMemorial: (memorialId: string) => void;
-}
+import { useAuth } from "@/context/AuthContext";
 
 const featuredMemorials = [
   {
@@ -46,11 +41,10 @@ const featuredMemorials = [
   },
 ];
 
-export function Home({
-  user,
-  onViewMemorial,
-}: HomeProps) {
+export default function Home() {
   const navigate = useNavigate();
+
+  const { user } = useAuth();
 
   return (
     <div className="min-h-screen">
@@ -169,7 +163,7 @@ export function Home({
                 <Card
                   key={memorial.id}
                   className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
-                  onClick={() => onViewMemorial(memorial.id)}
+                  onClick={() => navigate(`/memorial/${memorial.id}`)}
                 >
                   <div className="aspect-square relative overflow-hidden bg-gray-200">
                     <img

@@ -17,7 +17,7 @@ interface AdminMyPageProps {
   onLogout: () => void;
 }
 
-export function AdminMyPage({ user, onLogout }: AdminMyPageProps) {
+export default function AdminMyPage({ user, onLogout }: AdminMyPageProps) {
   const [profileData, setProfileData] = useState({
     name: user?.name || '',
     email: user?.email || '',
@@ -68,7 +68,7 @@ export function AdminMyPage({ user, onLogout }: AdminMyPageProps) {
     toast.success('권한이 변경되었습니다');
   };
 
-  const isSuperAdmin = user?.role === 'super-admin';
+  const isSuperAdmin = user?.role === 'SUPER_ADMIN';
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -142,7 +142,7 @@ export function AdminMyPage({ user, onLogout }: AdminMyPageProps) {
 
                 <div>
                   <Label>권한</Label>
-                  <Input value={user?.role === 'super-admin' ? 'Super Admin' : 'Admin'} disabled />
+                  <Input value={user?.role === 'SUPER_ADMIN' ? 'Super Admin' : 'Admin'} disabled />
                 </div>
 
                 <div className="flex gap-3">

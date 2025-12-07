@@ -11,7 +11,7 @@ interface NotificationCenterProps {
   onMarkAllAsRead: () => void;
 }
 
-export function NotificationCenter({
+export default function NotificationCenter({
   notifications,
   onMarkAsRead,
   onMarkAllAsRead

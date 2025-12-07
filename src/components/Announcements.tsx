@@ -24,7 +24,7 @@ interface Announcement {
   author: string;
 }
 
-export function Announcements({ user }: AnnouncementsProps) {
+export default function Announcements({ user }: AnnouncementsProps) {
   const isAdmin = user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN';
 
   const [announcements, setAnnouncements] = useState<Announcement[]>([

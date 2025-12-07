@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Heart } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import FaqDialog from '@/components/templates/dialogs/Faq';
 import InquiryDialog from '@/components/templates/dialogs/Inquiry';
@@ -8,6 +7,7 @@ import GuideDialog from '@/components/templates/dialogs/Guide';
 import TermsDialog from '@/components/templates/dialogs/Terms';
 import PrivacyDialog from '@/components/templates/dialogs/Privacy';
 import AccessibilityDialog from '@/components/templates/dialogs/Accessibility';
+import { Link } from 'react-router';
 
 export function Footer() {
   const [activeDialog, setActiveDialog] = useState<'faq' | 'inquiry' | 'guide' | 'terms' | 'privacy' | 'accessibility' | null>(null);

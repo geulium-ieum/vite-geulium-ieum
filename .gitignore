@@ -23,4 +23,5 @@ dist-ssr
 *.sln
 *.sw?
 
+.react-router
 node_modules

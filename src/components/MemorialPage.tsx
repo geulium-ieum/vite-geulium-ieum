@@ -10,7 +10,7 @@ import type { User as UserType } from '@/types';
 import { toast } from 'sonner';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 interface MemorialPageProps {
   user: UserType | null;
@@ -30,7 +30,7 @@ const offeringOptions = {
   ],
 };
 
-export function MemorialPage({ user, memorialId }: MemorialPageProps) {
+export default function MemorialPage({ user, memorialId }: MemorialPageProps) {
   const [tributeText, setTributeText] = useState('');
   const [tributeVisibility, setTributeVisibility] = useState<'public' | 'private'>('public');
   const [tributes, setTributes] = useState([
