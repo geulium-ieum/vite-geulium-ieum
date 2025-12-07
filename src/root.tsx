@@ -5,6 +5,11 @@ import {
     Scripts,
     ScrollRestoration
 } from "react-router";
+import type { Route } from "./+types/root"
+
+export async function loader({ request }: Route.LoaderArgs) {
+    
+}
 
 export function Layout({
     children
