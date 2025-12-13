@@ -70,7 +70,7 @@ export default function HelpBoard() {
                     user?.role === undefined ?
                         '/login'
                         :
-                        '/inquiry'
+                        '/one-on-one-inquiry'
                     }  
                     className="w-full">
                     <Button 

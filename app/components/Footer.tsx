@@ -72,13 +72,12 @@ export function Footer() {
                   </Link>
                 </li>
                 <li>
-                  <Button
-                    variant="ghost"
-                    className="h-fit hover:text-white hover:bg-transparent transition-colors p-0"
-                    onClick={() => setActiveDialog('inquiry')}
+                  <Link
+                    to="/one-on-one-inquiry"
+                    className="font-medium hover:text-white transition-colors"
                   >
                     1:1 문의
-                  </Button>
+                  </Link>
                 </li>
                 <li>
                   <Button

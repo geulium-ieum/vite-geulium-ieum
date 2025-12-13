@@ -19,6 +19,7 @@ export default [
         route("/notifications", "./components/NotificationCenter.tsx"),
         route("/announcements", "./components/Announcements.tsx"),
         route("/help-board", "./components/HelpBoard.tsx"),
-        route("/auth/verify-email", "./components/pages/VerifyEmail.tsx")
+        route("/auth/verify-email", "./components/pages/VerifyEmail.tsx"),
+        route("/one-on-one-inquiry", "./components/OneOnOneInquiry.tsx"),
     ])
 ] satisfies RouteConfig
