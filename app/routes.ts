@@ -21,5 +21,7 @@ export default [
         route("/help-board", "./components/HelpBoard.tsx"),
         route("/auth/verify-email", "./components/pages/VerifyEmail.tsx"),
         route("/one-on-one-inquiry", "./components/OneOnOneInquiry.tsx"),
+        route("/policy/stipulations", "./components/Stipulations.tsx"),
+        route("/policy/privacy", "./components/Privacy.tsx"),
     ])
 ] satisfies RouteConfig

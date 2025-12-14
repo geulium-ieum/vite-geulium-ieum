@@ -96,13 +96,12 @@ export function Footer() {
               <h3 className="text-white mb-4">약관 및 정책</h3>
               <ul className="space-y-2 text-sm">
                 <li>
-                  <Button
-                    variant="ghost"
-                    className="h-fit hover:text-white hover:bg-transparent transition-colors p-0"
-                    onClick={() => setActiveDialog('terms')}
+                  <Link
+                    to="/policy/stipulations"
+                    className="font-medium hover:text-white transition-colors"
                   >
                     이용약관
-                  </Button>
+                  </Link>
                 </li>
                 <li>
                   <Button
