@@ -1,23 +1,30 @@
-import Loading from "~/components/atoms/Loading";
 import FlexDiv from "~/components/FlexDiv";
 import { userService } from "~/lib/services/user";
-import { getSession } from "~/lib/sessions.server";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router";
+import { Form, redirect } from "react-router";
 import type { Route } from "./+types/VerifyEmail";
+import { Input } from "~/components/ui/input";
+import { Button } from "~/components/ui/button";
 
-export async function loader({ request }: Route.LoaderArgs) {
-    const session = await getSession(request.headers.get("Cookie"));
-    return session.data.token;
+export async function action({ request }: Route.ActionArgs) {
+    const formData = await request.formData();
+    const email = formData.get('email') as string;
+    const code = formData.get('code') as string;
+    if (!email || !code) {
+        return redirect('/login');
+    }
+    try {
+        const token = await userService.post.verifyEmail({ email, code });
+        return token;
+    } catch (error) {
+        console.error(error);
+        // return redirect('/login');
+    }
 }
 
-export default function VerifyEmail({ loaderData }: Route.ComponentProps) {
-    // TODO: token 저장
-    const token = loaderData;
-    const [email, setEmail] = useState<string | null>(null);
-
-    const [searchParams] = useSearchParams();
-    const code = searchParams.get('code');
+export default function VerifyEmail() {
+    const [code, setCode] = useState<string>("");
+    const [email, setEmail] = useState<string>("");
 
     useEffect(() => {
         const emailFromSessionStorage = window.sessionStorage.getItem('email');
@@ -26,21 +33,28 @@ export default function VerifyEmail({ loaderData }: Route.ComponentProps) {
         }
     }, []);
 
-    useEffect(() => {
-        if (!email || !code) return;
-        (async () => {
-            try {
-                const token = await userService.post.verifyEmail({ email, code });
-                //set token
-            } catch (error) {
-                console.error(error);
-            }
-        })
-    }, [email, code]);
-
     return (
-        <FlexDiv className="w-full h-dvh justify-center items-center">
-            <Loading />
+        <FlexDiv className="min-h-dvh items-center justify-center bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 py-12 px-4">
+            <Form method="POST" className="flex flex-col gap-4 w-78">
+                <Input
+                    type="hidden"
+                    name="email"
+                    value={email}
+                />
+                <Input
+                    type="text"
+                    name="code"
+                    placeholder="인증 코드"
+                    value={code}
+                    className="bg-white"
+                    onChange={(e) => setCode(e.target.value)}
+                />
+                <Button
+                    type="submit"
+                    className="w-full"
+                    disabled={!email || !code}
+                >인증</Button>
+            </Form>
         </FlexDiv>
     )
 }

@@ -26,23 +26,25 @@ export default function Register() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.name || !formData.email || !formData.password || !formData.phone) {
-      toast.error('필수 항목을 모두 입력해주세요');
-      return;
-    }
+    // if (!formData.name || !formData.email || !formData.password || !formData.phone) {
+    //   toast.error('필수 항목을 모두 입력해주세요');
+    //   return;
+    // }
 
-    if (formData.password !== formData.confirmPassword) {
-      toast.error('비밀번호가 일치하지 않습니다');
-      return;
-    }
+    // if (formData.password !== formData.confirmPassword) {
+    //   toast.error('비밀번호가 일치하지 않습니다');
+    //   return;
+    // }
 
-    if (!agreements.terms || !agreements.privacy) {
-      toast.error('필수 약관에 동의해주세요');
-      return;
-    }
+    // if (!agreements.terms || !agreements.privacy) {
+    //   toast.error('필수 약관에 동의해주세요');
+    //   return;
+    // }
 
-    toast.success('회원가입이 완료되었습니다');
-    navigate('/login');
+    // toast.success('회원가입이 완료되었습니다');
+    // navigate('/login');
+    window.sessionStorage.setItem('email', formData.email);
+    navigate('/auth/verify-email');
   };
 
   const handleInputChange = (field: string, value: string) => {
