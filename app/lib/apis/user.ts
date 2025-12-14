@@ -21,7 +21,7 @@ export async function postVerifyEmail({
     code
 }: PostVerifyEmailParams) {
     try {
-        const response = await http.post('/auth/verify-email', {
+        const response = await http.post('auth/verify-email', {
             json: {
                 email,
                 code
