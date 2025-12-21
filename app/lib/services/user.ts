@@ -1,5 +1,5 @@
-import { getUser, postVerifyEmail } from "~/lib/apis/user";
-import type { PostVerifyEmailParams } from "~/types";
+import { getUser, postRegister, postVerifyEmail } from "~/lib/apis/user";
+import type { PostRegisterParams, PostVerifyEmailParams } from "~/types";
 
 class UserService {
     private requireToken(): string {
@@ -10,22 +10,22 @@ class UserService {
 
     public get = {
         user: async () => {
-            try {
-                const token = this.requireToken();
-                return await getUser(token);
-            } catch (error) {
-                throw error;
-            }
+            const token = this.requireToken();
+            return await getUser(token);
         }
     }
     
     public post = {
+        register: async ({
+            email,
+            password,
+            phone,
+            name
+        }: PostRegisterParams) => {
+            return await postRegister({ email, password, phone, name });
+        },
         verifyEmail: async ({ email, code }: PostVerifyEmailParams) => {
-            try {
-                return await postVerifyEmail({ email, code });
-            } catch (error) {
-                throw error;
-            }
+            return await postVerifyEmail({ email, code });
         }
     }
 }

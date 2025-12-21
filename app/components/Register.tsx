@@ -5,7 +5,10 @@ import { Label } from '~/components/ui/label';
 import { Card } from '~/components/ui/card';
 import { Checkbox } from '~/components/ui/checkbox';
 import { toast } from 'sonner';
-import { Link, useNavigate } from 'react-router';
+import { Form, Link, useNavigate } from 'react-router';
+import FlexDiv from '~/components/FlexDiv';
+import { InputGroup, InputGroupAddon, InputGroupInput } from './ui/input-group';
+import { EyeIcon, EyeOffIcon } from 'lucide-react';
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -20,31 +23,33 @@ export default function Register() {
     privacy: false,
     marketing: false,
   });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // if (!formData.name || !formData.email || !formData.password || !formData.phone) {
-    //   toast.error('필수 항목을 모두 입력해주세요');
-    //   return;
-    // }
+    if (!formData.name || !formData.email || !formData.password || !formData.phone) {
+      toast.error('필수 항목을 모두 입력해주세요');
+      return;
+    }
 
-    // if (formData.password !== formData.confirmPassword) {
-    //   toast.error('비밀번호가 일치하지 않습니다');
-    //   return;
-    // }
+    if (formData.password !== formData.confirmPassword) {
+      toast.error('비밀번호가 일치하지 않습니다');
+      return;
+    }
 
-    // if (!agreements.terms || !agreements.privacy) {
-    //   toast.error('필수 약관에 동의해주세요');
-    //   return;
-    // }
+    if (!agreements.terms || !agreements.privacy) {
+      toast.error('필수 약관에 동의해주세요');
+      return;
+    }
 
-    // toast.success('회원가입이 완료되었습니다');
-    // navigate('/login');
     window.sessionStorage.setItem('email', formData.email);
-    navigate('/auth/verify-email');
+
+    // TODO: api 호출 추가
+    // navigate('/auth/verify-email');
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -64,18 +69,18 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 py-12 px-4">
+    <FlexDiv className="min-h-screen items-center justify-center bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 py-12 px-4">
       <Card className="w-full max-w-md p-8">
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-linear-to-br from-purple-600 to-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+          <FlexDiv className="w-16 h-16 bg-linear-to-br from-purple-600 to-blue-600 rounded-xl items-center justify-center mx-auto mb-4">
             <span className="text-white text-2xl">🕊️</span>
-          </div>
+          </FlexDiv>
           <h1 className="text-2xl text-gray-900 mb-2">회원가입</h1>
           <p className="text-gray-600">그리움 이음과 함께 시작하세요</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
+        <Form onSubmit={handleSubmit} className="space-y-4">
+          <FlexDiv className="flex-col gap-2">
             <Label htmlFor="name">이름 *</Label>
             <Input
               id="name"
@@ -83,9 +88,9 @@ export default function Register() {
               value={formData.name}
               onChange={(e) => handleInputChange('name', e.target.value)}
             />
-          </div>
+          </FlexDiv>
 
-          <div>
+          <FlexDiv className="flex-col gap-2">
             <Label htmlFor="email">이메일 *</Label>
             <Input
               id="email"
@@ -94,9 +99,9 @@ export default function Register() {
               value={formData.email}
               onChange={(e) => handleInputChange('email', e.target.value)}
             />
-          </div>
+          </FlexDiv>
 
-          <div>
+          <FlexDiv className="flex-col gap-2">
             <Label htmlFor="phone">휴대폰 번호 *</Label>
             <Input
               id="phone"
@@ -105,32 +110,66 @@ export default function Register() {
               value={formData.phone}
               onChange={(e) => handleInputChange('phone', e.target.value)}
             />
-          </div>
+          </FlexDiv>
 
-          <div>
+          <FlexDiv className="flex-col gap-2">
             <Label htmlFor="password">비밀번호 *</Label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="8자 이상 입력해주세요"
-              value={formData.password}
-              onChange={(e) => handleInputChange('password', e.target.value)}
-            />
-          </div>
+            <InputGroup>
+              <InputGroupInput
+                id="password"
+                type={showPassword ? 'text' : 'password'}
+                placeholder="8자 이상 입력해주세요"
+                value={formData.password}
+                onChange={(e) => handleInputChange('password', e.target.value)}
+              />
+              <InputGroupAddon align="inline-end">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="hover:bg-transparent"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ?
+                    <EyeOffIcon className="size-4" />
+                    :
+                    <EyeIcon className="size-4" />
+                  }
+                </Button>
+              </InputGroupAddon>
+            </InputGroup>
+          </FlexDiv>
 
-          <div>
+          <FlexDiv className="flex-col gap-2">
             <Label htmlFor="confirmPassword">비밀번호 확인 *</Label>
-            <Input
-              id="confirmPassword"
-              type="password"
-              placeholder="비밀번호를 다시 입력해주세요"
-              value={formData.confirmPassword}
-              onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
-            />
-          </div>
+            <InputGroup>
+              <InputGroupInput
+                id="confirmPassword"
+                type={showConfirmPassword ? 'text' : 'password'}
+                placeholder="비밀번호를 다시 입력해주세요"
+                value={formData.confirmPassword}
+                onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
+              />
+              <InputGroupAddon align="inline-end">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="hover:bg-transparent"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                >
+                  {showConfirmPassword ?
+                    <EyeOffIcon className="size-4" />
+                    :
+                    <EyeIcon className="size-4" />
+                  }
+                </Button>
+              </InputGroupAddon>
+            </InputGroup>
+          </FlexDiv>
 
           <div className="border-t border-gray-200 pt-4 space-y-3">
-            <div className="flex items-center space-x-2">
+            <FlexDiv className="items-center space-x-2">
               <Checkbox
                 id="all-agree"
                 checked={agreements.terms && agreements.privacy && agreements.marketing}
@@ -139,10 +178,10 @@ export default function Register() {
               <Label htmlFor="all-agree" className="cursor-pointer">
                 전체 동의
               </Label>
-            </div>
+            </FlexDiv>
 
             <div className="pl-6 space-y-2">
-              <div className="flex items-center space-x-2">
+              <FlexDiv className="items-center space-x-2">
                 <Checkbox
                   id="terms"
                   checked={agreements.terms}
@@ -151,9 +190,9 @@ export default function Register() {
                 <Label htmlFor="terms" className="text-sm cursor-pointer">
                   이용약관 동의 (필수)
                 </Label>
-              </div>
+              </FlexDiv>
 
-              <div className="flex items-center space-x-2">
+              <FlexDiv className="items-center space-x-2">
                 <Checkbox
                   id="privacy"
                   checked={agreements.privacy}
@@ -162,9 +201,9 @@ export default function Register() {
                 <Label htmlFor="privacy" className="text-sm cursor-pointer">
                   개인정보 수집 및 이용 동의 (필수)
                 </Label>
-              </div>
+              </FlexDiv>
 
-              <div className="flex items-center space-x-2">
+              <FlexDiv className="items-center space-x-2">
                 <Checkbox
                   id="marketing"
                   checked={agreements.marketing}
@@ -173,7 +212,7 @@ export default function Register() {
                 <Label htmlFor="marketing" className="text-sm cursor-pointer">
                   마케팅 정보 수신 동의 (선택)
                 </Label>
-              </div>
+              </FlexDiv>
             </div>
           </div>
 
@@ -190,8 +229,8 @@ export default function Register() {
               로그인
             </Link>
           </div>
-        </form>
+        </Form>
       </Card>
-    </div>
+    </FlexDiv>
   );
 }

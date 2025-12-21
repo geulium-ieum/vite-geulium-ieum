@@ -37,6 +37,13 @@ export interface FooterDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
+export interface PostRegisterParams {
+  email: string;
+  password: string;
+  phone: string;
+  name: string;
+}
+
 export interface PostVerifyEmailParams {
   email: string;
   code: string;
