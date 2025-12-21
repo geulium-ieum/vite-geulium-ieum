@@ -104,22 +104,20 @@ export function Footer() {
                   </Link>
                 </li>
                 <li>
-                  <Button
-                    variant="ghost"
-                    className="h-fit hover:text-white hover:bg-transparent transition-colors p-0"
-                    onClick={() => setActiveDialog('privacy')}
+                  <Link
+                    to="/policy/privacy"
+                    className="font-medium hover:text-white transition-colors"
                   >
                     개인정보처리방침
-                  </Button>
+                  </Link>
                 </li>
                 <li>
-                  <Button
-                    variant="ghost"
-                    className="h-fit hover:text-white hover:bg-transparent transition-colors p-0"
-                    onClick={() => setActiveDialog('accessibility')}
+                  <Link
+                    to="/policy/accessibility"
+                    className="font-medium hover:text-white transition-colors"
                   >
                     웹 접근성 정책
-                  </Button>
+                  </Link>
                 </li>
               </ul>
             </div>
