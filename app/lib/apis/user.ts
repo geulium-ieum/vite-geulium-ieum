@@ -1,7 +1,7 @@
 import { http } from "~/lib/utils"
 import * as v from 'valibot';
 import { TokenSchema, UserSchema } from "~/constants/user";
-import type { PostVerifyEmailParams } from "~/types";
+import type { PostRegisterParams, PostVerifyEmailParams } from "~/types";
 
 export async function getUser(token: string) {
     try {
@@ -14,6 +14,22 @@ export async function getUser(token: string) {
     } catch (error) {
         throw error;
     }
+}
+
+export async function postRegister({
+    email,
+    password,
+    phone,
+    name
+}: PostRegisterParams) {
+    await http.post('auth/register', {
+        json: {
+            email,
+            password,
+            phone,
+            name
+        }
+    }).json();
 }
 
 export async function postVerifyEmail({
