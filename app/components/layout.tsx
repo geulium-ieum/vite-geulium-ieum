@@ -1,5 +1,6 @@
 import Header from "~/components/organisms/Header";
 import { Outlet, useLocation } from "react-router";
+import { Toaster } from "./ui/sonner";
 
 export default function RootLayout() {
     const location = useLocation();
@@ -17,6 +18,7 @@ export default function RootLayout() {
             <main>
                 <Outlet />
             </main>
+            <Toaster />
         </div>
     )
 }

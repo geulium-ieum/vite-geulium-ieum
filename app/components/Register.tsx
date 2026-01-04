@@ -9,6 +9,7 @@ import { Form, Link, useNavigate } from 'react-router';
 import FlexDiv from '~/components/FlexDiv';
 import { InputGroup, InputGroupAddon, InputGroupInput } from './ui/input-group';
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
+import { userService } from '~/lib/services/user';
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -48,8 +49,21 @@ export default function Register() {
 
     window.sessionStorage.setItem('email', formData.email);
 
-    // TODO: api 호출 추가
-    // navigate('/auth/verify-email');
+    try {
+      const response = await userService.post.register({
+        email: formData.email,
+        password: formData.password,
+        phone: formData.phone,
+        name: formData.name,
+      });
+      toast.success(response.message);
+      setTimeout(() => {
+        navigate('/auth/verify-email');
+      }, 3000);
+    } catch (error) {
+      console.error(error);
+      toast.error('오류가 발생했습니다. 다시 시도해주세요.');
+    }
   };
 
   const handleInputChange = (field: string, value: string) => {

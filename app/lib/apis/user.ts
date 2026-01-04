@@ -22,14 +22,19 @@ export async function postRegister({
     phone,
     name
 }: PostRegisterParams) {
-    await http.post('auth/register', {
-        json: {
-            email,
-            password,
-            phone,
-            name
-        }
-    }).json();
+    try {
+        const response: { message: string } = await http.post('auth/register', {
+            json: {
+                email,
+                password,
+                phone,
+                name
+            }
+        }).json();
+        return response;
+    } catch (error) {
+        throw error;
+    }
 }
 
 export async function postVerifyEmail({
