@@ -4,6 +4,7 @@ import { Input } from '~/components/ui/input';
 import { Search } from 'lucide-react';
 import { useAuth } from '~/context/AuthContext';
 import { Link } from 'react-router';
+import { useState } from 'react';
 
 const content = [
     {
@@ -25,7 +26,15 @@ const content = [
 ]
 
 export default function HelpBoard() {
+    const [search, setSearch] = useState('');
+    const [filteredContent, setFilteredContent] = useState(content);
     const { user } = useAuth();
+
+    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearch(e.target.value);
+        setFilteredContent(content.filter((item) => item.question.toLowerCase().includes(e.target.value.toLowerCase())));
+    }
+
     return (
         <div
             className="bg-gray-50 max-w-7xl mx-auto"
@@ -38,8 +47,12 @@ export default function HelpBoard() {
             <div className="max-w-7xl mx-auto flex items-center gap-2 mb-4">
                 <Input
                     placeholder="검색어를 입력해주세요."
+                    value={search}
+                    onChange={handleSearch}
                 />
-                <Button>
+                <Button
+                    onClick={() => setSearch('')}
+                >
                     <Search className="w-4 h-4" />
                 </Button>
             </div>
