@@ -34,7 +34,7 @@ export function Footer() {
               <ul className="space-y-2 text-sm">
                 <li>
                   <Link
-                    to="/home"
+                    to="/"
                     className="font-medium hover:text-white transition-colors"
                   >
                       홈
