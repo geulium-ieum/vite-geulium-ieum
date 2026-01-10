@@ -48,3 +48,8 @@ export interface PostVerifyEmailParams {
   email: string;
   code: string;
 }
+
+export interface PostLoginParams {
+  email: string;
+  password: string;
+}

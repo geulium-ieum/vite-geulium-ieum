@@ -15,8 +15,8 @@ export async function action({ request }: Route.ActionArgs) {
         return redirect('/login');
     }
     try {
-        const token = await userService.post.verifyEmail({ email, code });
-        return token;
+        await userService.post.verifyEmail({ email, code });
+        return redirect('/login');
     } catch (error) {
         console.error(error);
         // return redirect('/login');

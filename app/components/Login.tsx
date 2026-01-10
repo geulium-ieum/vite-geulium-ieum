@@ -6,10 +6,32 @@ import { Card } from '~/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui/tabs';
 import type { UserRole } from '~/types';
 import { toast } from 'sonner';
-import { Link } from 'react-router';
+import { Form, Link, redirect } from 'react-router';
+import type { Route } from './+types/Login';
+import { userService } from '~/lib/services/user';
+import { session } from '~/lib/sessions.server';
 
 interface LoginProps {
   onLogin: (email: string, role: UserRole) => void;
+}
+
+export async function action({ request }: Route.ActionArgs) {
+  const formData = await request.formData();
+  const email = formData.get('email') as string;
+  const password = formData.get('password') as string;
+  if (!email || !password) {
+    return
+  }
+  try {
+    const response = await userService.post.login({ email, password });
+    return redirect('/', {
+      headers: {
+        "Set-Cookie": await session.serialize(response.accessToken)
+      }
+    });
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 export default function Login({ onLogin }: LoginProps) {
@@ -17,29 +39,6 @@ export default function Login({ onLogin }: LoginProps) {
   const [password, setPassword] = useState('');
   const [adminEmail, setAdminEmail] = useState('');
   const [adminPassword, setAdminPassword] = useState('');
-
-  const handleUserLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email || !password) {
-      toast.error('이메일과 비밀번호를 입력해주세요');
-      return;
-    }
-    toast.success('로그인되었습니다');
-    onLogin(email, 'USER');
-  };
-
-  const handleAdminLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!adminEmail || !adminPassword) {
-      toast.error('이메일과 비밀번호를 입력해주세요');
-      return;
-    }
-    
-    // Super Admin 구분 (데모용)
-    const role: UserRole = adminEmail === 'superadmin@admin.com' ? 'SUPER_ADMIN' : 'ADMIN';
-    toast.success('관리자 로그인되었습니다');
-    onLogin(adminEmail, role);
-  };
 
   const handleSocialLogin = (provider: string) => {
     toast.success(`${provider} 로그인 (데모)`);
@@ -64,11 +63,12 @@ export default function Login({ onLogin }: LoginProps) {
           </TabsList>
 
           <TabsContent value="user">
-            <form onSubmit={handleUserLogin} className="space-y-4">
+            <Form method="POST" className="space-y-4">
               <div>
                 <Label htmlFor="email">이메일</Label>
                 <Input
                   id="email"
+                  name="email"
                   type="email"
                   placeholder="이메일"
                   value={email}
@@ -80,6 +80,7 @@ export default function Login({ onLogin }: LoginProps) {
                 <Label htmlFor="password">비밀번호</Label>
                 <Input
                   id="password"
+                  name="password"
                   type="password"
                   placeholder="비밀번호"
                   value={password}
@@ -137,11 +138,11 @@ export default function Login({ onLogin }: LoginProps) {
                   회원가입
                 </Link>
               </div>
-            </form>
+            </Form>
           </TabsContent>
 
           <TabsContent value="admin">
-            <form onSubmit={handleAdminLogin} className="space-y-4">
+            <Form method="POST" className="space-y-4">
               <div>
                 <Label htmlFor="admin-email">관리자 이메일</Label>
                 <Input
@@ -179,7 +180,7 @@ export default function Login({ onLogin }: LoginProps) {
                   메인으로 돌아가기
                 </Link>
               </div>
-            </form>
+            </Form>
           </TabsContent>
         </Tabs>
       </Card>
