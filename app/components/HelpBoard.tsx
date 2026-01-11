@@ -31,8 +31,14 @@ export default function HelpBoard() {
     const { user } = useAuth();
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const searchValue = e.target.value.toLowerCase();
         setSearch(e.target.value);
-        setFilteredContent(content.filter((item) => item.question.toLowerCase().includes(e.target.value.toLowerCase())));
+        setFilteredContent(
+            content.filter((item) => 
+                item.question.toLowerCase().includes(searchValue) ||
+                item.answer.toLowerCase().includes(searchValue)
+            )
+        );
     }
 
     return (
@@ -45,16 +51,26 @@ export default function HelpBoard() {
                 </h1>
             </div>
             <div className="max-w-7xl mx-auto flex items-center gap-2 mb-4">
-                <Input
-                    placeholder="검색어를 입력해주세요."
-                    value={search}
-                    onChange={handleSearch}
-                />
-                <Button
-                    onClick={() => setSearch('')}
-                >
-                    <Search className="w-4 h-4" />
-                </Button>
+                <div className="relative flex-1">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <Input
+                        placeholder="검색어를 입력해주세요."
+                        value={search}
+                        onChange={handleSearch}
+                        className="pl-10"
+                    />
+                </div>
+                {search && (
+                    <Button
+                        onClick={() => {
+                            setSearch('');
+                            setFilteredContent(content);
+                        }}
+                        variant="outline"
+                    >
+                        초기화
+                    </Button>
+                )}
             </div>
             <div className="flex flex-col gap-4">
                 <Card 
@@ -67,14 +83,20 @@ export default function HelpBoard() {
                         그리움 이음 서비스 이용 시 자주 묻는 질문들입니다
                     </p>
                     <div className="space-y-6">
-                        {content.map((item, index) => (
-                            <div key={index}>
-                            <h3 className="mb-2">{item.question}</h3>
-                            <p className="text-gray-600 text-sm">
-                                {item.answer}
-                            </p>
-                        </div>
-                    ))}
+                        {filteredContent.length > 0 ? (
+                            filteredContent.map((item, index) => (
+                                <div key={index}>
+                                    <h3 className="mb-2">{item.question}</h3>
+                                    <p className="text-gray-600 text-sm">
+                                        {item.answer}
+                                    </p>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="text-center py-8 text-gray-500">
+                                검색 결과가 없습니다.
+                            </div>
+                        )}
                     </div>
                 </Card>
             </div>
