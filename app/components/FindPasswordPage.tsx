@@ -5,9 +5,15 @@ import { Label } from '~/components/ui/label';
 import { toast } from 'sonner';
 import { useState } from 'react';
 
-export function FindPasswordPage() {
+export default function FindPasswordPage() {
   const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
+
   const handleSubmit = (e: React.FormEvent) => {
+    if (!email) {
+      setEmailError('이메일을 입력해주세요.');
+      return;
+    }
     e.preventDefault();
     toast.success('비밀번호 찾기 링크를 보내드립니다.');
   };
@@ -24,7 +30,10 @@ export function FindPasswordPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <Label htmlFor="email">이메일</Label>
-              <Input id="email" placeholder="이메일" value={email} onChange={(e) => setEmail(e.target.value)} />
+              <Input id="email" placeholder="이메일" value={email} onChange={(e) => setEmail(e.target.value)} className={emailError ? 'border-red-500 focus-visible:border-red-500' : ''} />
+              {emailError && (
+                <p className="text-red-500 text-sm mt-1">{emailError}</p>
+              )}
             </div>
             <Button type="submit">비밀번호 찾기</Button>
           </form>
