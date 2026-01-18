@@ -9,7 +9,8 @@ import { Footer } from "~/components/Footer";
 import { Card } from "~/components/ui/card";
 import { Link, useNavigate } from "react-router";
 import FlexDiv from "~/components/FlexDiv";
-import { useAuth } from "~/context/AuthContext";
+import { userContext } from "~/context/userContext";
+import type { Route } from "./+types/Home";
 
 const featuredMemorials = [
   {
@@ -41,10 +42,15 @@ const featuredMemorials = [
   },
 ];
 
-export default function Home() {
-  const navigate = useNavigate();
+export async function loader({ context }: Route.LoaderArgs) {
+  const user = context.get(userContext);
+  return { user };
+}
 
-  const { user } = useAuth();
+export default function Home({ loaderData }: Route.ComponentProps) {
+  const { user } = loaderData;
+
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen">

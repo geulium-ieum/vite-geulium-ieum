@@ -2,14 +2,53 @@ import {
     Links,
     Meta,
     Outlet,
+    redirect,
     Scripts,
     ScrollRestoration
 } from "react-router";
-// import type { Route } from "./+types/root"
+import { destroySession, getSession } from "./lib/sessions.server";
+import type { Route } from "./+types/root";
+import { userContext } from "./context/userContext";
+import { getUser } from "./lib/apis/user";
+import Header from "./components/organisms/Header";
 
-// export async function loader({ request }: Route.LoaderArgs) {
-    
-// }
+async function authMiddleware({ request, context }: Route.LoaderArgs) {
+    const unnecessarySessionPath = [
+        "/login",
+        "/register",
+        "/auth/verify-email"
+    ];
+    const pathname = new URL(request.url).pathname;
+    if (unnecessarySessionPath.includes(pathname)) {
+        return;
+    }
+    const session = await getSession(request.headers.get("Cookie"));
+    const token = session.get("token") as string;
+    if (!token) {
+        return redirect("/login", {
+            headers: {
+                "Set-Cookie": await destroySession(session)
+            }
+        });
+    }
+    const user = await getUser(token);
+    context.set(userContext, user);
+}
+
+export const middleware: Route.MiddlewareFunction[] = [
+    async (_, next) => {
+        const start = performance.now();
+        await next();
+        const duration = performance.now() - start;
+        console.log(`Navigation took ${duration}ms`);
+    },
+    authMiddleware
+];
+
+export async function loader({ context }: Route.LoaderArgs) {
+    const user = context.get(userContext);
+    return { user };
+}
 
 export function Layout({
     children
@@ -35,6 +74,13 @@ export function Layout({
     )
 }
 
-export default function Root() {
-    return <Outlet />
+export default function Root({ loaderData }: Route.ComponentProps) {
+    const { user } = loaderData;
+
+    return (
+        <>
+            <Header user={user} />
+            <Outlet />
+        </>
+    )
 }

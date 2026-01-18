@@ -5,7 +5,7 @@ import type { PostLoginParams, PostRegisterParams, PostVerifyEmailParams } from 
 
 export async function getUser(token: string) {
     try {
-        const response = await http.get('/user/me', {
+        const response = await http.get('user/me', {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
