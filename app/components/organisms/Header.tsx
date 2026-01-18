@@ -2,12 +2,21 @@ import { Button } from "~/components/ui/button";
 import { Bell } from "lucide-react";
 // import { Badge } from "~/components/ui/badge";
 import FlexDiv from "~/components/FlexDiv";
-import { Link } from "react-router";
-import { useAuth } from "~/context/AuthContext";
+import { Link, useLocation } from "react-router";
+import type { User } from "~/types";
 
-export default function Header() {
-    const { user } = useAuth();
+export default function Header({ user }: { user: User | null }) {
+    const location = useLocation();
+    const pathname = location.pathname;
 
+    if (
+        pathname === '/login' || 
+        pathname === '/register' || 
+        pathname === '/auth/verify-email'
+    ) {
+        return null;
+    }
+    
     return (
         <header className="bg-white shadow-sm border-b sticky top-0 z-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -105,7 +114,7 @@ export default function Header() {
                                         :
                                         '/mypage'
                                 }>
-                                    <Button className="text-gray-700 hover:text-gray-900 transition-colors">
+                                    <Button className="transition-colors">
                                         마이페이지
                                     </Button>
                                 </Link>

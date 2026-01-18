@@ -2,15 +2,8 @@ import { getUser, postLogin, postRegister, postVerifyEmail } from "~/lib/apis/us
 import type { PostLoginParams, PostRegisterParams, PostVerifyEmailParams } from "~/types";
 
 class UserService {
-    private requireToken(): string {
-        const token = localStorage.getItem('token');
-        if (!token) throw new Error("Token is required");
-        return token;
-    }
-
     public get = {
-        user: async () => {
-            const token = this.requireToken();
+        user: async (token: string) => {
             return await getUser(token);
         }
     }

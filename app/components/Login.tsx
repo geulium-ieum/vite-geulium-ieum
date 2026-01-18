@@ -9,13 +9,14 @@ import { toast } from 'sonner';
 import { Form, Link, redirect } from 'react-router';
 import type { Route } from './+types/Login';
 import { userService } from '~/lib/services/user';
-import { session } from '~/lib/sessions.server';
+import { commitSession, getSession } from '~/lib/sessions.server';
 
 interface LoginProps {
   onLogin: (email: string, role: UserRole) => void;
 }
 
 export async function action({ request }: Route.ActionArgs) {
+  const session = await getSession(request.headers.get("Cookie"));
   const formData = await request.formData();
   const email = formData.get('email') as string;
   const password = formData.get('password') as string;
@@ -24,9 +25,10 @@ export async function action({ request }: Route.ActionArgs) {
   }
   try {
     const response = await userService.post.login({ email, password });
+    session.set("token", response.accessToken);
     return redirect('/', {
       headers: {
-        "Set-Cookie": await session.serialize(response.accessToken)
+        "Set-Cookie": await commitSession(session)
       }
     });
   } catch (error) {

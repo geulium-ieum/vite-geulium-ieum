@@ -10,6 +10,8 @@ import type { User as UserType } from '~/types';
 import { toast } from 'sonner';
 import { Footer } from '~/components/Footer';
 import { useNavigate } from 'react-router';
+import type { Route } from './+types/UserMyPage';
+import { userContext } from '~/context/userContext';
 
 interface UserMyPageProps {
   user: UserType | null;
@@ -17,7 +19,14 @@ interface UserMyPageProps {
   onViewMemorial: (memorialId: string) => void;
 }
 
-export default function UserMyPage({ user, onLogout, onViewMemorial }: UserMyPageProps) {
+export async function loader({ context }: Route.LoaderArgs) {
+  const user = context.get(userContext);
+  return { user };
+}
+
+export default function UserMyPage({ loaderData }: Route.ComponentProps) {
+  const { user } = loaderData;
+
   const [profileData, setProfileData] = useState({
     name: user?.name || '',
     email: user?.email || '',
@@ -138,7 +147,7 @@ export default function UserMyPage({ user, onLogout, onViewMemorial }: UserMyPag
                   <Card 
                     key={memorial.id}
                     className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
-                    onClick={() => onViewMemorial(memorial.id)}
+                    // onClick={() => onViewMemorial(memorial.id)}
                   >
                     <div className="aspect-square relative overflow-hidden bg-gray-200">
                       <img 
@@ -316,7 +325,7 @@ export default function UserMyPage({ user, onLogout, onViewMemorial }: UserMyPag
                       <Button 
                         variant="destructive" 
                         size="sm"
-                        onClick={onLogout}
+                        // onClick={onLogout}
                       >
                         <LogOut className="w-4 h-4 mr-2" />
                         로그아웃
