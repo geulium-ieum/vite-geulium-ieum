@@ -31,6 +31,8 @@ import {
 } from "~/components/ui/select";
 import { toast } from "sonner";
 import { Badge } from "~/components/ui/badge";
+import { Form } from "react-router";
+import type { Route } from "./+types/SearchDeceased";
 
 interface SearchDeceasedProps {
   user: UserType | null;
@@ -84,6 +86,17 @@ const mockDeceasedList = [
   },
 ];
 
+export async function action({ request }: Route.ActionArgs) {
+  const formData = await request.formData();
+  const name = formData.get("name")
+  const birthDate = formData.get("birthDate")
+  const deathDate = formData.get("deathDate")
+  if (!name || !birthDate || !deathDate) {
+    return;
+  }
+  
+}
+
 export default function SearchDeceased({
   user,
   onViewMemorial,
@@ -91,6 +104,7 @@ export default function SearchDeceased({
   const [searchParams, setSearchParams] = useState({
     name: "",
     birthDate: "",
+    deathDate: "",
     location: "",
   });
   const [searchResults, setSearchResults] =
@@ -130,6 +144,7 @@ export default function SearchDeceased({
     setSearchParams({
       name: "",
       birthDate: "",
+      deathDate: "",
       location: "",
     });
     setSearchResults(mockDeceasedList);
@@ -167,8 +182,8 @@ export default function SearchDeceased({
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="bg-gray-50">
+      <div className="max-w-7xl min-h-[calc(100vh-398px)] mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="mb-8 flex items-center justify-between">
           <div>
             <h1 className="text-3xl text-gray-900 mb-2">
@@ -189,7 +204,7 @@ export default function SearchDeceased({
 
         {/* Search Form */}
         <Card className="p-6 mb-8">
-          <form onSubmit={handleSearch}>
+          <Form method="POST">
             <div className="grid md:grid-cols-3 gap-4 mb-4">
               <div>
                 <Label
@@ -201,6 +216,7 @@ export default function SearchDeceased({
                 </Label>
                 <Input
                   id="search-name"
+                  name="name"
                   placeholder="예: 김철수"
                   value={searchParams.name}
                   onChange={(e) =>
@@ -222,12 +238,35 @@ export default function SearchDeceased({
                 </Label>
                 <Input
                   id="search-birth"
+                  name="birthDate"
                   type="date"
                   value={searchParams.birthDate}
                   onChange={(e) =>
                     setSearchParams((prev) => ({
                       ...prev,
                       birthDate: e.target.value,
+                    }))
+                  }
+                />
+              </div>
+
+              <div>
+                <Label
+                  htmlFor="search-death"
+                  className="flex items-center gap-2 mb-2"
+                >
+                  <Calendar className="w-4 h-4" />
+                  사망일
+                </Label>
+                <Input
+                  id="search-death"
+                  name="deathDate"
+                  type="date"
+                  value={searchParams.deathDate}
+                  onChange={(e) =>
+                    setSearchParams((prev) => ({
+                      ...prev,
+                      deathDate: e.target.value,
                     }))
                   }
                 />
@@ -250,7 +289,7 @@ export default function SearchDeceased({
                 초기화
               </Button>
             </div>
-          </form>
+          </Form>
         </Card>
 
         {/* Search Results */}
@@ -268,7 +307,7 @@ export default function SearchDeceased({
           {searchResults.map((deceased) => (
             <Card
               key={deceased.id}
-              className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+              className="overflow-hidden py-0 hover:shadow-lg transition-shadow cursor-pointer"
               onClick={() => onViewMemorial(deceased.id)}
             >
               <div className="aspect-square relative overflow-hidden bg-gray-200">

@@ -22,9 +22,11 @@ async function authMiddleware({ request, context }: Route.LoaderArgs) {
     if (unnecessarySessionPath.includes(pathname)) {
         return;
     }
-    const session = await getSession(request.headers.get("Cookie"));
-    const token = session.get("token") as string;
+    const cookie = request.headers.get("Cookie");
+    const session = await getSession(cookie);
+    const token = session.get("token");
     if (!token) {
+        context.set(userContext, null);
         return redirect("/login", {
             headers: {
                 "Set-Cookie": await destroySession(session)

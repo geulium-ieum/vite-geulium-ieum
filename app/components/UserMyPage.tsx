@@ -103,8 +103,8 @@ export default function UserMyPage({ loaderData }: Route.ComponentProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="bg-gray-50">
+      <div className="max-w-7xl min-h-[calc(100vh-398px)] mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="mb-8">
           <h1 className="text-3xl text-gray-900 mb-2">마이페이지</h1>
           <p className="text-gray-600">내 정보와 활동을 관리하세요</p>
