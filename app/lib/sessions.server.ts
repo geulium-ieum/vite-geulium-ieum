@@ -12,7 +12,7 @@ export const session = createCookie("token", {
     path: "/",
     sameSite: "lax",
     httpOnly: true,
-    maxAge: 60 * 60 * 2,
+    maxAge: 60 * 60 * 6,
     secure: import.meta.env.PROD,
     secrets: [import.meta.env.VITE_SECRET_KEY],
 });
