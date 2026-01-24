@@ -4,8 +4,9 @@ import { Bell } from "lucide-react";
 import FlexDiv from "~/components/FlexDiv";
 import { Link, useLocation } from "react-router";
 import type { User } from "~/types";
+import ProfileDropDown from "./ProfileDropDown";
 
-export default function Header({ user }: { user: User | null }) {
+export default function Header({ user }: { user: User | null, }) {
     const location = useLocation();
     const pathname = location.pathname;
 
@@ -65,6 +66,7 @@ export default function Header({ user }: { user: User | null }) {
                                                 가족 그룹
                                             </Button>
                                         </Link>
+                                        <ProfileDropDown user={user} />
                                     </>
                                 )}
                                 {(user.role === "ADMIN" || user.role === "SUPER_ADMIN") && (
@@ -85,6 +87,7 @@ export default function Header({ user }: { user: User | null }) {
                                                 공지사항 관리
                                             </Button>
                                         </Link>
+                                        <ProfileDropDown user={user}/>
                                     </>
                                 )}
 
@@ -107,17 +110,6 @@ export default function Header({ user }: { user: User | null }) {
                                         </Button>
                                     </Link>
                                 </div>
-                                <Link to={
-                                    user.role === "ADMIN" ||
-                                    user.role === "SUPER_ADMIN" ?
-                                        '/admin-mypage'
-                                        :
-                                        '/mypage'
-                                }>
-                                    <Button className="transition-colors">
-                                        마이페이지
-                                    </Button>
-                                </Link>
                             </>
                         )}
                         {!user && (

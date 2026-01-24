@@ -2,8 +2,6 @@ import { Card } from '~/components/ui/card';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 import { Search } from 'lucide-react';
-import { useAuth } from '~/context/userContext';
-import { Link } from 'react-router';
 import { useState } from 'react';
 
 const content = [
@@ -28,7 +26,6 @@ const content = [
 export default function HelpBoard() {
     const [search, setSearch] = useState('');
     const [filteredContent, setFilteredContent] = useState(content);
-    const { user } = useAuth();
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         const searchValue = e.target.value.toLowerCase();
@@ -99,21 +96,6 @@ export default function HelpBoard() {
                         )}
                     </div>
                 </Card>
-            </div>
-            <div className="flex py-4">
-                <Link to={
-                    user?.role === undefined ?
-                        '/login'
-                        :
-                        '/one-on-one-inquiry'
-                    }  
-                    className="w-full">
-                    <Button 
-                        className="font-bold w-full"
-                    >
-                        1:1 문의
-                    </Button>
-                </Link>
             </div>
         </div>
     )
