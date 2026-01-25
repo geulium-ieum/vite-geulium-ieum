@@ -87,7 +87,7 @@ export default function Header({ user }: { user: User | null, }) {
                                                 공지사항 관리
                                             </Button>
                                         </Link>
-                                        <ProfileDropDown user={user}/>
+                                        <ProfileDropDown user={user} />
                                     </>
                                 )}
 

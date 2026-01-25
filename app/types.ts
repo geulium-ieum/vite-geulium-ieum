@@ -1,5 +1,6 @@
 import * as v from 'valibot';
-import { TokenSchema, UserSchema } from '~/constants/user';
+import type { TokenSchema, UserSchema } from '~/constants/user';
+import type { MemorialFilterSchema } from '~/constants/memorial';
 
 export type Page =
   | 'home'
@@ -24,10 +25,26 @@ export interface Notification {
   relatedId?: string;
 }
 
+// Common
 export type Children = React.ReactNode | React.ReactNode[];
+export interface ListParams {
+  page?: number;
+  size?: number;
+  sort?: string[];
+}
 
+// User
 export type User = v.InferOutput<typeof UserSchema>;
 export type UserRole = "USER" | "ADMIN" | "SUPER_ADMIN";
+
+// Memorial
+export type MemorialFilter = v.InferOutput<typeof MemorialFilterSchema>;
+export interface MemorialFilterProps extends ListParams {
+  name: string;
+  birthDate: string;
+  deathDate: string;
+}
+
 export type Token = v.InferOutput<typeof TokenSchema>;
 
 export type FooterDialogType = 'faq' | 'inquiry' | 'guide' | 'terms' | 'privacy' | 'accessibility';

@@ -11,7 +11,7 @@ import { Link } from 'react-router';
 import { useState } from 'react';
 import type { User } from '~/types';
 
-export default async function ProfileDropDown({ user }: { user: User }) {
+export default function ProfileDropDown({ user }: { user: User }) {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 //   const handleLogout = async () => {
 //     if (isLoggingOut) return;

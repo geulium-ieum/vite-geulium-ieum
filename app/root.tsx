@@ -2,11 +2,10 @@ import {
     Links,
     Meta,
     Outlet,
-    redirect,
     Scripts,
     ScrollRestoration
 } from "react-router";
-import { destroySession, getSession } from "./lib/sessions.server";
+import { getSession } from "./lib/sessions.server";
 import type { Route } from "./+types/root";
 import { userContext } from "./context/userContext";
 import { getUser } from "./lib/apis/user";
@@ -27,11 +26,7 @@ async function authMiddleware({ request, context }: Route.LoaderArgs) {
     const token = session.get("token");
     if (!token) {
         context.set(userContext, null);
-        return redirect("/login", {
-            headers: {
-                "Set-Cookie": await destroySession(session)
-            }
-        });
+        return;
     }
     const user = await getUser(token);
     context.set(userContext, user);

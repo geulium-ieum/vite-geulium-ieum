@@ -12,7 +12,6 @@ import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { Card } from "~/components/ui/card";
-import type { User as UserType } from "~/types";
 import { Footer } from "~/components/Footer";
 import {
   Dialog,
@@ -33,100 +32,63 @@ import { toast } from "sonner";
 import { Badge } from "~/components/ui/badge";
 import { Form } from "react-router";
 import type { Route } from "./+types/SearchDeceased";
+import { memorialService } from "~/lib/services/memorial";
+import { userContext } from "~/context/userContext";
+import type { MemorialFilter } from "~/types";
 
-interface SearchDeceasedProps {
-  user: UserType | null;
-  onViewMemorial: (memorialId: string) => void;
+export async function loader({ context }: Route.LoaderArgs) {
+  const user = context.get(userContext);
+  return { user };
 }
-
-const mockDeceasedList = [
-  {
-    id: "1",
-    name: "김철수",
-    birthDate: "1945-03-15",
-    deathDate: "2024-08-20",
-    location: "서울추모공원 A동 101호",
-    image:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop",
-    visibility: "public" as const,
-    members: [],
-  },
-  {
-    id: "2",
-    name: "이영희",
-    birthDate: "1950-07-22",
-    deathDate: "2024-09-10",
-    location: "서울추모공원 B동 205호",
-    image:
-      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=300&h=300&fit=crop",
-    visibility: "public" as const,
-    members: [],
-  },
-  {
-    id: "3",
-    name: "박민수",
-    birthDate: "1960-11-30",
-    deathDate: "2024-10-01",
-    location: "서울추모공원 A동 303호",
-    image:
-      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300&h=300&fit=crop",
-    visibility: "private" as const,
-    members: ["user-1", "user-2"],
-  },
-  {
-    id: "4",
-    name: "최순자",
-    birthDate: "1942-05-18",
-    deathDate: "2024-07-15",
-    location: "서울추모공원 C동 150호",
-    image:
-      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&h=300&fit=crop",
-    visibility: "public" as const,
-    members: [],
-  },
-];
 
 export async function action({ request }: Route.ActionArgs) {
   const formData = await request.formData();
-  const name = formData.get("name")
-  const birthDate = formData.get("birthDate")
-  const deathDate = formData.get("deathDate")
+  const name = formData.get("name");
+  const birthDate = formData.get("birthDate");
+  const deathDate = formData.get("deathDate");
   if (!name || !birthDate || !deathDate) {
     return;
   }
-  
+  try {
+    const response = await memorialService.get.memorialFilter({
+      name: name as string,
+      birthDate: birthDate as string,
+      deathDate: deathDate as string
+    });
+    return response.content;
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 export default function SearchDeceased({
-  user,
-  onViewMemorial,
-}: SearchDeceasedProps) {
+  loaderData
+}: Route.ComponentProps) {
+  const { user } = loaderData;
   const [searchParams, setSearchParams] = useState({
     name: "",
     birthDate: "",
     deathDate: "",
     location: "",
   });
-  const [searchResults, setSearchResults] =
-    useState(mockDeceasedList);
-  const [isRegisterDialogOpen, setIsRegisterDialogOpen] =
-    useState(false);
+  const [searchResults, setSearchResults] = useState<MemorialFilter['content']>([]);
+  const [isRegisterDialogOpen, setIsRegisterDialogOpen] = useState(false);
   const [registerData, setRegisterData] = useState({
     name: "",
     birthDate: "",
     deathDate: "",
     location: "",
     biography: "",
-    visibility: "public" as "public" | "private",
+    visibility: "PUBLIC" as "PUBLIC" | "PRIVATE",
   });
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const filtered = mockDeceasedList.filter((deceased) => {
+    const filtered = searchResults.filter((deceased) => {
       const nameMatch =
         !searchParams.name ||
-        deceased.name.includes(searchParams.name);
+        deceased.deceasedName.includes(searchParams.name);
       const birthMatch =
         !searchParams.birthDate ||
         deceased.birthDate.includes(searchParams.birthDate);
@@ -147,7 +109,7 @@ export default function SearchDeceased({
       deathDate: "",
       location: "",
     });
-    setSearchResults(mockDeceasedList);
+    setSearchResults([]);
   };
 
   const handleRegisterSubmit = (e: React.FormEvent) => {
@@ -177,7 +139,7 @@ export default function SearchDeceased({
       deathDate: "",
       location: "",
       biography: "",
-      visibility: "public",
+      visibility: "PUBLIC",
     });
   };
 
@@ -308,15 +270,10 @@ export default function SearchDeceased({
             <Card
               key={deceased.id}
               className="overflow-hidden py-0 hover:shadow-lg transition-shadow cursor-pointer"
-              onClick={() => onViewMemorial(deceased.id)}
+              // onClick={() => onViewMemorial(deceased.id)}
             >
               <div className="aspect-square relative overflow-hidden bg-gray-200">
-                <img
-                  src={deceased.image}
-                  alt={deceased.name}
-                  className="w-full h-full object-cover"
-                />
-                {deceased.visibility === "private" && (
+                {deceased.visibility === "PRIVATE" && (
                   <div className="absolute top-3 right-3">
                     <Badge
                       variant="secondary"
@@ -327,7 +284,7 @@ export default function SearchDeceased({
                     </Badge>
                   </div>
                 )}
-                {deceased.visibility === "public" && (
+                {deceased.visibility === "PUBLIC" && (
                   <div className="absolute top-3 right-3">
                     <Badge
                       variant="secondary"
@@ -341,7 +298,7 @@ export default function SearchDeceased({
               </div>
               <div className="p-6">
                 <h3 className="text-xl mb-3">
-                  {deceased.name}
+                  {deceased.deceasedName}
                 </h3>
                 <div className="space-y-2 text-sm text-gray-600">
                   <p className="flex items-center gap-2">
@@ -360,7 +317,7 @@ export default function SearchDeceased({
                   className="w-full mt-4"
                   onClick={(e) => {
                     e.stopPropagation();
-                    onViewMemorial(deceased.id);
+                    // onViewMemorial(deceased.id);
                   }}
                 >
                   추모관 방문
@@ -497,7 +454,7 @@ export default function SearchDeceased({
               </Label>
               <Select
                 value={registerData.visibility}
-                onValueChange={(value: "public" | "private") =>
+                onValueChange={(value: "PUBLIC" | "PRIVATE") =>
                   setRegisterData((prev) => ({
                     ...prev,
                     visibility: value,
@@ -508,13 +465,13 @@ export default function SearchDeceased({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="public">
+                  <SelectItem value="PUBLIC">
                     <div className="flex items-center gap-2">
                       <Globe className="w-4 h-4" />
                       공개 - 모든 사용자가 볼 수 있습니다
                     </div>
                   </SelectItem>
-                  <SelectItem value="private">
+                  <SelectItem value="PRIVATE">
                     <div className="flex items-center gap-2">
                       <Lock className="w-4 h-4" />
                       비공개 - 가족 그룹 멤버만 볼 수 있습니다
@@ -523,7 +480,7 @@ export default function SearchDeceased({
                 </SelectContent>
               </Select>
               <p className="text-sm text-gray-500 mt-2">
-                {registerData.visibility === "public"
+                {registerData.visibility === "PUBLIC"
                   ? "누구나 추모관을 방문하고 추모글을 남길 수 있습니다."
                   : "가족 그룹에 초대된 멤버만 추모관에 접근할 수 있습니다."}
               </p>

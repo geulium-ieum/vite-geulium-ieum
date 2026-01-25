@@ -19,4 +19,4 @@ export const MemorialFilterSchema = v.object({
       updatedAt: v.string()
     })
   )
-})
+});
