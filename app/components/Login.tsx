@@ -36,15 +36,35 @@ export async function action({ request }: Route.ActionArgs) {
   }
 }
 
+type FormErrors = { email?: string; password?: string };
+
 export default function Login({ onLogin }: LoginProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [adminEmail, setAdminEmail] = useState('');
   const [adminPassword, setAdminPassword] = useState('');
+  const [userErrors, setUserErrors] = useState<FormErrors>({});
+  const [adminErrors, setAdminErrors] = useState<FormErrors>({});
 
   const handleSocialLogin = (provider: string) => {
     toast.success(`${provider} 로그인 (데모)`);
     onLogin(`user@${provider.toLowerCase()}.com`, 'USER');
+  };
+
+  const handleUserSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const errors: FormErrors = {};
+    if (!email.trim()) errors.email = '이메일을 입력해주세요.';
+    if (!password) errors.password = '비밀번호를 입력해주세요.';
+    setUserErrors(errors);
+    if (Object.keys(errors).length > 0) e.preventDefault();
+  };
+
+  const handleAdminSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const errors: FormErrors = {};
+    if (!adminEmail.trim()) errors.email = '이메일을 입력해주세요.';
+    if (!adminPassword) errors.password = '비밀번호를 입력해주세요.';
+    setAdminErrors(errors);
+    if (Object.keys(errors).length > 0) e.preventDefault();
   };
 
   return (
@@ -65,7 +85,7 @@ export default function Login({ onLogin }: LoginProps) {
           </TabsList>
 
           <TabsContent value="user">
-            <Form method="POST" className="space-y-4">
+            <Form method="POST" className="space-y-4" onSubmit={handleUserSubmit}>
               <div>
                 <Label htmlFor="email">이메일</Label>
                 <Input
@@ -74,8 +94,17 @@ export default function Login({ onLogin }: LoginProps) {
                   type="email"
                   placeholder="이메일"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (userErrors.email) setUserErrors((prev) => ({ ...prev, email: undefined }));
+                  }}
+                  className={userErrors.email ? 'border-red-500 focus-visible:ring-red-500' : ''}
                 />
+                {userErrors.email && (
+                  <p className="mt-1 text-sm text-red-500" role="alert">
+                    {userErrors.email}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -86,8 +115,17 @@ export default function Login({ onLogin }: LoginProps) {
                   type="password"
                   placeholder="비밀번호"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    if (userErrors.password) setUserErrors((prev) => ({ ...prev, password: undefined }));
+                  }}
+                  className={userErrors.password ? 'border-red-500 focus-visible:ring-red-500' : ''}
                 />
+                {userErrors.password && (
+                  <p className="mt-1 text-sm text-red-500" role="alert">
+                    {userErrors.password}
+                  </p>
+                )}
               </div>
 
               <div className="flex items-center justify-between text-sm">
@@ -144,27 +182,47 @@ export default function Login({ onLogin }: LoginProps) {
           </TabsContent>
 
           <TabsContent value="admin">
-            <Form method="POST" className="space-y-4">
+            <Form method="POST" className="space-y-4" onSubmit={handleAdminSubmit}>
               <div>
                 <Label htmlFor="admin-email">관리자 이메일</Label>
                 <Input
                   id="admin-email"
+                  name="email"
                   type="email"
                   placeholder="이메일"
                   value={adminEmail}
-                  onChange={(e) => setAdminEmail(e.target.value)}
+                  onChange={(e) => {
+                    setAdminEmail(e.target.value);
+                    if (adminErrors.email) setAdminErrors((prev) => ({ ...prev, email: undefined }));
+                  }}
+                  className={adminErrors.email ? 'border-red-500 focus-visible:ring-red-500' : ''}
                 />
+                {adminErrors.email && (
+                  <p className="mt-1 text-sm text-red-500" role="alert">
+                    {adminErrors.email}
+                  </p>
+                )}
               </div>
 
               <div>
                 <Label htmlFor="admin-password">비밀번호</Label>
                 <Input
                   id="admin-password"
+                  name="password"
                   type="password"
                   placeholder="비밀번호"
                   value={adminPassword}
-                  onChange={(e) => setAdminPassword(e.target.value)}
+                  onChange={(e) => {
+                    setAdminPassword(e.target.value);
+                    if (adminErrors.password) setAdminErrors((prev) => ({ ...prev, password: undefined }));
+                  }}
+                  className={adminErrors.password ? 'border-red-500 focus-visible:ring-red-500' : ''}
                 />
+                {adminErrors.password && (
+                  <p className="mt-1 text-sm text-red-500" role="alert">
+                    {adminErrors.password}
+                  </p>
+                )}
               </div>
 
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-800">

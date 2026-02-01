@@ -70,3 +70,12 @@ export async function postLogin({
         throw error;
     }
 }
+
+export async function postLogout() {
+    try {
+        const response = await http.post('auth/logout').json();
+        return v.parse(TokenSchema, response);
+    } catch (error) {
+        throw error;
+    }
+}

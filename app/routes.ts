@@ -25,5 +25,6 @@ export default [
         route("/policy/privacy", "./components/Privacy.tsx"),
         route("/policy/accessibility", "./components/Accessibility.tsx"),
         route("/find-password", "./components/FindPasswordPage.tsx"),
+        route("/auth/logout", "./components/Logout.tsx"),
     ])
 ] satisfies RouteConfig
