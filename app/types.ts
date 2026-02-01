@@ -30,7 +30,23 @@ export type Children = React.ReactNode | React.ReactNode[];
 export interface ListParams {
   page?: number;
   size?: number;
-  sort?: string[];
+  sort?: (
+    'deceasedName' |
+    'birthDate' |
+    'deathDate' |
+    'location' |
+    'biography' |
+    'photoUrl' |
+    'visibility' |
+    'status' |
+    'rejectionReason' |
+    'approvedBy' |
+    'approvedAt' |
+    'createdBy' |
+    'updatedBy' |
+    'createdAt' |
+    'updatedAt'
+  )[];
 }
 
 // User
