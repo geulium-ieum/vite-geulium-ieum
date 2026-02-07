@@ -12,15 +12,6 @@ import { getUser } from "./lib/apis/user";
 import Header from "./components/organisms/Header";
 
 async function authMiddleware({ request, context }: Route.LoaderArgs) {
-    const unnecessarySessionPath = [
-        "/login",
-        "/register",
-        "/auth/verify-email"
-    ];
-    const pathname = new URL(request.url).pathname;
-    if (unnecessarySessionPath.includes(pathname)) {
-        return;
-    }
     const cookie = request.headers.get("Cookie");
     const session = await getSession(cookie);
     const token = session.get("token");
