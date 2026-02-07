@@ -26,5 +26,7 @@ export default [
         route("/policy/accessibility", "./components/Accessibility.tsx"),
         route("/find-password", "./components/FindPasswordPage.tsx"),
         route("/auth/logout", "./components/Logout.tsx"),
+        route("/mypage/change-password", "./components/ChangePasswordPage.tsx"),
+        route("/auth/password-reset/request", "./components/ResetPassword.tsx"),
     ])
 ] satisfies RouteConfig

@@ -12,6 +12,7 @@ import { Footer } from '~/components/Footer';
 import { useNavigate } from 'react-router';
 import type { Route } from './+types/UserMyPage';
 import { userContext } from '~/context/userContext';
+import { Link } from 'react-router';
 
 interface UserMyPageProps {
   user: UserType | null;
@@ -311,7 +312,9 @@ export default function UserMyPage({ loaderData }: Route.ComponentProps) {
                         <p className="text-sm text-gray-600">계정 보안을 위해 주기적으로 비밀번호를 변경하세요</p>
                       </div>
                       <Button variant="outline" size="sm">
-                        변경
+                        <Link to="/mypage/change-password">
+                          변경
+                        </Link>
                       </Button>
                     </div>
                   </div>
