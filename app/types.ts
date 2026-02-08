@@ -87,3 +87,7 @@ export interface PostLoginParams {
   email: string;
   password: string;
 }
+
+export interface PostChangePasswordParams {
+  email: string;
+}
