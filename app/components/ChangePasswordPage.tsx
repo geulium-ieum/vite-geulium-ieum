@@ -17,12 +17,12 @@ export default function ChangePasswordPage() {
                 <CardContent>
                     <Form 
                         method="POST" 
-                        action="/auth/password-reset-request" 
+                        action="/auth/password-reset/request" 
                         className="flex flex-col gap-4"
                     >
-                        <Label htmlFor="currentPassword">이메일 계정</Label>
-                        <Input id="email" type="email" placeholder="이메일 계정을 입력하세요" />
-                        <Button type="submit" className="w-full">비밀번호 변경</Button>
+                        <Label htmlFor="email">이메일 계정</Label>
+                        <Input id="email"name="email" type="email" placeholder="이메일 계정을 입력하세요" />
+                        <Button type="submit" className="w-full">이메일 전송</Button>
                     </Form>
                 </CardContent>
             </Card>

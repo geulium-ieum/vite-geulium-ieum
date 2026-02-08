@@ -1,7 +1,7 @@
 import { http } from "~/lib/utils"
 import * as v from 'valibot';
 import { TokenSchema, UserSchema } from "~/constants/user";
-import type { PostLoginParams, PostRegisterParams, PostVerifyEmailParams } from "~/types";
+import type { PostLoginParams, PostRegisterParams, PostVerifyEmailParams, PostChangePasswordParams } from "~/types";
 
 export async function getUser(token: string) {
     try {
@@ -75,6 +75,19 @@ export async function postLogout() {
     try {
         const response = await http.post('auth/logout').json();
         return v.parse(TokenSchema, response);
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function postChangePassword({
+    email
+}: PostChangePasswordParams) {
+    try {
+        const response = await http.post('auth/password-reset/request', {
+            json: { email }
+        }).json();
+        return response;
     } catch (error) {
         throw error;
     }
