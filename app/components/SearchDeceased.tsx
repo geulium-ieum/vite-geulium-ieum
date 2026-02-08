@@ -66,7 +66,6 @@ export default function SearchDeceased({
   actionData
 }: Route.ComponentProps) {
   const { user } = loaderData;
-  const searchResults = actionData
   const [searchParams, setSearchParams] = useState({
     name: "",
     birthDate: "",

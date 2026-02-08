@@ -1,7 +1,28 @@
-import { http } from "~/lib/utils";
+import { http, JSONbigNative } from "~/lib/utils";
 import * as v from 'valibot';
-import { MemorialFilterSchema } from "~/constants/memorial";
-import type { MemorialFilterProps } from "~/types";
+import { MemorialSchema } from "~/constants/memorial";
+import type { ListParams, MemorialFilterProps } from "~/types";
+
+export async function getMemorialList({
+  page,
+  size,
+  sort
+}: ListParams) {
+  try {
+    const response = await http.get('memorial/list', {
+      searchParams: {
+        page,
+        size,
+        sort: sort?.map(({ field, direction }) => `${field},${direction}`).join(',')
+      }
+    });
+    const textData = await response.text();
+    const jsonData = JSONbigNative.parse(textData);
+    return v.parse(MemorialSchema, jsonData);
+  } catch (error) {
+    throw error;
+  }
+}
 
 export async function getMemorialFilter({
   name,
@@ -19,10 +40,10 @@ export async function getMemorialFilter({
         deathDate,
         page,
         size,
-        sort: sort?.join(',')
+        sort: sort?.map(({ field, direction }) => `${field},${direction}`).join(',')
       }
     }).json();
-    return v.parse(MemorialFilterSchema, response);
+    return v.parse(MemorialSchema, response);
   } catch (error) {
     throw error;
   }

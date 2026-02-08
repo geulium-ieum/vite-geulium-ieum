@@ -1,21 +1,21 @@
 import * as v from 'valibot';
 import { ListSchema } from './list';
 
-export const MemorialFilterSchema = v.object({
+export const MemorialSchema = v.object({
   ...ListSchema.entries,
   content: v.array(
     v.object({
-      id: v.number(),
+      id: v.bigint(),
       deceasedName: v.string(),
       birthDate: v.string(),
       deathDate: v.string(),
       location: v.nullable(v.string()),
-      biography: v.string(),
+      biography: v.nullable(v.string()),
       photoUrl: v.nullable(v.string()),
       visibility: v.picklist(['PUBLIC', 'PRIVATE', 'FAMILY_ONLY']),
       status: v.picklist(['PENDING', 'REJECT', 'APPROVED', 'CANCEL']),
-      createdBy: v.number(),
-      updatedBy: v.number(),
+      createdBy: v.bigint(),
+      updatedBy: v.bigint(),
       createdAt: v.string(),
       updatedAt: v.string()
     })

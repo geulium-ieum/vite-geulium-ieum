@@ -1,6 +1,6 @@
 import * as v from 'valibot';
 import type { TokenSchema, UserSchema } from '~/constants/user';
-import type { MemorialFilterSchema } from '~/constants/memorial';
+import type { MemorialSchema } from '~/constants/memorial';
 
 export type Page =
   | 'home'
@@ -30,8 +30,8 @@ export type Children = React.ReactNode | React.ReactNode[];
 export interface ListParams {
   page?: number;
   size?: number;
-  sort?: (
-    'deceasedName' |
+  sort?: {
+    field: 'deceasedName' |
     'birthDate' |
     'deathDate' |
     'location' |
@@ -45,8 +45,9 @@ export interface ListParams {
     'createdBy' |
     'updatedBy' |
     'createdAt' |
-    'updatedAt'
-  )[];
+    'updatedAt',
+    direction: 'asc' | 'desc'
+  }[];
 }
 
 // User
@@ -54,7 +55,7 @@ export type User = v.InferOutput<typeof UserSchema>;
 export type UserRole = "USER" | "ADMIN" | "SUPER_ADMIN";
 
 // Memorial
-export type MemorialFilter = v.InferOutput<typeof MemorialFilterSchema>;
+export type MemorialFilter = v.InferOutput<typeof MemorialSchema>;
 export interface MemorialFilterProps extends ListParams {
   name: string;
   birthDate: string;

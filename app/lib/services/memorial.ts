@@ -1,8 +1,19 @@
-import type { MemorialFilterProps } from "~/types";
-import { getMemorialFilter } from "~/lib/apis/memorial";
+import type { ListParams, MemorialFilterProps } from "~/types";
+import { getMemorialFilter, getMemorialList } from "~/lib/apis/memorial";
 
 class MemorialService {
   public get = {
+    memorialList: async ({
+      page,
+      size,
+      sort
+    }: ListParams) => {
+      return await getMemorialList({
+        page,
+        size,
+        sort
+      });
+    },
     memorialFilter: async ({
       name,
       birthDate,

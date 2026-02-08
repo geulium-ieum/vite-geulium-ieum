@@ -11,49 +11,59 @@ import { Link, useNavigate } from "react-router";
 import FlexDiv from "~/components/FlexDiv";
 import { userContext } from "~/context/userContext";
 import type { Route } from "./+types/Home";
+import { memorialService } from "~/lib/services/memorial";
+import { updatedTime } from "~/lib/utils";
 
-const featuredMemorials = [
-  {
-    id: "1",
-    name: "김철수",
-    birthDate: "1945.03.15",
-    deathDate: "2024.08.20",
-    image:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop",
-    recentActivity: "2일 전 추모글",
-  },
-  {
-    id: "2",
-    name: "이영희",
-    birthDate: "1950.07.22",
-    deathDate: "2024.09.10",
-    image:
-      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=300&h=300&fit=crop",
-    recentActivity: "5일 전 헌화",
-  },
-  {
-    id: "3",
-    name: "박민수",
-    birthDate: "1960.11.30",
-    deathDate: "2024.10.01",
-    image:
-      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300&h=300&fit=crop",
-    recentActivity: "1주 전 방명록",
-  },
-];
+// const featuredMemorials = [
+//   {
+//     id: "1",
+//     name: "김철수",
+//     birthDate: "1945.03.15",
+//     deathDate: "2024.08.20",
+//     image:
+//       "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop",
+//     recentActivity: "2일 전 추모글",
+//   },
+//   {
+//     id: "2",
+//     name: "이영희",
+//     birthDate: "1950.07.22",
+//     deathDate: "2024.09.10",
+//     image:
+//       "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=300&h=300&fit=crop",
+//     recentActivity: "5일 전 헌화",
+//   },
+//   {
+//     id: "3",
+//     name: "박민수",
+//     birthDate: "1960.11.30",
+//     deathDate: "2024.10.01",
+//     image:
+//       "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300&h=300&fit=crop",
+//     recentActivity: "1주 전 방명록",
+//   },
+// ];
 
 export async function loader({ context }: Route.LoaderArgs) {
   const user = context.get(userContext);
+  if (user) {
+    const { content } = await memorialService.get.memorialList({
+      size: 3,
+      sort: [{ field: 'updatedAt', direction: 'desc' }]
+    });
+    return { user, content };
+  }
   return { user };
 }
 
 export default function Home({ loaderData }: Route.ComponentProps) {
-  const { user } = loaderData;
+  const { user, content: featuredMemorials } = loaderData;
+  console.log("featuredMemorials:", featuredMemorials);
 
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen">
+    <div className="h-full">
       {/* Hero Section */}
       <section className="relative bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 text-white py-20">
         <div className="absolute inset-0 bg-black/20"></div>
@@ -168,26 +178,28 @@ export default function Home({ loaderData }: Route.ComponentProps) {
               {featuredMemorials.map((memorial) => (
                 <Card
                   key={memorial.id}
-                  className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+                  className="py-0 overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
                   onClick={() => navigate(`/memorial/${memorial.id}`)}
                 >
                   <div className="aspect-square relative overflow-hidden bg-gray-200">
-                    <img
-                      src={memorial.image}
-                      alt={memorial.name}
-                      className="w-full h-full object-cover"
-                    />
+                    {memorial.photoUrl && (
+                      <img
+                        src={memorial.photoUrl}
+                        alt={memorial.deceasedName}
+                        className="w-full h-full object-cover"
+                      />
+                    )}
                   </div>
                   <div className="p-6">
                     <h3 className="text-xl mb-2">
-                      {memorial.name}
+                      {memorial.deceasedName}
                     </h3>
                     <p className="text-gray-600 text-sm mb-1">
                       {memorial.birthDate} ~{" "}
                       {memorial.deathDate}
                     </p>
                     <p className="text-purple-600 text-sm">
-                      {memorial.recentActivity}
+                      {updatedTime(memorial.updatedAt)}
                     </p>
                   </div>
                 </Card>
