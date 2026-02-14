@@ -9,13 +9,16 @@ import type { User as UserType } from '~/types';
 import { toast } from 'sonner';
 import { Avatar, AvatarFallback } from '~/components/ui/avatar';
 import { Footer } from '~/components/Footer';
+import type { Route } from './+types/FamilyGroups';
+import { userContext } from '~/context/userContext';
+import { redirect } from 'react-router';
 
 interface FamilyGroupsProps {
   user: UserType | null;
 }
 
 interface FamilyGroup {
-  id: number;
+  id: string;
   name: string;
   description: string;
   createdDate: Date;
@@ -26,17 +29,26 @@ interface FamilyGroup {
 }
 
 interface GroupMember {
-  id: number;
+  id: string;
   name: string;
   email: string;
   role: 'admin' | 'member';
   joinDate: Date;
 }
 
-export default function FamilyGroups({ user }: FamilyGroupsProps) {
+export async function loader({ context }: Route.LoaderArgs) {
+  const user = context.get(userContext);
+  if (!user) {
+    return redirect('/login');
+  }
+  return { user };
+}
+
+export default function FamilyGroups({ loaderData }: Route.ComponentProps) {
+  const { user } = loaderData;
   const [groups, setGroups] = useState<FamilyGroup[]>([
     {
-      id: 1,
+      id: "1",
       name: '김씨 가문',
       description: '김철수님과 이영희님을 추모하는 가족 그룹입니다',
       createdDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
@@ -45,21 +57,21 @@ export default function FamilyGroups({ user }: FamilyGroupsProps) {
       role: 'admin',
       members: [
         {
-          id: 1,
+          id: "1",
           name: '김영수',
           email: 'kim@example.com',
           role: 'admin',
           joinDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
         },
         {
-          id: 2,
+          id: "2",
           name: '김민지',
           email: 'mj@example.com',
           role: 'member',
           joinDate: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000)
         },
         {
-          id: 3,
+          id: "3",
           name: '김준호',
           email: 'junho@example.com',
           role: 'member',
@@ -68,7 +80,7 @@ export default function FamilyGroups({ user }: FamilyGroupsProps) {
       ],
     },
     {
-      id: 2,
+      id: "2",
       name: '이씨 가문',
       description: '이씨 가문 추모 그룹',
       createdDate: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000),
@@ -77,14 +89,14 @@ export default function FamilyGroups({ user }: FamilyGroupsProps) {
       role: 'member',
       members: [
         {
-          id: 4,
+          id: "4",
           name: '이영희',
           email: 'lee@example.com',
           role: 'admin',
           joinDate: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000)
         },
         {
-          id: 5,
+          id: "5",
           name: user?.name || '',
           email: user?.email || '',
           role: 'member',
@@ -108,7 +120,7 @@ export default function FamilyGroups({ user }: FamilyGroupsProps) {
     }
 
     const newGroup: FamilyGroup = {
-      id: Date.now(),
+      id: Date.now().toString(),
       name: newGroupName,
       description: newGroupDescription,
       createdDate: new Date(),
@@ -117,7 +129,7 @@ export default function FamilyGroups({ user }: FamilyGroupsProps) {
       role: 'admin',
       members: [
         {
-          id: user?.id || 1,
+          id: user?.id || "1",
           name: user?.name || '',
           email: user?.email || '',
           role: 'admin',
@@ -144,7 +156,7 @@ export default function FamilyGroups({ user }: FamilyGroupsProps) {
     setIsInviteDialogOpen(false);
   };
 
-  const handleDeleteGroup = (groupId: number) => {
+  const handleDeleteGroup = (groupId: string) => {
     if (confirm('정말로 이 그룹을 삭제하시겠습니까?')) {
       setGroups(groups.filter(g => g.id !== groupId));
       setSelectedGroup(null);
@@ -152,7 +164,7 @@ export default function FamilyGroups({ user }: FamilyGroupsProps) {
     }
   };
 
-  const handleRemoveMember = (groupId: number, memberId: number) => {
+  const handleRemoveMember = (groupId: string, memberId: string) => {
     if (confirm('이 멤버를 그룹에서 제거하시겠습니까?')) {
       setGroups(groups.map(g => {
         if (g.id === groupId) {
@@ -169,8 +181,8 @@ export default function FamilyGroups({ user }: FamilyGroupsProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="bg-gray-50">
+      <div className="max-w-7xl mx-auto min-h-[calc(100vh-398px)] px-4 sm:px-6 lg:px-8 py-12">
         <div className="mb-8 flex items-center justify-between">
           <div>
             <h1 className="text-3xl text-gray-900 mb-2">가족 그룹</h1>

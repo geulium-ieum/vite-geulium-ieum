@@ -58,7 +58,6 @@ export async function loader({ context }: Route.LoaderArgs) {
 
 export default function Home({ loaderData }: Route.ComponentProps) {
   const { user, content: featuredMemorials } = loaderData;
-  console.log("featuredMemorials:", featuredMemorials);
 
   const navigate = useNavigate();
 

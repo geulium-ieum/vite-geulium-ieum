@@ -6,19 +6,12 @@ import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui/tabs';
 import { Switch } from '~/components/ui/switch';
-import type { User as UserType } from '~/types';
 import { toast } from 'sonner';
 import { Footer } from '~/components/Footer';
 import { useNavigate } from 'react-router';
 import type { Route } from './+types/UserMyPage';
 import { userContext } from '~/context/userContext';
 import { Link } from 'react-router';
-
-interface UserMyPageProps {
-  user: UserType | null;
-  onLogout: () => void;
-  onViewMemorial: (memorialId: string) => void;
-}
 
 export async function loader({ context }: Route.LoaderArgs) {
   const user = context.get(userContext);
