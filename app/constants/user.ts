@@ -1,7 +1,7 @@
 import * as v from 'valibot';
 
 export const UserSchema = v.object({
-    id: v.number(),
+    id: v.string(),
     email: v.string(),
     name: v.string(),
     phone: v.string(),

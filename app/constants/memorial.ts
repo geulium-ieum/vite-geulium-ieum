@@ -5,7 +5,7 @@ export const MemorialSchema = v.object({
   ...ListSchema.entries,
   content: v.array(
     v.object({
-      id: v.bigint(),
+      id: v.string(),
       deceasedName: v.string(),
       birthDate: v.string(),
       deathDate: v.string(),

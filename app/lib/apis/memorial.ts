@@ -42,8 +42,10 @@ export async function getMemorialFilter({
         size,
         sort: sort?.map(({ field, direction }) => `${field},${direction}`).join(',')
       }
-    }).json();
-    return v.parse(MemorialSchema, response);
+    });
+    const textData = await response.text();
+    const jsonData = JSONbigNative.parse(textData);
+    return v.parse(MemorialSchema, jsonData);
   } catch (error) {
     throw error;
   }
