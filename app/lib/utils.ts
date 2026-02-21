@@ -1,7 +1,6 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import ky from 'ky';
-import JSONbig from 'json-bigint';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -28,10 +27,6 @@ export function updatedTime(time: string) {
     return updatedTime.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
   }
 }
-
-export const JSONbigNative = JSONbig({
-  useNativeBigInt: true
-})
 
 export function calculateAge(birthDate: string) {
   const now = new Date();

@@ -1,4 +1,4 @@
-import { http, JSONbigNative } from "~/lib/utils";
+import { http } from "~/lib/utils";
 import * as v from 'valibot';
 import { MemorialSchema } from "~/constants/memorial";
 import type { ListParams, MemorialFilterProps } from "~/types";
@@ -15,10 +15,8 @@ export async function getMemorialList({
         size,
         sort: sort?.map(({ field, direction }) => `${field},${direction}`).join(',')
       }
-    });
-    const textData = await response.text();
-    const jsonData = JSONbigNative.parse(textData);
-    return v.parse(MemorialSchema, jsonData);
+    }).json();
+    return v.parse(MemorialSchema, response);
   } catch (error) {
     throw error;
   }
@@ -42,10 +40,8 @@ export async function getMemorialFilter({
         size,
         sort: sort?.map(({ field, direction }) => `${field},${direction}`).join(',')
       }
-    });
-    const textData = await response.text();
-    const jsonData = JSONbigNative.parse(textData);
-    return v.parse(MemorialSchema, jsonData);
+    }).json();
+    return v.parse(MemorialSchema, response);
   } catch (error) {
     throw error;
   }

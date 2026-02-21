@@ -14,8 +14,8 @@ export const MemorialSchema = v.object({
       photoUrl: v.nullable(v.string()),
       visibility: v.picklist(['PUBLIC', 'PRIVATE', 'FAMILY_ONLY']),
       status: v.picklist(['PENDING', 'REJECT', 'APPROVED', 'CANCEL']),
-      createdBy: v.bigint(),
-      updatedBy: v.bigint(),
+      createdBy: v.string(),
+      updatedBy: v.string(),
       createdAt: v.string(),
       updatedAt: v.string()
     })
