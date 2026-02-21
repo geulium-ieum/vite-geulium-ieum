@@ -1,5 +1,5 @@
-import { getUser, postLogin, postRegister, postVerifyEmail, postChangePassword } from "~/lib/apis/user";
-import type { PostLoginParams, PostRegisterParams, PostVerifyEmailParams, PostChangePasswordParams } from "~/types";
+import { getUser, postLogin, postRegister, postVerifyEmail, postChangePassword, postVerifyChangePassword } from "~/lib/apis/user";
+import type { PostLoginParams, PostRegisterParams, PostVerifyEmailParams, PostChangePasswordParams, PostVerifyChangePasswordParams } from "~/types";
 
 class UserService {
     public get = {
@@ -25,6 +25,9 @@ class UserService {
         },
         changePassword: async ({ email }: PostChangePasswordParams) => {
             return await postChangePassword({ email });
+        },
+        verifyChangePassword: async ({ code, email, newPassword }: PostVerifyChangePasswordParams) => {
+            return await postVerifyChangePassword({ code, email, newPassword });
         }
     }
 }

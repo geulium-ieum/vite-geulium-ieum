@@ -91,3 +91,13 @@ export interface PostLoginParams {
 export interface PostChangePasswordParams {
   email: string;
 }
+
+export interface PostVerifyChangePasswordParams {
+  code: string;
+}
+
+export interface PostVerifyChangePasswordParams {
+  code: string;
+  email: string;
+  newPassword: string;
+}
