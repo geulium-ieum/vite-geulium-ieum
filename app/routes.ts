@@ -29,6 +29,7 @@ export default [
         route("/auth/logout", "./components/Logout.tsx"),
         route("/mypage/change-password", "./components/ChangePasswordPage.tsx"),
         route("/auth/password-reset/request", "./components/ChangePassword.tsx"),
-        route("/auth/password-reset", "./components/pages/VerifyChangePassword.tsx"),
+        route("/auth/password-reset", "./components/VerifyChangePasswordPage.tsx"),
+        route("/auth/password-reset/verify", "./components/pages/VerifyChangePassword.tsx"),
     ])
 ] satisfies RouteConfig
