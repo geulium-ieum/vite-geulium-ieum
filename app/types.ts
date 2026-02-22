@@ -1,6 +1,7 @@
 import * as v from 'valibot';
 import type { TokenSchema, UserSchema } from '~/constants/user';
 import type { MemorialSchema } from '~/constants/memorial';
+import type { FamilyGroupSchema } from './constants/familyGroup';
 
 export type Page =
   | 'home'
@@ -56,6 +57,9 @@ export type UserRole = "USER" | "ADMIN" | "SUPER_ADMIN";
 
 // Memorial
 export type MemorialFilter = v.InferOutput<typeof MemorialSchema>;
+
+// Family Group
+export type FamilyGroup = v.InferOutput<typeof FamilyGroupSchema>;
 export interface MemorialFilterProps extends ListParams {
   name: string;
   birthDate: string;

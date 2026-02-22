@@ -2,6 +2,7 @@ import {
     Links,
     Meta,
     Outlet,
+    redirect,
     Scripts,
     ScrollRestoration
 } from "react-router";
@@ -12,12 +13,19 @@ import { getUser } from "./lib/apis/user";
 import Header from "./components/organisms/Header";
 
 async function authMiddleware({ request, context }: Route.LoaderArgs) {
+    const pathname = new URL(request.url).pathname;
     const cookie = request.headers.get("Cookie");
     const session = await getSession(cookie);
     const token = session.get("token");
     if (!token) {
         context.set(userContext, null);
         return;
+    } else if (
+        pathname === '/login' ||
+        pathname === '/register' ||
+        pathname === '/auth/verify-email'
+    ) {
+        throw redirect('/');
     }
     const user = await getUser(token);
     context.set(userContext, user);

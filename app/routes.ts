@@ -16,6 +16,7 @@ export default [
         route("/admin-dashboard", "./components/AdminDashboard.tsx"),
         route("/admin-mypage", "./components/AdminMyPage.tsx"),
         route("/family-groups", "./components/FamilyGroups.tsx"),
+        route("/family-groups/:id", "./components/FamilyGroupDetail.tsx"),
         route("/notifications", "./components/NotificationCenter.tsx"),
         route("/announcements", "./components/Announcements.tsx"),
         route("/help-board", "./components/HelpBoard.tsx"),
