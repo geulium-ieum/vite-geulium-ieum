@@ -11,6 +11,7 @@ import type { Route } from './+types/Login';
 import { userService } from '~/lib/services/user';
 import { commitSession, getSession } from '~/lib/sessions.server';
 
+
 interface LoginProps {
   onLogin: (email: string, role: UserRole) => void;
 }
@@ -159,7 +160,7 @@ export default function Login({ onLogin }: LoginProps) {
                   onClick={() => handleSocialLogin('Kakao')}
                 >
                   <span className="mr-2">💬</span>
-                  카카오로 계속하기
+                  카카오로 로그인
                 </Button>
                 <Button 
                   type="button" 
@@ -168,7 +169,7 @@ export default function Login({ onLogin }: LoginProps) {
                   onClick={() => handleSocialLogin('Naver')}
                 >
                   <span className="mr-2">N</span>
-                  네이버로 계속하기
+                  네이버로 로그인
                 </Button>
               </div>
 
