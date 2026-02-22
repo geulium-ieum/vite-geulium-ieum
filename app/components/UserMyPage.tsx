@@ -20,11 +20,12 @@ export async function loader({ context }: Route.LoaderArgs) {
 
 export default function UserMyPage({ loaderData }: Route.ComponentProps) {
   const { user } = loaderData;
-
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  
   const [profileData, setProfileData] = useState({
     name: user?.name || '',
     email: user?.email || '',
-    phone: '010-1234-5678',
+    phone: user?.phone || '',
   });
   const [notifications, setNotifications] = useState({
     newTribute: true,

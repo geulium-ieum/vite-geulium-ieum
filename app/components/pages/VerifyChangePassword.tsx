@@ -14,7 +14,7 @@ export async function action({ request }: Route.ActionArgs) {
     }
     try {
         await userService.post.verifyChangePassword({ code, email, newPassword });
-        return redirect(`/`);
+        return redirect('/');
     } catch (error) {
         console.error(error);
     }
