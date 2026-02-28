@@ -1,7 +1,7 @@
 import * as v from 'valibot';
 import type { TokenSchema, UserSchema } from '~/constants/user';
 import type { MemorialSchema } from '~/constants/memorial';
-import type { FamilyGroupSchema } from './constants/familyGroup';
+import type { FamilyGroupDetailSchema, FamilyGroupSchema } from './constants/familyGroup';
 
 export type Page =
   | 'home'
@@ -60,6 +60,7 @@ export type MemorialFilter = v.InferOutput<typeof MemorialSchema>;
 
 // Family Group
 export type FamilyGroup = v.InferOutput<typeof FamilyGroupSchema>;
+export type FamilyGroupDetail = v.InferOutput<typeof FamilyGroupDetailSchema>;
 export interface MemorialFilterProps extends ListParams {
   name: string;
   birthDate: string;

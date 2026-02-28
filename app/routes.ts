@@ -2,6 +2,7 @@ import {
     type RouteConfig,
     index,
     layout,
+    prefix,
     route
 } from "@react-router/dev/routes"
 
@@ -15,8 +16,10 @@ export default [
         route("/mypage", "./components/UserMyPage.tsx"),
         route("/admin-dashboard", "./components/AdminDashboard.tsx"),
         route("/admin-mypage", "./components/AdminMyPage.tsx"),
-        route("/family-groups", "./components/FamilyGroups.tsx"),
-        route("/family-groups/:id", "./components/FamilyGroupDetail.tsx"),
+        ...prefix("family-groups", [
+            index("./components/FamilyGroups.tsx"),
+            route(":id", "./components/FamilyGroupDetail.tsx"),
+        ]),
         route("/notifications", "./components/NotificationCenter.tsx"),
         route("/announcements", "./components/Announcements.tsx"),
         route("/help-board", "./components/HelpBoard.tsx"),

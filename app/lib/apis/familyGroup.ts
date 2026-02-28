@@ -1,6 +1,6 @@
 import type { ListParams } from "~/types";
 import { http } from "../utils";
-import { FamilyGroupMemberSchema, FamilyGroupMemorialSchema, FamilyGroupSchema } from "~/constants/familyGroup";
+import { FamilyGroupDetailSchema, FamilyGroupMemberSchema, FamilyGroupMemorialSchema, FamilyGroupSchema } from "~/constants/familyGroup";
 import * as v from 'valibot';
 
 export async function getFamilyGroupList({
@@ -77,6 +77,25 @@ export async function getFamilyGroupMemorialList({
       }
     }).json();
     return v.parse(FamilyGroupMemorialSchema, response);
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function getFamilyGroupDetail({
+  id,
+  token
+}: {
+  id: string;
+  token: string;
+}) {
+  try {
+    const response = await http.get(`family-group/${id}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    }).json();
+    return v.parse(FamilyGroupDetailSchema, response);
   } catch (error) {
     throw error;
   }

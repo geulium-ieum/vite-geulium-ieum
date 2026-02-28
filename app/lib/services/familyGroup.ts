@@ -1,5 +1,5 @@
 import type { ListParams } from "~/types";
-import { getFamilyGroupList, getFamilyGroupMemberList, getFamilyGroupMemorialList } from "../apis/familyGroup";
+import { getFamilyGroupDetail, getFamilyGroupList, getFamilyGroupMemberList, getFamilyGroupMemorialList } from "../apis/familyGroup";
 
 class FamilyGroupService {
   public get = {
@@ -35,6 +35,18 @@ class FamilyGroupService {
         sort,
         token
       });
+    },
+    familyGroupDetail: async ({
+      id,
+      token
+    }: {
+      id: string;
+      token: string;
+    }) => {
+      return await getFamilyGroupDetail({
+        id,
+        token
+      })
     },
     familyGroupMemorialList: async ({
       id,

@@ -1,13 +1,11 @@
 import { useState } from 'react';
-import { Users, Plus, Settings, UserPlus, Trash2 } from 'lucide-react';
+import { Users, Plus, Settings } from 'lucide-react';
 import { Button } from '~/components/ui/button';
 import { Card } from '~/components/ui/card';
 import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '~/components/ui/dialog';
-import type { FamilyGroup, User as UserType } from '~/types';
 import { toast } from 'sonner';
-import { Avatar, AvatarFallback } from '~/components/ui/avatar';
 import { Footer } from '~/components/Footer';
 import type { Route } from './+types/FamilyGroups';
 import { userContext } from '~/context/userContext';

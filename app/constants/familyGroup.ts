@@ -48,3 +48,12 @@ export const FamilyGroupMemorialSchema = v.object({
     })
   )
 })
+
+export const FamilyGroupDetailSchema = v.object({
+  id: v.string(),
+  name: v.string(),
+  description: v.string(),
+  ownerId: v.string(),
+  createdAt: v.string(),
+  updatedAt: v.string()
+})
