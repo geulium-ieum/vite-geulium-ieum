@@ -57,3 +57,16 @@ export const FamilyGroupDetailSchema = v.object({
   createdAt: v.string(),
   updatedAt: v.string()
 })
+
+export const FamilyGroupDetailMemberListSchema = v.object({
+  ...ListSchema.entries,
+  content: v.array(
+    v.object({
+      id: v.string(),
+      groupId: v.string(),
+      userId: v.string(),
+      role: v.picklist(['member', 'admin']),
+      joinedAt: v.nullable(v.string())
+    })
+  )
+})

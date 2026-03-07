@@ -9,7 +9,7 @@ import {
 import { getSession } from "./lib/sessions.server";
 import type { Route } from "./+types/root";
 import { userContext } from "./context/userContext";
-import { getUser } from "./lib/apis/user";
+import { getMe } from "./lib/apis/user";
 import Header from "./components/organisms/Header";
 
 async function authMiddleware({ request, context }: Route.LoaderArgs) {
@@ -27,7 +27,7 @@ async function authMiddleware({ request, context }: Route.LoaderArgs) {
     ) {
         throw redirect('/');
     }
-    const user = await getUser(token);
+    const user = await getMe({ token });
     context.set(userContext, user);
 }
 

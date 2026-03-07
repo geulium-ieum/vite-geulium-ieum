@@ -3,9 +3,28 @@ import * as v from 'valibot';
 import { TokenSchema, UserSchema } from "~/constants/user";
 import type { PostLoginParams, PostRegisterParams, PostVerifyEmailParams, PostChangePasswordParams, PostVerifyChangePasswordParams } from "~/types";
 
-export async function getUser(token: string) {
+export async function getMe({ token }: { token: string }) {
     try {
         const response = await http.get('user/me', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        }).json();
+        return v.parse(UserSchema, response);
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function getUser({
+    id,
+    token
+}: {
+    id: string;
+    token: string;
+}) {
+    try {
+        const response = await http.get(`user/${id}`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
