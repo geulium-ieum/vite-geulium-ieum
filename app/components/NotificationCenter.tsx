@@ -3,6 +3,10 @@ import { Button } from '~/components/ui/button';
 import { Card } from '~/components/ui/card';
 import type { User as UserType, Notification } from '~/types';
 import { Footer } from '~/components/Footer';
+import type { Route } from './+types/NotificationCenter';
+import { redirect } from 'react-router';
+import { userContext } from '~/context/userContext';
+import { userService } from '~/lib/services/user';
 
 interface NotificationCenterProps {
   user: UserType | null;
@@ -10,6 +14,55 @@ interface NotificationCenterProps {
   onMarkAsRead: (notificationId: string) => void;
   onMarkAllAsRead: () => void;
 }
+
+export async function loader({ context }: Route.LoaderArgs) {
+  const user = context.get(userContext);
+  if (!user) {
+    return redirect('/login');
+  }
+  try {
+    const response = await userService.get.notificationList({
+      size: 10,
+      content: [{
+        id: 0,
+        userId: 0,
+        type: '',
+        title: '',
+        message: '',
+        relatedId: 0,
+        relatedType: '',
+        isRead: false,
+        createdAt: ''
+      }],
+      number: 0,
+      sort: {
+        empty: false,
+        sorted: false,
+        unsorted: false
+      },
+      numberOfElements: 0,
+      pageable: {
+        offset: 0,
+        sort: {
+          empty: false,
+          sorted: false,
+          unsorted: false
+        },
+        paged: false,
+        pageNumber: 0,
+        pageSize: 0,
+        unpaged: false
+      },
+      first: false,
+      last: false,
+      empty: false
+    });
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 
 export default function NotificationCenter({
   notifications,
@@ -51,8 +104,10 @@ export default function NotificationCenter({
     }
   };
 
-  const unreadNotifications = notifications.filter(n => !n.read);
-  const readNotifications = notifications.filter(n => n.read);
+  const safeNotifications = notifications ?? [];
+  const unreadNotifications = safeNotifications.filter(n => !n.read);
+  const readNotifications = safeNotifications.filter(n => n.read);
+  console.log(notifications);
 
   return (
     <div className="min-h-screen bg-gray-50">
