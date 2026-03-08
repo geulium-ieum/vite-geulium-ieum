@@ -1,7 +1,7 @@
 import { userContext } from "~/context/userContext";
 import type { Route } from "./+types/FamilyGroupDetail";
 import { getSession } from "~/lib/sessions.server";
-import { redirect } from "react-router";
+import { redirect, useNavigate } from "react-router";
 import { familyGroupService } from "~/lib/services/familyGroup";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
@@ -13,6 +13,7 @@ import { Avatar, AvatarFallback } from "./ui/avatar";
 import moment from "moment";
 import { useState } from "react";
 import { userService } from "~/lib/services/user";
+import { toast } from "sonner";
 
 export async function loader({ request, context }: Route.LoaderArgs) {
   const user = context.get(userContext);
@@ -54,6 +55,7 @@ export async function loader({ request, context }: Route.LoaderArgs) {
 
   return {
     user,
+    token,
     familyGroupDetail,
     members,
     memorialContent
@@ -63,6 +65,7 @@ export async function loader({ request, context }: Route.LoaderArgs) {
 export default function FamilyGroupDetail({ loaderData }: Route.ComponentProps) {
   const {
     user,
+    token,
     familyGroupDetail,
     members,
     memorialContent
@@ -71,19 +74,57 @@ export default function FamilyGroupDetail({ loaderData }: Route.ComponentProps) 
   const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
   const [inviteEmail, setInviteEmail] = useState('');
 
+  const navigate = useNavigate();
+
+  const handleBack = () => {
+    navigate(-1);
+  };
+
+  const handleInviteMember = async () => {
+    if (!inviteEmail.trim()) {
+      toast.error('초대할 이메일을 입력해주세요');
+      return;
+    }
+
+    try {
+      await familyGroupService.post.inviteFamilyGroupMember({
+        id: familyGroupDetail.id,
+        token,
+        email: inviteEmail,
+        role: 'member',
+        relationship: "family"
+      });
+      toast.success(`${inviteEmail}로 초대 이메일이 발송되었습니다`);
+      setInviteEmail('');
+      setIsInviteDialogOpen(false);
+    } catch (error) {
+      toast.error('초대 이메일 발송에 실패했습니다');
+      console.error(error);
+    }
+  };
+
+  const handleRemoveMember = async () => {
+    try {
+      // await familyGroupService
+    } catch (error) {
+      toast.error('멤버 제거에 실패했습니다');
+      console.error(error);
+    }
+  }
+
   return (
-    <div>
+    <div className="p-6">
       <Button
         variant="ghost"
         className="mb-6"
-        // onClick={() => setSelectedGroup(null)}
+        onClick={handleBack}
       >
         ← 그룹 목록으로
       </Button>
 
-      <div className="grid lg:grid-cols-3 gap-6">
+      <div className="grid md:grid-cols-3 gap-6">
         {/* Group Info */}
-        <div className="lg:col-span-1">
+        <div className="md:col-span-1">
           <Card className="p-6">
             <div className="w-16 h-16 bg-linear-to-br from-purple-600 to-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4">
               <Users className="w-8 h-8 text-white" />
@@ -110,7 +151,7 @@ export default function FamilyGroupDetail({ loaderData }: Route.ComponentProps) 
               </div>
             </div>
 
-            {user.role === 'ADMIN' && (
+            {user.role === "ADMIN" && (
               <div className="mt-6 pt-6 border-t space-y-2">
                 <Dialog
                   open={isInviteDialogOpen}
@@ -143,13 +184,11 @@ export default function FamilyGroupDetail({ loaderData }: Route.ComponentProps) 
                       <div className="flex justify-end gap-3">
                         <Button
                           variant="outline"
-                          // onClick={() => setIsInviteDialogOpen(false)}
+                          onClick={() => setIsInviteDialogOpen(false)}
                         >
                           취소
                         </Button>
-                        <Button
-                          // onClick={handleInviteMember}
-                        >
+                        <Button onClick={handleInviteMember}>
                           초대
                         </Button>
                       </div>
@@ -171,16 +210,13 @@ export default function FamilyGroupDetail({ loaderData }: Route.ComponentProps) 
         </div>
 
         {/* Members List */}
-        <div className="lg:col-span-2">
+        <div className="md:col-span-2">
           <Card className="p-6">
             <h3 className="text-xl mb-6">그룹 멤버</h3>
             <div className="space-y-4">
               {members.map(member => (
                 <div key={member.id} className="flex items-center justify-between p-4 border rounded-lg">
                   <div className="flex items-center gap-4">
-                    <Avatar>
-                      <AvatarFallback>{member.user.name}</AvatarFallback>
-                    </Avatar>
                     <div>
                       <p className="flex items-center gap-2">
                         {member.user.name}
@@ -200,7 +236,7 @@ export default function FamilyGroupDetail({ loaderData }: Route.ComponentProps) 
                     <Button
                       size="sm"
                       variant="ghost"
-                      // onClick={() => handleRemoveMember(selectedGroup.id, member.id)}
+                      onClick={handleRemoveMember}
                     >
                       제거
                     </Button>

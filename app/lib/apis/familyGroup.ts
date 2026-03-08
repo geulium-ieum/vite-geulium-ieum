@@ -100,3 +100,52 @@ export async function getFamilyGroupDetail({
     throw error;
   }
 }
+
+export async function postInviteFamilyGroupMember({
+  id,
+  token,
+  email,
+  role,
+  relationship
+}: {
+  id: string;
+  token: string;
+  email: string;
+  role: 'member' | 'admin';
+  relationship: string;
+}) {
+  try {
+    await http.post(`family-group/${id}/invite`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+      json: {
+        email,
+        role,
+        relationship
+      }
+    });
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function deleteFamilyGroupMember({
+  id,
+  userId,
+  token
+}: {
+  id: string;
+  userId: string;
+  token: string;
+}) {
+  try {
+    await http.delete(`family-group/${id}/member/${userId}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+  } catch (error) {
+    throw error;
+  }
+}
