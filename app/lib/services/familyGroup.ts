@@ -1,5 +1,5 @@
 import type { ListParams } from "~/types";
-import { getFamilyGroupDetail, getFamilyGroupList, getFamilyGroupMemberList, getFamilyGroupMemorialList } from "../apis/familyGroup";
+import { deleteFamilyGroupMember, getFamilyGroupDetail, getFamilyGroupList, getFamilyGroupMemberList, getFamilyGroupMemorialList, postInviteFamilyGroupMember } from "../apis/familyGroup";
 
 class FamilyGroupService {
   public get = {
@@ -63,6 +63,46 @@ class FamilyGroupService {
         page,
         size,
         sort,
+        token
+      });
+    }
+  }
+  public post = {
+    inviteFamilyGroupMember: async ({
+      id,
+      token,
+      email,
+      role,
+      relationship
+    }: {
+      id: string;
+      token: string;
+      email: string;
+      role: 'member' | 'admin';
+      relationship: string;
+    }) => {
+      return await postInviteFamilyGroupMember({
+        id,
+        token,
+        email,
+        role,
+        relationship
+      });
+    }
+  }
+  public delete = {
+    familyGroupMember: async ({
+      id,
+      userId,
+      token
+    }: {
+      id: string;
+      userId: string;
+      token: string;
+    }) => {
+      return await deleteFamilyGroupMember({
+        id,
+        userId,
         token
       });
     }
