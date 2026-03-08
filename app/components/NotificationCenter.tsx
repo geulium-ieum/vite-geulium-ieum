@@ -21,48 +21,12 @@ export async function loader({ context }: Route.LoaderArgs) {
     return redirect('/login');
   }
   try {
-    const response = await userService.get.notificationList({
-      size: 10,
-      content: [{
-        id: 0,
-        userId: 0,
-        type: '',
-        title: '',
-        message: '',
-        relatedId: 0,
-        relatedType: '',
-        isRead: false,
-        createdAt: ''
-      }],
-      number: 0,
-      sort: {
-        empty: false,
-        sorted: false,
-        unsorted: false
-      },
-      numberOfElements: 0,
-      pageable: {
-        offset: 0,
-        sort: {
-          empty: false,
-          sorted: false,
-          unsorted: false
-        },
-        paged: false,
-        pageNumber: 0,
-        pageSize: 0,
-        unpaged: false
-      },
-      first: false,
-      last: false,
-      empty: false
-    });
+    const response = await userService.get.notificationList();
     return response;
   } catch (error) {
     console.error(error);
   }
 }
-
 
 export default function NotificationCenter({
   notifications,
@@ -107,7 +71,6 @@ export default function NotificationCenter({
   const safeNotifications = notifications ?? [];
   const unreadNotifications = safeNotifications.filter(n => !n.read);
   const readNotifications = safeNotifications.filter(n => n.read);
-  console.log(notifications);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -169,7 +132,7 @@ export default function NotificationCenter({
         )}
 
         {/* Read Notifications */}
-        {readNotifications.length > 0 && (
+        {safeNotifications.length > 0 && (
           <div>
             <h2 className="text-lg mb-4 text-gray-700">읽음</h2>
             <div className="space-y-3">
@@ -196,7 +159,7 @@ export default function NotificationCenter({
           </div>
         )}
 
-        {notifications.length === 0 && (
+        {safeNotifications.length === 0 && (
           <div className="text-center py-12">
             <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
               <Bell className="w-10 h-10 text-gray-400" />

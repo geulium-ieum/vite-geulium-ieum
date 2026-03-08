@@ -15,8 +15,8 @@ class UserService {
         }) => {
             return await getUser({ id, token });
         },
-        notificationList: async ({size, content, number, sort, numberOfElements, pageable, first, last, empty }: GetNotificationListParams) => {
-            return await getUserNotificationList({ size, content, number, sort, numberOfElements, pageable, first, last, empty });
+        notificationList: async () => {
+            return await getUserNotificationList();
         },
     }
     

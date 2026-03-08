@@ -108,7 +108,7 @@ export interface PostVerifyChangePasswordParams {
 }
 
 export interface GetNotificationListParams {
-  size?: number;
+  size: number;
   content: [
     {
       id: number;

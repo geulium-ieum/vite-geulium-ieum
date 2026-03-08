@@ -18,6 +18,21 @@ export async function loader({ context }: Route.LoaderArgs) {
   return { user };
 }
 
+// export async function action({ request }: Route.ActionArgs) {
+//   const formData = await request.formData();
+//   const memorialId = formData.get('id') as string;
+//   const memorialMessage = formData.get('memorialMessage') as string;
+//   if (!memorialId) {
+//     return redirect('/mypage');
+//   }
+//   try {
+//     await userService.post.deleteMemorial(memorialId);
+//   }
+//   catch (error) {
+//     console.error(error);
+//   }
+// }
+
 export default function UserMyPage({ loaderData }: Route.ComponentProps) {
   const { user } = loaderData;
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -175,6 +190,10 @@ export default function UserMyPage({ loaderData }: Route.ComponentProps) {
                       </p>
                     </div>
                     <p className="text-gray-700">{tribute.content}</p>
+                    <div className="flex items-center justify-end gap-2">
+                      <Button variant="outline">수정</Button>
+                      <Button variant="destructive">삭제</Button>
+                    </div>
                   </Card>
                 ))}
               </div>

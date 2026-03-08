@@ -127,10 +127,9 @@ export async function postVerifyChangePassword({
     }
 }
 
-export async function getUserNotificationList({ size, content, number, sort, numberOfElements, pageable, first, last, empty }: GetNotificationListParams) {
+export async function getUserNotificationList() {
     try {
-        const response = await http.get('notification/list', {
-            json: { size, content, number, sort, numberOfElements, pageable, first, last, empty }
+        const response = await http.post('notification/list', {
         }).json();
         return response;
     } catch (error) {
