@@ -14,6 +14,7 @@ import moment from "moment";
 import { useState } from "react";
 import { userService } from "~/lib/services/user";
 import { toast } from "sonner";
+import type { User } from "~/types";
 
 export async function loader({ request, context }: Route.LoaderArgs) {
   const user = context.get(userContext);
@@ -73,6 +74,9 @@ export default function FamilyGroupDetail({ loaderData }: Route.ComponentProps) 
 
   const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
   const [inviteEmail, setInviteEmail] = useState('');
+  const [selectedMember, setSelectedMember] = useState<User | null>(null);
+  const [isDeleteMemberDialogOpen, setIsDeleteMemberDialogOpen] = useState(false);
+  const [isDeleteGroupDialogOpen, setIsDeleteGroupDialogOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -103,11 +107,45 @@ export default function FamilyGroupDetail({ loaderData }: Route.ComponentProps) 
     }
   };
 
-  const handleRemoveMember = async () => {
+  const handleSelectedDeleteMember = (member: User) => {
+    setSelectedMember(member);
+    setIsDeleteMemberDialogOpen(true);
+  }
+
+  const handleCancelDeleteMember = () => {
+    setSelectedMember(null);
+    setIsDeleteMemberDialogOpen(false);
+  }
+
+  // TODO: 멤버 제거 후 그룹 멤버 목록 갱신
+  const handleDeleteMember = async () => {
+    if (!selectedMember) return;
     try {
-      // await familyGroupService
+      await familyGroupService.delete.familyGroupMember({
+        id: familyGroupDetail.id,
+        userId: selectedMember.id,
+        token
+      });
+      toast.success(`${selectedMember.name}님이 그룹에서 제거되었습니다`);
+      setSelectedMember(null);
+      setIsDeleteMemberDialogOpen(false);
     } catch (error) {
       toast.error('멤버 제거에 실패했습니다');
+      console.error(error);
+    }
+  }
+
+  const handleDeleteGroup = async () => {
+    try {
+      await familyGroupService.delete.familyGroup({
+        id: familyGroupDetail.id,
+        token
+      });
+      toast.success('그룹이 삭제되었습니다');
+      setIsDeleteGroupDialogOpen(false);
+      navigate('/family-groups', { replace: true });
+    } catch (error) {
+      toast.error('그룹 삭제에 실패했습니다');
       console.error(error);
     }
   }
@@ -121,6 +159,25 @@ export default function FamilyGroupDetail({ loaderData }: Route.ComponentProps) 
       >
         ← 그룹 목록으로
       </Button>
+
+      <Dialog open={isDeleteGroupDialogOpen} onOpenChange={setIsDeleteGroupDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>그룹 삭제</DialogTitle>
+            <DialogDescription>
+              정말 이 그룹을 삭제하시겠습니까?
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end gap-3">
+            <Button variant="outline" onClick={() => setIsDeleteGroupDialogOpen(false)}>
+              취소
+            </Button>
+            <Button variant="destructive" onClick={handleDeleteGroup}>
+              삭제
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <div className="grid md:grid-cols-3 gap-6">
         {/* Group Info */}
@@ -147,11 +204,11 @@ export default function FamilyGroupDetail({ loaderData }: Route.ComponentProps) 
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">내 권한</span>
-                <span>{user.role === "ADMIN" ? '관리자' : '멤버'}</span>
+                <span>{user.id === familyGroupDetail.ownerId ? '관리자' : '멤버'}</span>
               </div>
             </div>
 
-            {user.role === "ADMIN" && (
+            {user.id === familyGroupDetail.ownerId && (
               <div className="mt-6 pt-6 border-t space-y-2">
                 <Dialog
                   open={isInviteDialogOpen}
@@ -171,7 +228,7 @@ export default function FamilyGroupDetail({ loaderData }: Route.ComponentProps) 
                       </DialogDescription>
                     </DialogHeader>
                     <div className="space-y-4">
-                      <div>
+                      <div className="space-y-2">
                         <Label htmlFor="invite-email">이메일</Label>
                         <Input
                           id="invite-email"
@@ -199,7 +256,7 @@ export default function FamilyGroupDetail({ loaderData }: Route.ComponentProps) 
                 <Button
                   variant="destructive"
                   className="w-full"
-                  // onClick={() => handleDeleteGroup(selectedGroup.id)}
+                  onClick={() => setIsDeleteGroupDialogOpen(true)}
                 >
                   <Trash2 className="w-4 h-4 mr-2" />
                   그룹 삭제
@@ -208,6 +265,25 @@ export default function FamilyGroupDetail({ loaderData }: Route.ComponentProps) 
             )}
           </Card>
         </div>
+
+        <Dialog open={isDeleteMemberDialogOpen} onOpenChange={setIsDeleteMemberDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>멤버 제거</DialogTitle>
+              <DialogDescription>
+                정말 {selectedMember?.name}님을 그룹에서 제거하시겠습니까?
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex justify-end gap-3">
+              <Button variant="outline" onClick={handleCancelDeleteMember}>
+                취소
+              </Button>
+              <Button variant="destructive" onClick={handleDeleteMember}>
+                제거
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {/* Members List */}
         <div className="md:col-span-2">
@@ -231,14 +307,13 @@ export default function FamilyGroupDetail({ loaderData }: Route.ComponentProps) 
                     </div>
                   </div>
 
-                  {member.user.role === "ADMIN" &&
-                  member.user.id !== user?.id && (
+                  {user.id === familyGroupDetail.ownerId && (
                     <Button
                       size="sm"
-                      variant="ghost"
-                      onClick={handleRemoveMember}
+                      variant="destructive"
+                      onClick={() => handleSelectedDeleteMember(member.user)}
                     >
-                      제거
+                      <Trash2 className="size-4" />
                     </Button>
                   )}
                 </div>

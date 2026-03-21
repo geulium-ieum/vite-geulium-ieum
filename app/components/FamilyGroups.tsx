@@ -13,78 +13,6 @@ import { Link, redirect } from 'react-router';
 import { familyGroupService } from '~/lib/services/familyGroup';
 import { getSession } from '~/lib/sessions.server';
 
-// interface FamilyGroupsProps {
-//   user: UserType | null;
-// }
-
-// interface GroupMember {
-//   id: string;
-//   name: string;
-//   email: string;
-//   role: 'admin' | 'member';
-//   joinDate: Date;
-// }
-
-// const mock = [
-//   {
-//     id: "1",
-//     name: '김씨 가문',
-//     description: '김철수님과 이영희님을 추모하는 가족 그룹입니다',
-//     createdDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
-//     memberCount: 5,
-//     memorialCount: 2,
-//     role: 'admin',
-//     members: [
-//       {
-//         id: "1",
-//         name: '김영수',
-//         email: 'kim@example.com',
-//         role: 'admin',
-//         joinDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
-//       },
-//       {
-//         id: "2",
-//         name: '김민지',
-//         email: 'mj@example.com',
-//         role: 'member',
-//         joinDate: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000)
-//       },
-//       {
-//         id: "3",
-//         name: '김준호',
-//         email: 'junho@example.com',
-//         role: 'member',
-//         joinDate: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000)
-//       },
-//     ],
-//   },
-//   {
-//     id: "2",
-//     name: '이씨 가문',
-//     description: '이씨 가문 추모 그룹',
-//     createdDate: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000),
-//     memberCount: 3,
-//     memorialCount: 1,
-//     role: 'member',
-//     members: [
-//       {
-//         id: "4",
-//         name: '이영희',
-//         email: 'lee@example.com',
-//         role: 'admin',
-//         joinDate: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000)
-//       },
-//       {
-//         id: "5",
-//         name: user?.name || '',
-//         email: user?.email || '',
-//         role: 'member',
-//         joinDate: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000)
-//       },
-//     ],
-//   },
-// ]
-
 export async function loader({ request, context }: Route.LoaderArgs) {
   const user = context.get(userContext);
   const cookie = request.headers.get("Cookie");
@@ -122,11 +50,11 @@ export async function loader({ request, context }: Route.LoaderArgs) {
     })
   )
 
-  return { user, memberContent, memorialContent };
+  return { token, user, memberContent, memorialContent };
 }
 
 export default function FamilyGroups({ loaderData }: Route.ComponentProps) {
-  const { user, memberContent, memorialContent } = loaderData;
+  const { token, user, memberContent, memorialContent } = loaderData;
 
   // const [selectedGroup, setSelectedGroup] = useState<FamilyGroup['content'] | null>(null);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
@@ -135,7 +63,7 @@ export default function FamilyGroups({ loaderData }: Route.ComponentProps) {
   const [newGroupDescription, setNewGroupDescription] = useState('');
   // const [inviteEmail, setInviteEmail] = useState('');
 
-  const handleCreateGroup = () => {
+  const handleCreateGroup = async () => {
     if (!newGroupName.trim()) {
       toast.error('그룹 이름을 입력해주세요');
       return;
@@ -159,36 +87,21 @@ export default function FamilyGroups({ loaderData }: Route.ComponentProps) {
     //     }
     //   ],
     // };
-
-    setNewGroupName('');
-    setNewGroupDescription('');
-    setIsCreateDialogOpen(false);
-    toast.success('가족 그룹이 생성되었습니다');
+    try {
+      await familyGroupService.post.createFamilyGroup({
+        token,
+        name: newGroupName,
+        description: newGroupDescription
+      });
+      setNewGroupName('');
+      setNewGroupDescription('');
+      setIsCreateDialogOpen(false);
+      toast.success('가족 그룹이 생성되었습니다');
+    } catch (error) {
+      toast.error('가족 그룹 생성에 실패했습니다');
+      console.error(error);
+    }
   };
-
-  // const handleInviteMember = () => {
-  //   if (!inviteEmail.trim()) {
-  //     toast.error('초대할 이메일을 입력해주세요');
-  //     return;
-  //   }
-
-  //   toast.success(`${inviteEmail}로 초대 이메일이 발송되었습니다`);
-  //   setInviteEmail('');
-  //   setIsInviteDialogOpen(false);
-  // };
-
-  // const handleDeleteGroup = (groupId: string) => {
-  //   if (confirm('정말로 이 그룹을 삭제하시겠습니까?')) {
-  //     toast.success('그룹이 삭제되었습니다');
-  //   }
-  // };
-
-  // const handleRemoveMember = (groupId: string, memberId: string) => {
-  //   if (confirm('이 멤버를 그룹에서 제거하시겠습니까?')) {
-
-  //     toast.success('멤버가 제거되었습니다');
-  //   }
-  // };
 
   return (
     <div className="bg-gray-50">
@@ -214,7 +127,7 @@ export default function FamilyGroups({ loaderData }: Route.ComponentProps) {
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-4">
-                <div>
+                <div className='space-y-2'>
                   <Label htmlFor="group-name">그룹 이름</Label>
                   <Input
                     id="group-name"
@@ -223,7 +136,7 @@ export default function FamilyGroups({ loaderData }: Route.ComponentProps) {
                     onChange={(e) => setNewGroupName(e.target.value)}
                   />
                 </div>
-                <div>
+                <div className='space-y-2'>
                   <Label htmlFor="group-description">설명 (선택)</Label>
                   <Input
                     id="group-description"
@@ -252,7 +165,7 @@ export default function FamilyGroups({ loaderData }: Route.ComponentProps) {
               key={group.id}
               to={`/family-groups/${group.id}`}
             >
-              <Card className="p-6 hover:shadow-lg transition-shadow">
+              <Card className="h-full p-6 hover:shadow-lg transition-shadow">
                 <div className="flex items-start justify-between mb-4">
                   <div className="w-12 h-12 bg-linear-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
                     <Users className="w-6 h-6 text-white" />
