@@ -1,7 +1,7 @@
 import { userContext } from "~/context/userContext";
 import type { Route } from "./+types/FamilyGroupDetail";
 import { getSession } from "~/lib/sessions.server";
-import { redirect, useNavigate } from "react-router";
+import { Form, redirect, useNavigate } from "react-router";
 import { familyGroupService } from "~/lib/services/familyGroup";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
@@ -63,6 +63,22 @@ export async function loader({ request, context }: Route.LoaderArgs) {
   };
 }
 
+export async function action({ request }: Route.ActionArgs) {
+  const formData = await request.formData();
+  const id = formData.get("groupId") as string;
+  const userId = formData.get("userId") as string;
+  const cookie = request.headers.get("Cookie");
+  const session = await getSession(cookie);
+  const token = session.get("token");
+  if (!id || !userId || !token) return { ok: false };
+  await familyGroupService.delete.familyGroupMember({
+    id,
+    userId,
+    token
+  });
+  return { ok: true };
+}
+
 export default function FamilyGroupDetail({ loaderData }: Route.ComponentProps) {
   const {
     user,
@@ -117,22 +133,11 @@ export default function FamilyGroupDetail({ loaderData }: Route.ComponentProps) 
     setIsDeleteMemberDialogOpen(false);
   }
 
-  // TODO: 멤버 제거 후 그룹 멤버 목록 갱신
   const handleDeleteMember = async () => {
     if (!selectedMember) return;
-    try {
-      await familyGroupService.delete.familyGroupMember({
-        id: familyGroupDetail.id,
-        userId: selectedMember.id,
-        token
-      });
-      toast.success(`${selectedMember.name}님이 그룹에서 제거되었습니다`);
-      setSelectedMember(null);
-      setIsDeleteMemberDialogOpen(false);
-    } catch (error) {
-      toast.error('멤버 제거에 실패했습니다');
-      console.error(error);
-    }
+    toast.success(`${selectedMember.name}님이 그룹에서 제거되었습니다`);
+    setSelectedMember(null);
+    setIsDeleteMemberDialogOpen(false);
   }
 
   const handleDeleteGroup = async () => {
@@ -169,10 +174,16 @@ export default function FamilyGroupDetail({ loaderData }: Route.ComponentProps) 
             </DialogDescription>
           </DialogHeader>
           <div className="flex justify-end gap-3">
-            <Button variant="outline" onClick={() => setIsDeleteGroupDialogOpen(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setIsDeleteGroupDialogOpen(false)}
+            >
               취소
             </Button>
-            <Button variant="destructive" onClick={handleDeleteGroup}>
+            <Button
+              variant="destructive"
+              onClick={handleDeleteGroup}
+            >
               삭제
             </Button>
           </div>
@@ -275,12 +286,22 @@ export default function FamilyGroupDetail({ loaderData }: Route.ComponentProps) 
               </DialogDescription>
             </DialogHeader>
             <div className="flex justify-end gap-3">
-              <Button variant="outline" onClick={handleCancelDeleteMember}>
+              <Button
+                variant="outline"
+                onClick={handleCancelDeleteMember}
+              >
                 취소
               </Button>
-              <Button variant="destructive" onClick={handleDeleteMember}>
-                제거
-              </Button>
+              <Form method="POST" onSubmit={handleDeleteMember}>
+                <input type="hidden" name="groupId" value={familyGroupDetail.id} />
+                <input type="hidden" name="userId" value={selectedMember?.id} />
+                <Button
+                  type="submit"
+                  variant="destructive"
+                >
+                  제거
+                </Button>
+              </Form>
             </div>
           </DialogContent>
         </Dialog>

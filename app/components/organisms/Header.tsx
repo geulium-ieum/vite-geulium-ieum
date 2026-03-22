@@ -13,7 +13,8 @@ export default function Header({ user }: { user: User | null, }) {
     if (
         pathname === '/login' || 
         pathname === '/register' || 
-        pathname === '/auth/verify-email'
+        pathname === '/auth/verify-email' ||
+        pathname.includes('/family-groups/join')
     ) {
         return null;
     }
