@@ -10,7 +10,7 @@ import { Form, Link, redirect } from 'react-router';
 import type { Route } from './+types/Login';
 import { userService } from '~/lib/services/user';
 import { commitSession, getSession } from '~/lib/sessions.server';
-
+import NaverLogin from '~/components/NaverLogin';
 
 interface LoginProps {
   onLogin: (email: string, role: UserRole) => void;
@@ -162,15 +162,7 @@ export default function Login({ onLogin }: LoginProps) {
                   <span className="mr-2">💬</span>
                   카카오로 로그인
                 </Button>
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  className="w-full bg-[#2DB400] text-white"
-                  onClick={() => handleSocialLogin('Naver')}
-                >
-                  <span className="mr-2">N</span>
-                  네이버로 로그인
-                </Button>
+                <NaverLogin />
               </div>
 
               <div className="text-center text-sm text-gray-600 mt-6">

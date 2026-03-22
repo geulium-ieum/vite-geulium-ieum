@@ -145,3 +145,40 @@ export interface GetNotificationListParams {
   last: boolean;
   empty: boolean;
 }
+
+export interface GetTributeListParams {
+  "size": number,
+  "content": [
+    {
+      "id": number,
+      "memorialId": number,
+      "userId": number,
+      "content": string,
+      "isPublic": boolean,
+      "createdAt": Date | string,
+      "updatedAt": Date | string,
+    }
+  ],
+  "number": number,
+  "sort": {
+    "empty": boolean,
+    "unsorted": boolean,
+    "sorted": boolean
+  },
+  "numberOfElements": number,
+  "pageable": {
+    "offset": number,
+    "sort": {
+      "empty": boolean,
+      "unsorted": boolean,
+      "sorted": boolean
+    },
+    "paged": boolean,
+    "pageNumber": number,
+    "pageSize": number,
+    "unpaged": boolean
+  },
+  "first": boolean,
+  "last": boolean,
+  "empty": boolean,
+}

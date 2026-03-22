@@ -12,29 +12,28 @@ import { useNavigate } from 'react-router';
 import type { Route } from './+types/UserMyPage';
 import { userContext } from '~/context/userContext';
 import { Link } from 'react-router';
+import { userService } from '~/lib/services/user';
+import { redirect } from 'react-router';
 
 export async function loader({ context }: Route.LoaderArgs) {
   const user = context.get(userContext);
-  return { user };
+  if (!user) {
+    return redirect('/login');
+  }
+  try {
+    const myTributes = await userService.get.tributeList({ id: user?.id || '' });
+    return { 
+      user, 
+      myTributes: Array.isArray(myTributes) ? myTributes : [], 
+    };
+  } catch (error) {
+    console.log(error);
+    return { user, myTributes: [] };
+  }
 }
 
-// export async function action({ request }: Route.ActionArgs) {
-//   const formData = await request.formData();
-//   const memorialId = formData.get('id') as string;
-//   const memorialMessage = formData.get('memorialMessage') as string;
-//   if (!memorialId) {
-//     return redirect('/mypage');
-//   }
-//   try {
-//     await userService.post.deleteMemorial(memorialId);
-//   }
-//   catch (error) {
-//     console.error(error);
-//   }
-// }
-
 export default function UserMyPage({ loaderData }: Route.ComponentProps) {
-  const { user } = loaderData;
+  const { user, myTributes = [] } = loaderData || {};
   const [confirmOpen, setConfirmOpen] = useState(false);
   
   const [profileData, setProfileData] = useState({
@@ -68,20 +67,20 @@ export default function UserMyPage({ loaderData }: Route.ComponentProps) {
     },
   ];
 
-  const myTributes = [
-    {
-      id: '1',
-      memorialName: '김철수',
-      content: '항상 따뜻한 미소로 맞아주시던 모습이 생각납니다...',
-      timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-    },
-    {
-      id: '2',
-      memorialName: '이영희',
-      content: '좋은 분이셨습니다. 하늘에서 편히 쉬시길...',
-      timestamp: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
-    },
-  ];
+  // const myTributes = [
+  //   {
+  //     id: '1',
+  //     memorialName: '김철수',
+  //     content: '항상 따뜻한 미소로 맞아주시던 모습이 생각납니다...',
+  //     timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+  //   },
+  //   {
+  //     id: '2',
+  //     memorialName: '이영희',
+  //     content: '좋은 분이셨습니다. 하늘에서 편히 쉬시길...',
+  //     timestamp: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+  //   },
+  // ];
 
   const upcomingAnniversaries = [
     {
@@ -181,12 +180,17 @@ export default function UserMyPage({ loaderData }: Route.ComponentProps) {
             <Card className="p-6">
               <h2 className="text-xl mb-6">내가 남긴 추모글</h2>
               <div className="space-y-4">
-                {myTributes.map(tribute => (
+                {myTributes.length === 0 && (
+                  <div className="text-center text-gray-500">
+                    내가 남긴 추모글이 없습니다.
+                  </div>
+                )}
+                {myTributes.map((tribute) => (
                   <Card key={tribute.id} className="p-4 hover:shadow-md transition-shadow">
                     <div className="flex items-start justify-between mb-2">
-                      <h3>{tribute.memorialName}</h3>
+                      <h3>{tribute.content}</h3>
                       <p className="text-sm text-gray-500">
-                        {tribute.timestamp.toLocaleDateString('ko-KR')}
+                        {tribute.createdAt.toLocaleDateString('ko-KR')}
                       </p>
                     </div>
                     <p className="text-gray-700">{tribute.content}</p>

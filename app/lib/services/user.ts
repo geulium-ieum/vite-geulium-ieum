@@ -1,4 +1,4 @@
-import { getUser, postLogin, postRegister, postVerifyEmail, postChangePassword, postVerifyChangePassword, getMe, getUserNotificationList } from "~/lib/apis/user";
+import { getUser, postLogin, postRegister, postVerifyEmail, postChangePassword, postVerifyChangePassword, getMe, getUserNotificationList, getUserTributeList } from "~/lib/apis/user";
 import type { PostLoginParams, PostRegisterParams, PostVerifyEmailParams, PostChangePasswordParams, PostVerifyChangePasswordParams, GetNotificationListParams } from "~/types";
 
 class UserService {
@@ -17,6 +17,9 @@ class UserService {
         },
         notificationList: async () => {
             return await getUserNotificationList();
+        },
+        tributeList: async ({ id }: { id: string }) => {
+            return await getUserTributeList({ id });
         },
     }
     

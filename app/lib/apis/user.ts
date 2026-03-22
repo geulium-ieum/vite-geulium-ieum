@@ -1,7 +1,7 @@
 import { http } from "~/lib/utils"
 import * as v from 'valibot';
 import { TokenSchema, UserSchema } from "~/constants/user";
-import type { PostLoginParams, PostRegisterParams, PostVerifyEmailParams, PostChangePasswordParams, PostVerifyChangePasswordParams, GetNotificationListParams } from "~/types";
+import type { PostLoginParams, PostRegisterParams, PostVerifyEmailParams, PostChangePasswordParams, PostVerifyChangePasswordParams, GetNotificationListParams, GetTributeListParams } from "~/types";
 
 export async function getMe({ token }: { token: string }) {
     try {
@@ -130,6 +130,16 @@ export async function postVerifyChangePassword({
 export async function getUserNotificationList() {
     try {
         const response = await http.post('notification/list', {
+        }).json();
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function getUserTributeList({ id }: { id: string }) {
+    try {
+        const response = await http.get(`tribute/user/${id}/list`, {
         }).json();
         return response;
     } catch (error) {
