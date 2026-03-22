@@ -9,7 +9,7 @@ import { toast } from 'sonner';
 import { Footer } from '~/components/Footer';
 import type { Route } from './+types/FamilyGroups';
 import { userContext } from '~/context/userContext';
-import { Link, redirect } from 'react-router';
+import { Form, Link, redirect } from 'react-router';
 import { familyGroupService } from '~/lib/services/familyGroup';
 import { getSession } from '~/lib/sessions.server';
 
@@ -50,11 +50,27 @@ export async function loader({ request, context }: Route.LoaderArgs) {
     })
   )
 
-  return { token, user, memberContent, memorialContent };
+  return { user, memberContent, memorialContent };
+}
+
+export async function action({ request }: Route.ActionArgs) {
+  const formData = await request.formData();
+  const name = formData.get("name") as string;
+  const description = formData.get("description") as string;
+  const cookie = request.headers.get("Cookie");
+  const session = await getSession(cookie);
+  const token = session.get("token");
+  if (!name || !token) return { ok: false };
+  await familyGroupService.post.createFamilyGroup({
+    token,
+    name,
+    description: description || ""
+  });
+  return { ok: true };
 }
 
 export default function FamilyGroups({ loaderData }: Route.ComponentProps) {
-  const { token, user, memberContent, memorialContent } = loaderData;
+  const { user, memberContent, memorialContent } = loaderData;
 
   // const [selectedGroup, setSelectedGroup] = useState<FamilyGroup['content'] | null>(null);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
@@ -68,39 +84,10 @@ export default function FamilyGroups({ loaderData }: Route.ComponentProps) {
       toast.error('그룹 이름을 입력해주세요');
       return;
     }
-
-    // const newGroup: FamilyGroup = {
-    //   id: Date.now().toString(),
-    //   name: newGroupName,
-    //   description: newGroupDescription,
-    //   createdDate: new Date(),
-    //   memberCount: 1,
-    //   memorialCount: 0,
-    //   role: 'admin',
-    //   members: [
-    //     {
-    //       id: user?.id || "1",
-    //       name: user?.name || '',
-    //       email: user?.email || '',
-    //       role: 'admin',
-    //       joinDate: new Date(),
-    //     }
-    //   ],
-    // };
-    try {
-      await familyGroupService.post.createFamilyGroup({
-        token,
-        name: newGroupName,
-        description: newGroupDescription
-      });
-      setNewGroupName('');
-      setNewGroupDescription('');
-      setIsCreateDialogOpen(false);
-      toast.success('가족 그룹이 생성되었습니다');
-    } catch (error) {
-      toast.error('가족 그룹 생성에 실패했습니다');
-      console.error(error);
-    }
+    setNewGroupName('');
+    setNewGroupDescription('');
+    setIsCreateDialogOpen(false);
+    toast.success('가족 그룹이 생성되었습니다');
   };
 
   return (
@@ -126,34 +113,38 @@ export default function FamilyGroups({ loaderData }: Route.ComponentProps) {
                   가족 구성원들과 함께 추모관을 관리할 수 있는 그룹을 만드세요
                 </DialogDescription>
               </DialogHeader>
-              <div className="space-y-4">
-                <div className='space-y-2'>
-                  <Label htmlFor="group-name">그룹 이름</Label>
-                  <Input
-                    id="group-name"
-                    placeholder="예: 김씨 가문"
-                    value={newGroupName}
-                    onChange={(e) => setNewGroupName(e.target.value)}
-                  />
+              <Form method="POST" onSubmit={handleCreateGroup}>
+                <div className="space-y-4">
+                  <div className='space-y-2'>
+                    <Label htmlFor="group-name">그룹 이름</Label>
+                    <Input
+                      id="group-name"
+                      name="name"
+                      placeholder="예: 김씨 가문"
+                      value={newGroupName}
+                      onChange={(e) => setNewGroupName(e.target.value)}
+                    />
+                  </div>
+                  <div className='space-y-2'>
+                    <Label htmlFor="group-description">설명 (선택)</Label>
+                    <Input
+                      id="group-description"
+                      name="description"
+                      placeholder="그룹에 대한 간단한 설명"
+                      value={newGroupDescription}
+                      onChange={(e) => setNewGroupDescription(e.target.value)}
+                    />
+                  </div>
+                  <div className="flex justify-end gap-3">
+                    <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
+                      취소
+                    </Button>
+                    <Button type="submit">
+                      생성
+                    </Button>
+                  </div>
                 </div>
-                <div className='space-y-2'>
-                  <Label htmlFor="group-description">설명 (선택)</Label>
-                  <Input
-                    id="group-description"
-                    placeholder="그룹에 대한 간단한 설명"
-                    value={newGroupDescription}
-                    onChange={(e) => setNewGroupDescription(e.target.value)}
-                  />
-                </div>
-                <div className="flex justify-end gap-3">
-                  <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
-                    취소
-                  </Button>
-                  <Button onClick={handleCreateGroup}>
-                    생성
-                  </Button>
-                </div>
-              </div>
+              </Form>
             </DialogContent>
           </Dialog>
         </div>
@@ -210,143 +201,6 @@ export default function FamilyGroups({ loaderData }: Route.ComponentProps) {
             </div>
           )}
         </div>
-
-        {/* Group Detail */}
-        {
-          // selectedGroup && (
-          //   <div>
-          //     <Button 
-          //       variant="ghost" 
-          //       className="mb-6"
-          //       onClick={() => setSelectedGroup(null)}
-          //     >
-          //       ← 그룹 목록으로
-          //     </Button>
-
-          //     <div className="grid lg:grid-cols-3 gap-6">
-          //       {/* Group Info */}
-          //       <div className="lg:col-span-1">
-          //         <Card className="p-6">
-          //           <div className="w-16 h-16 bg-linear-to-br from-purple-600 to-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4">
-          //             <Users className="w-8 h-8 text-white" />
-          //           </div>
-          //           <h2 className="text-2xl text-center mb-2">{selectedGroup.name}</h2>
-          //           <p className="text-gray-600 text-center text-sm mb-6">{selectedGroup.description}</p>
-                    
-          //           <div className="space-y-3 text-sm">
-          //             <div className="flex justify-between">
-          //               <span className="text-gray-600">멤버</span>
-          //               <span>{selectedGroup.members.length}명</span>
-          //             </div>
-          //             <div className="flex justify-between">
-          //               <span className="text-gray-600">추모관</span>
-          //               <span>{selectedGroup.memorialCount}개</span>
-          //             </div>
-          //             <div className="flex justify-between">
-          //               <span className="text-gray-600">생성일</span>
-          //               <span>{selectedGroup.createdDate.toLocaleDateString('ko-KR')}</span>
-          //             </div>
-          //             <div className="flex justify-between">
-          //               <span className="text-gray-600">내 권한</span>
-          //               <span>{selectedGroup.role === 'admin' ? '관리자' : '멤버'}</span>
-          //             </div>
-          //           </div>
-
-          //           {selectedGroup.role === 'admin' && (
-          //             <div className="mt-6 pt-6 border-t space-y-2">
-          //               <Dialog open={isInviteDialogOpen} onOpenChange={setIsInviteDialogOpen}>
-          //                 <DialogTrigger asChild>
-          //                   <Button className="w-full">
-          //                     <UserPlus className="w-4 h-4 mr-2" />
-          //                     멤버 초대
-          //                   </Button>
-          //                 </DialogTrigger>
-          //                 <DialogContent>
-          //                   <DialogHeader>
-          //                     <DialogTitle>멤버 초대</DialogTitle>
-          //                     <DialogDescription>
-          //                       초대할 사용자의 이메일을 입력하세요
-          //                     </DialogDescription>
-          //                   </DialogHeader>
-          //                   <div className="space-y-4">
-          //                     <div>
-          //                       <Label htmlFor="invite-email">이메일</Label>
-          //                       <Input
-          //                         id="invite-email"
-          //                         type="email"
-          //                         placeholder="example@email.com"
-          //                         value={inviteEmail}
-          //                         onChange={(e) => setInviteEmail(e.target.value)}
-          //                       />
-          //                     </div>
-          //                     <div className="flex justify-end gap-3">
-          //                       <Button variant="outline" onClick={() => setIsInviteDialogOpen(false)}>
-          //                         취소
-          //                       </Button>
-          //                       <Button onClick={handleInviteMember}>
-          //                         초대
-          //                       </Button>
-          //                     </div>
-          //                   </div>
-          //                 </DialogContent>
-          //               </Dialog>
-                        
-          //               <Button 
-          //                 variant="destructive" 
-          //                 className="w-full"
-          //                 onClick={() => handleDeleteGroup(selectedGroup.id)}
-          //               >
-          //                 <Trash2 className="w-4 h-4 mr-2" />
-          //                 그룹 삭제
-          //               </Button>
-          //             </div>
-          //           )}
-          //         </Card>
-          //       </div>
-
-          //       {/* Members List */}
-          //       <div className="lg:col-span-2">
-          //         <Card className="p-6">
-          //           <h3 className="text-xl mb-6">그룹 멤버</h3>
-          //           <div className="space-y-4">
-          //             {selectedGroup.members.map(member => (
-          //               <div key={member.id} className="flex items-center justify-between p-4 border rounded-lg">
-          //                 <div className="flex items-center gap-4">
-          //                   <Avatar>
-          //                     <AvatarFallback>{member.name[0]}</AvatarFallback>
-          //                   </Avatar>
-          //                   <div>
-          //                     <p className="flex items-center gap-2">
-          //                       {member.name}
-          //                       {member.role === 'admin' && (
-          //                         <span className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded">관리자</span>
-          //                       )}
-          //                     </p>
-          //                     <p className="text-sm text-gray-600">{member.email}</p>
-          //                     <p className="text-xs text-gray-500">
-          //                       가입일: {member.joinDate.toLocaleDateString('ko-KR')}
-          //                     </p>
-          //                   </div>
-          //                 </div>
-                          
-          //                 {selectedGroup.role === 'admin' && member.id !== user?.id && (
-          //                   <Button 
-          //                     size="sm" 
-          //                     variant="ghost"
-          //                     onClick={() => handleRemoveMember(selectedGroup.id, member.id)}
-          //                   >
-          //                     제거
-          //                   </Button>
-          //                 )}
-          //               </div>
-          //             ))}
-          //           </div>
-          //         </Card>
-          //       </div>
-          //     </div>
-          //   </div>
-          // )
-        }
       </div>
 
       <Footer />
