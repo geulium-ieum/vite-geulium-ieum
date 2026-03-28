@@ -1,7 +1,7 @@
 import { http } from "~/lib/utils"
 import * as v from 'valibot';
 import { TokenSchema, UserSchema } from "~/constants/user";
-import type { PostLoginParams, PostRegisterParams, PostVerifyEmailParams, PostChangePasswordParams, PostVerifyChangePasswordParams, GetNotificationListParams, GetTributeListParams } from "~/types";
+import type { PostLoginParams, PostRegisterParams, PostVerifyEmailParams, PostChangePasswordParams, PostVerifyChangePasswordParams, GetNotificationListParams, GetTributeListParams, PostNaverLoginParams } from "~/types";
 
 export async function getMe({ token }: { token: string }) {
     try {
@@ -127,6 +127,19 @@ export async function postVerifyChangePassword({
     }
 }
 
+export async function postNaverLogin({
+    code,
+    redirectUri
+}: PostNaverLoginParams) {
+    try {
+        const response = await http.post('auth/naver/login', {
+            json: { code, redirectUri }
+        }).json();
+        return v.parse(TokenSchema, response);
+    } catch (error) {
+        throw error;
+    }
+}
 export async function getUserNotificationList() {
     try {
         const response = await http.post('notification/list', {

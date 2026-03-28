@@ -46,6 +46,10 @@ export default function Login({ onLogin }: LoginProps) {
   const [adminPassword, setAdminPassword] = useState('');
   const [userErrors, setUserErrors] = useState<FormErrors>({});
   const [adminErrors, setAdminErrors] = useState<FormErrors>({});
+  const NaverClientId = import.meta.env.VITE_NAVER_CLIENT_ID; // 발급받은 클라이언트 아이디
+  const RedirectUri = 'http://localhost:5173/auth/naver/login'; //Callback URL
+  const State = "geulium-ieum"
+  const NaverAuthUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${NaverClientId}&state=${State}&redirect_uri=${RedirectUri}`;
 
   const handleSocialLogin = (provider: string) => {
     toast.success(`${provider} 로그인 (데모)`);
@@ -66,6 +70,10 @@ export default function Login({ onLogin }: LoginProps) {
     if (!adminPassword) errors.password = '비밀번호를 입력해주세요.';
     setAdminErrors(errors);
     if (Object.keys(errors).length > 0) e.preventDefault();
+  };
+
+  const handleNaverLogin = () => {
+    window.location.href = NaverAuthUrl;
   };
 
   return (
@@ -162,7 +170,16 @@ export default function Login({ onLogin }: LoginProps) {
                   <span className="mr-2">💬</span>
                   카카오로 로그인
                 </Button>
-                <NaverLogin />
+                <Form method="POST" action="/auth/naver/login">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full bg-[#03C75A] text-white"
+                  onClick={handleNaverLogin}
+                >
+                  <span className="mr-2">N</span> 네이버로 로그인
+                </Button>
+                </Form>
               </div>
 
               <div className="text-center text-sm text-gray-600 mt-6">
