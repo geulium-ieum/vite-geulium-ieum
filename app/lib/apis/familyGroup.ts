@@ -130,6 +130,24 @@ export async function postInviteFamilyGroupMember({
   }
 }
 
+export async function postJoinFamilyGroup({
+  id,
+  token
+}: {
+  id: string;
+  token: string;
+}) {
+  try {
+    await http.post(`family-group/${id}/join`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+  } catch (error) {
+    throw error;
+  }
+}
+
 export async function postCreateFamilyGroup({
   token,
   name,

@@ -175,16 +175,16 @@ export default function FamilyGroupDetail({ loaderData }: Route.ComponentProps) 
           </DialogHeader>
           <div className="flex justify-end gap-3">
             <Button
-              variant="outline"
-              onClick={() => setIsDeleteGroupDialogOpen(false)}
-            >
-              취소
-            </Button>
-            <Button
               variant="destructive"
               onClick={handleDeleteGroup}
             >
               삭제
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => setIsDeleteGroupDialogOpen(false)}
+            >
+              취소
             </Button>
           </div>
         </DialogContent>
@@ -250,14 +250,14 @@ export default function FamilyGroupDetail({ loaderData }: Route.ComponentProps) 
                         />
                       </div>
                       <div className="flex justify-end gap-3">
+                        <Button onClick={handleInviteMember}>
+                          초대
+                        </Button>
                         <Button
                           variant="outline"
                           onClick={() => setIsInviteDialogOpen(false)}
                         >
                           취소
-                        </Button>
-                        <Button onClick={handleInviteMember}>
-                          초대
                         </Button>
                       </div>
                     </div>
@@ -286,12 +286,6 @@ export default function FamilyGroupDetail({ loaderData }: Route.ComponentProps) 
               </DialogDescription>
             </DialogHeader>
             <div className="flex justify-end gap-3">
-              <Button
-                variant="outline"
-                onClick={handleCancelDeleteMember}
-              >
-                취소
-              </Button>
               <Form method="POST" onSubmit={handleDeleteMember}>
                 <input type="hidden" name="groupId" value={familyGroupDetail.id} />
                 <input type="hidden" name="userId" value={selectedMember?.id} />
@@ -302,6 +296,12 @@ export default function FamilyGroupDetail({ loaderData }: Route.ComponentProps) 
                   제거
                 </Button>
               </Form>
+              <Button
+                variant="outline"
+                onClick={handleCancelDeleteMember}
+              >
+                취소
+              </Button>
             </div>
           </DialogContent>
         </Dialog>

@@ -19,7 +19,7 @@ export default [
         ...prefix("family-groups", [
             index("./components/FamilyGroups.tsx"),
             route(":id", "./components/FamilyGroupDetail.tsx"),
-            route("join", "./components/FamilyGroupJoin.tsx"),
+            route("/join", "./components/FamilyGroupJoin.tsx"),
         ]),
         route("/notifications", "./components/NotificationCenter.tsx"),
         route("/announcements", "./components/Announcements.tsx"),
