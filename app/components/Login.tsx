@@ -10,7 +10,6 @@ import { Form, Link, redirect } from 'react-router';
 import type { Route } from './+types/Login';
 import { userService } from '~/lib/services/user';
 import { commitSession, getSession } from '~/lib/sessions.server';
-import NaverLogin from '~/components/NaverLogin';
 
 interface LoginProps {
   onLogin: (email: string, role: UserRole) => void;
@@ -47,12 +46,12 @@ export default function Login({ onLogin }: LoginProps) {
   const [userErrors, setUserErrors] = useState<FormErrors>({});
   const [adminErrors, setAdminErrors] = useState<FormErrors>({});
   const NaverClientId = import.meta.env.VITE_NAVER_CLIENT_ID; // 발급받은 클라이언트 아이디
-  const NaverRedirectUri = 'http://localhost:5173/auth/naver/login'; //Callback URL
+  const NaverRedirectUri = import.meta.env.VITE_NAVER_AUTH_REDIRECT_URI; //Callback URL
   const State = "geulium-ieum"
   const NaverAuthUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${NaverClientId}&state=${State}&redirect_uri=${NaverRedirectUri}`;
-  const KakaoClientId = 'dcadbea7e4ace3bf568a0c3351939374';
+  const KakaoClientId = import.meta.env.VITE_KAKAO_CLIENT_ID;
   // const KakaoRestApiKey = 'f7fa95378edceb9434253f50fef1b79a';
-  const KakaoRedirectUri = 'http://localhost:5173/auth/kakao/login';
+  const KakaoRedirectUri = import.meta.env.VITE_KAKAO_AUTH_REDIRECT_URI;
   const KakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${KakaoClientId}&redirect_uri=${KakaoRedirectUri}&response_type=code`;
 
   const handleSocialLogin = (provider: string) => {

@@ -1,12 +1,14 @@
 import { Button } from "~/components/ui/button";
-import { Bell } from "lucide-react";
+import { Bell, Menu } from "lucide-react";
 // import { Badge } from "~/components/ui/badge";
 import FlexDiv from "~/components/FlexDiv";
 import { Link, useLocation } from "react-router";
 import type { User } from "~/types";
 import ProfileDropDown from "./ProfileDropDown";
+import { useSidebar } from "../ui/sidebar";
 
 export default function Header({ user }: { user: User | null, }) {
+    const { toggleSidebar } = useSidebar();
     const location = useLocation();
     const pathname = location.pathname;
 
@@ -19,6 +21,10 @@ export default function Header({ user }: { user: User | null, }) {
         return null;
     }
     
+    const handleSidebarToggle = () => {
+        toggleSidebar();
+    }
+
     return (
         <header className="bg-white shadow-sm border-b sticky top-0 z-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -34,23 +40,38 @@ export default function Header({ user }: { user: User | null, }) {
                             <div className="w-10 h-10 bg-linear-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
                                 <span className="text-white">🕊️</span>
                             </div>
-                            <h1 className="text-xl text-gray-900">그리움 이음</h1>
+                            <h1 className="text-lg md:text-xl font-bold text-gray-900">그리움 이음</h1>
                         </FlexDiv>
                     </Link>
 
-                    <nav className="flex items-center gap-6">
+                    {user ? (
+                        <nav className="md:hidden">
+                            <Button
+                                variant="ghost"
+                                className="p-0!"
+                                onClick={handleSidebarToggle}
+                            >
+                                <Menu className="size-5" />
+                            </Button>
+                        </nav>
+                    ) : (
+                        <nav className="md:hidden">
+                            <Link to="/login">
+                                <Button
+                                    variant="ghost"
+                                    className="text-gray-700 hover:text-gray-900 transition-colors px-0!"
+                                >
+                                    로그인
+                                </Button>
+                            </Link>
+                        </nav>
+                    )}
+
+                    <nav className="hidden md:flex items-center gap-6">
                         {user && (
                             <>
                                 {(user.role === "USER" || !user.role) && (
                                     <>
-                                        <Link to="/">
-                                            <Button
-                                                variant="ghost"
-                                                className="text-gray-700 hover:text-gray-900 transition-colors"
-                                            >
-                                                홈
-                                            </Button>
-                                        </Link>
                                         <Link to="/search">
                                             <Button
                                                 variant="ghost"
@@ -91,26 +112,6 @@ export default function Header({ user }: { user: User | null, }) {
                                         <ProfileDropDown user={user} />
                                     </>
                                 )}
-
-                                <div className="relative">
-                                    <Link to="/notifications">
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            className="relative"
-                                        >
-                                            <Bell className="h-5 w-5" />
-                                            {/* {unreadCount > 0 && (
-                                                <Badge
-                                                    variant="destructive"
-                                                    className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
-                                                >
-                                                    {unreadCount}
-                                                </Badge>
-                                            )} */}
-                                        </Button>
-                                    </Link>
-                                </div>
                             </>
                         )}
                         {!user && (

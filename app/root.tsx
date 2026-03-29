@@ -1,4 +1,5 @@
 import {
+    Link,
     Links,
     Meta,
     Outlet,
@@ -11,6 +12,7 @@ import type { Route } from "./+types/root";
 import { userContext } from "./context/userContext";
 import { getMe } from "./lib/apis/user";
 import Header from "./components/organisms/Header";
+import { Sidebar, SidebarContent, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider } from "./components/ui/sidebar";
 
 async function authMiddleware({ request, context }: Route.LoaderArgs) {
     const pathname = new URL(request.url).pathname;
@@ -62,7 +64,33 @@ export function Layout({
                 <Links />
             </head>
             <body>
-                {children}
+                <SidebarProvider className="flex-col">
+                    {children}
+                    <Sidebar
+                        side="right"
+                        variant="floating"
+                        className="md:hidden"
+                    >
+                        <SidebarContent className="py-4 px-2">
+                            <SidebarMenu>
+                                <SidebarMenuItem>
+                                    <SidebarMenuButton>
+                                        <Link to="/search">
+                                            <span className="text-lg font-semibold">고인 검색</span>
+                                        </Link>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                                <SidebarMenuItem>
+                                    <SidebarMenuButton>
+                                        <Link to="/family-groups">
+                                            <span className="text-lg font-semibold">가족 그룹</span>
+                                        </Link>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                            </SidebarMenu>
+                        </SidebarContent>
+                    </Sidebar>
+                </SidebarProvider>
                 <ScrollRestoration />
                 <Scripts />
             </body>

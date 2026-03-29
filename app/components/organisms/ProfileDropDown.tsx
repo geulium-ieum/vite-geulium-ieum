@@ -10,10 +10,13 @@ import {
 import { Link } from 'react-router';
 import type { User } from '~/types';
 import { Form } from 'react-router';
+import { useState } from 'react';
 
 export default function ProfileDropDown({ user }: { user: User }) {
+  const [open, setOpen] = useState(false);
+
   return (
-    <DropdownMenu>
+    <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost">
           {user.name} 님 <ChevronDown className="w-4 h-4 ml-2" />
@@ -22,13 +25,16 @@ export default function ProfileDropDown({ user }: { user: User }) {
       <DropdownMenuContent>
         <DropdownMenuGroup>
           <DropdownMenuItem>
-          <Link to={
-            user.role === "ADMIN" ||
-            user.role === "SUPER_ADMIN" ?
-                '/admin-mypage'
-                :
-                '/mypage'
-            }>
+            <Link
+              to={
+                user.role === "ADMIN" ||
+                user.role === "SUPER_ADMIN" ?
+                    '/admin-mypage'
+                    :
+                    '/mypage'
+              }
+              onClick={() => setOpen(false)}
+            >
               마이페이지
             </Link>
           </DropdownMenuItem>
