@@ -128,10 +128,6 @@ export default function UserMyPage({ loaderData }: Route.ComponentProps) {
             <TabsTrigger value="tributes">
               추모글
             </TabsTrigger>
-            <TabsTrigger value="anniversaries">
-              <Calendar className="w-4 h-4 mr-2" />
-              기일 알림
-            </TabsTrigger>
             <TabsTrigger value="profile">
               <User className="w-4 h-4 mr-2" />
               프로필
@@ -303,17 +299,6 @@ export default function UserMyPage({ loaderData }: Route.ComponentProps) {
                     <Switch
                       checked={notifications.familyInvite}
                       onCheckedChange={(checked) => handleNotificationToggle('familyInvite', checked)}
-                    />
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p>기일 알림</p>
-                      <p className="text-sm text-gray-600">기일 및 명절 알림을 받습니다</p>
-                    </div>
-                    <Switch
-                      checked={notifications.anniversary}
-                      onCheckedChange={(checked) => handleNotificationToggle('anniversary', checked)}
                     />
                   </div>
                 </div>

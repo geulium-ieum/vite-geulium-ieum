@@ -34,7 +34,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
   return (
     <div className="h-full">
       {/* Hero Section */}
-      <section className="relative bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 text-white py-20">
+      <section className="relative bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 text-white py-40">
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto">
@@ -74,7 +74,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
           <h2 className="text-3xl text-center mb-12 text-gray-900">
             주요 기능
           </h2>
-          <div className="grid md:grid-cols-4 gap-8 max-w-4xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
             <Link to="/search">
               <Card className="h-full p-6 text-center hover:shadow-lg transition-shadow cursor-pointer">
                 <div className="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -104,18 +104,6 @@ export default function Home({ loaderData }: Route.ComponentProps) {
             <Link to={user ? "/mypage" : "/login"}>
               <Card className="h-full p-6 text-center hover:shadow-lg transition-shadow cursor-pointer">
                 <div className="w-14 h-14 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Calendar className="w-7 h-7 text-orange-600" />
-                </div>
-                <h3 className="text-lg mb-2">기일 알림</h3>
-                <p className="text-gray-600 text-sm">
-                  소중한 날을 잊지 않도록 알림을 받을 수 있습니다
-                </p>
-              </Card>
-            </Link>
-
-            <Link to={user ? "/mypage" : "/login"}>
-              <Card className="h-full p-6 text-center hover:shadow-lg transition-shadow cursor-pointer">
-                <div className="w-14 h-14 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <NotebookPen className="w-7 h-7 text-orange-600" />
                 </div>
                 <h3 className="text-lg mb-2">추모글 작성</h3>
@@ -133,7 +121,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
         <section className="py-16 bg-gray-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between mb-8">
-              <h2 className="text-3xl text-gray-900">
+              <h2 className="text-xl md:text-3xl text-gray-900">
                 최근 활동이 있는 추모관
               </h2>
               <Button
@@ -143,37 +131,48 @@ export default function Home({ loaderData }: Route.ComponentProps) {
                 전체보기
               </Button>
             </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {featuredMemorials.map((memorial) => (
-                <Card
-                  key={memorial.id}
-                  className="py-0 overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
-                  onClick={() => navigate(`/memorial/${memorial.id}`)}
-                >
-                  <div className="aspect-square relative overflow-hidden bg-gray-200">
-                    {memorial.photoUrl && (
-                      <img
-                        src={memorial.photoUrl}
-                        alt={memorial.deceasedName}
-                        className="w-full h-full object-cover"
-                      />
-                    )}
-                  </div>
-                  <div className="p-6">
-                    <h3 className="text-xl mb-2">
-                      {memorial.deceasedName}
-                    </h3>
-                    <p className="text-gray-600 text-sm mb-1">
-                      {memorial.birthDate} ~{" "}
-                      {memorial.deathDate}
-                    </p>
-                    <p className="text-purple-600 text-sm">
-                      {updatedTime(memorial.updatedAt)}
-                    </p>
-                  </div>
-                </Card>
-              ))}
-            </div>
+            {featuredMemorials.length > 0 ? (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {featuredMemorials.map((memorial) => (
+                  <Card
+                    key={memorial.id}
+                    className="py-0 overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+                    onClick={() => navigate(`/memorial/${memorial.id}`)}
+                  >
+                    <div className="aspect-square relative overflow-hidden bg-gray-200">
+                      {memorial.photoUrl && (
+                        <img
+                          src={memorial.photoUrl}
+                          alt={memorial.deceasedName}
+                          className="w-full h-full object-cover"
+                        />
+                      )}
+                    </div>
+                    <div className="p-6">
+                      <h3 className="text-xl mb-2">
+                        {memorial.deceasedName}
+                      </h3>
+                      <p className="text-gray-600 text-sm mb-1">
+                        {memorial.birthDate} ~{" "}
+                        {memorial.deathDate}
+                      </p>
+                      <p className="text-purple-600 text-sm">
+                        {updatedTime(memorial.updatedAt)}
+                      </p>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <div className="size-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Search className="size-8 text-gray-400" />
+                </div>
+                <h3 className="text-lg md:text-xl text-gray-900 mb-2">
+                  최근 활동이 있는 추모관이 없습니다
+                </h3>
+              </div>
+            )}
           </div>
         </section>
       )}

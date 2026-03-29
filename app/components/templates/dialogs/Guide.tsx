@@ -29,12 +29,6 @@ export default function GuideDialog({ open, onOpenChange }: FooterDialogProps) {
                             가족 그룹을 만들어 구성원들과 함께 추모관을 관리하고 추억을 공유하세요.
                         </p>
                     </div>
-                    <div>
-                        <h3 className="mb-3">4. 기일 알림 설정</h3>
-                        <p className="text-gray-600 text-sm">
-                            마이페이지에서 알림을 설정하여 소중한 날을 잊지 않도록 하세요.
-                        </p>
-                    </div>
                 </div>
             </DialogContent>
         </Dialog>
