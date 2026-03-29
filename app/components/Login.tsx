@@ -47,9 +47,13 @@ export default function Login({ onLogin }: LoginProps) {
   const [userErrors, setUserErrors] = useState<FormErrors>({});
   const [adminErrors, setAdminErrors] = useState<FormErrors>({});
   const NaverClientId = import.meta.env.VITE_NAVER_CLIENT_ID; // 발급받은 클라이언트 아이디
-  const RedirectUri = 'http://localhost:5173/auth/naver/login'; //Callback URL
+  const NaverRedirectUri = 'http://localhost:5173/auth/naver/login'; //Callback URL
   const State = "geulium-ieum"
-  const NaverAuthUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${NaverClientId}&state=${State}&redirect_uri=${RedirectUri}`;
+  const NaverAuthUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${NaverClientId}&state=${State}&redirect_uri=${NaverRedirectUri}`;
+  const KakaoClientId = 'dcadbea7e4ace3bf568a0c3351939374';
+  // const KakaoRestApiKey = 'f7fa95378edceb9434253f50fef1b79a';
+  const KakaoRedirectUri = 'http://localhost:5173/auth/kakao/login';
+  const KakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${KakaoClientId}&redirect_uri=${KakaoRedirectUri}&response_type=code`;
 
   const handleSocialLogin = (provider: string) => {
     toast.success(`${provider} 로그인 (데모)`);
@@ -74,6 +78,10 @@ export default function Login({ onLogin }: LoginProps) {
 
   const handleNaverLogin = () => {
     window.location.href = NaverAuthUrl;
+  };
+
+  const handleKakaoLogin = () => {
+    window.location.href = KakaoAuthUrl;
   };
 
   return (
@@ -165,7 +173,7 @@ export default function Login({ onLogin }: LoginProps) {
                   type="button" 
                   variant="outline" 
                   className="w-full bg-[#FEE500] text-black"
-                  onClick={() => handleSocialLogin('Kakao')}
+                  onClick={handleKakaoLogin}
                 >
                   <span className="mr-2">💬</span>
                   카카오로 로그인

@@ -1,5 +1,5 @@
-import { getUser, postLogin, postRegister, postVerifyEmail, postChangePassword, postVerifyChangePassword, postNaverLogin, getMe, getUserNotificationList, getUserTributeList } from "~/lib/apis/user";
-import type { PostLoginParams, PostRegisterParams, PostVerifyEmailParams, PostChangePasswordParams, PostVerifyChangePasswordParams, GetNotificationListParams, PostNaverLoginParams } from "~/types";
+import { getUser, postLogin, postRegister, postVerifyEmail, postChangePassword, postVerifyChangePassword, postNaverLogin, postKakaoLogin, getMe, getUserNotificationList, getUserTributeList } from "~/lib/apis/user";
+import type { PostLoginParams, PostRegisterParams, PostVerifyEmailParams, PostChangePasswordParams, PostVerifyChangePasswordParams, GetNotificationListParams, PostNaverLoginParams, PostKakaoLoginParams } from "~/types";
 
 class UserService {
     public get = {
@@ -46,6 +46,9 @@ class UserService {
         },
         naverLogin: async ({ code, redirectUri }: PostNaverLoginParams) => {
             return await postNaverLogin({ code, redirectUri });
+        },
+        kakaoLogin: async ({ code, redirectUri }: PostKakaoLoginParams) => {
+            return await postKakaoLogin({ code, redirectUri });
         },
     }
 }

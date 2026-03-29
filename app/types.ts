@@ -107,6 +107,16 @@ export interface PostVerifyChangePasswordParams {
   newPassword: string;
 }
 
+export interface PostNaverLoginParams {
+  code: string;
+  redirectUri: string;
+}
+
+export interface PostKakaoLoginParams {
+  code: string;
+  redirectUri: string;
+}
+
 export interface GetNotificationListParams {
   size: number;
   content: [

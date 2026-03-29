@@ -36,5 +36,6 @@ export default [
         route("/auth/password-reset", "./components/VerifyChangePasswordPage.tsx"),
         route("/auth/password-reset/verify", "./components/pages/VerifyChangePassword.tsx"),
         route("/auth/naver/login", "./components/NaverLogin.tsx"),
+        route("/auth/kakao/login", "./components/KakaoLogin.tsx"),
     ])
 ] satisfies RouteConfig
