@@ -1,5 +1,5 @@
-import { getUser, postLogin, postRegister, postVerifyEmail, postChangePassword, postVerifyChangePassword, postNaverLogin, postKakaoLogin, getMe, getUserNotificationList, getUserTributeList } from "~/lib/apis/user";
-import type { PostLoginParams, PostRegisterParams, PostVerifyEmailParams, PostChangePasswordParams, PostVerifyChangePasswordParams, GetNotificationListParams, PostNaverLoginParams, PostKakaoLoginParams } from "~/types";
+import { getUser, postLogin, postRegister, postVerifyEmail, postChangePassword, postVerifyChangePassword, postNaverLogin, postKakaoLogin, getMe, getUserNotificationList, getTributeList } from "~/lib/apis/user";
+import type { PostLoginParams, PostRegisterParams, PostVerifyEmailParams, PostChangePasswordParams, PostVerifyChangePasswordParams, PostNaverLoginParams, PostKakaoLoginParams, ListParams } from "~/types";
 
 class UserService {
     public get = {
@@ -15,11 +15,20 @@ class UserService {
         }) => {
             return await getUser({ id, token });
         },
-        notificationList: async () => {
-            return await getUserNotificationList();
+        notificationList: async ({ token }: { token: string }) => {
+            return await getUserNotificationList({ token });
         },
-        tributeList: async ({ id }: { id: string }) => {
-            return await getUserTributeList({ id });
+        tributeList: async ({
+            userId,
+            token
+        }:ListParams & {
+            userId: string,
+            token: string
+        }) => {
+            return await getTributeList({
+                userId,
+                token
+            });
         },
     }
     
