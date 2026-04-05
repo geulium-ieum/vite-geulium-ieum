@@ -9,7 +9,7 @@ export async function loader ({request}: Route.LoaderArgs) {
   const url = new URL(request.url);
   const code = url.searchParams.get('code') as string;
   try {
-    const response = await userService.post.naverLogin({ code, redirectUri: process.env.NAVER_AUTH_REDIRECT_URI! });
+    const response = await userService.post.naverLogin({ code, redirectUri: import.meta.env.VITE_NAVER_AUTH_REDIRECT_URI });
     const session = await getSession(request.headers.get("Cookie"));
     session.set("token", response.accessToken);
     return redirect('/', {

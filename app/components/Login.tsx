@@ -168,24 +168,9 @@ export default function Login({ onLogin }: LoginProps) {
               </div>
 
               <div className="space-y-3">
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  className="w-full bg-[#FEE500] text-black"
-                  onClick={handleKakaoLogin}
-                >
-                  <span className="mr-2">💬</span>
-                  카카오로 로그인
-                </Button>
+                  <img src="/img/kakao_login.png" className="w-full" alt="kakao" onClick={handleKakaoLogin}/>
                 <Form method="POST" action="/auth/naver/login">
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full bg-[#03C75A] text-white"
-                  onClick={handleNaverLogin}
-                >
-                  <span className="mr-2">N</span> 네이버로 로그인
-                </Button>
+                  <img src="/img/naver_login.png" className="w-full" alt="naver" onClick={handleNaverLogin}/>
                 </Form>
               </div>
 
