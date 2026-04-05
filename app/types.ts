@@ -118,77 +118,13 @@ export interface PostKakaoLoginParams {
 }
 
 export interface GetNotificationListParams {
-  size: number;
-  content: [
-    {
-      id: number;
-      userId: number;
-      type: string;
-      title: string;
-      message: string;
-      relatedId: number;
-      relatedType: string;
-      isRead: boolean;
-      createdAt: string;
-    }
-  ],
-  number: number,  
-  sort?: {
-    empty: boolean;
-    sorted: boolean;
-    unsorted: boolean;
-  },
-  numberOfElements: number,
-  pageable: {
-    offset: number;
-    sort: {
-      empty: boolean;
-      sorted: boolean;
-      unsorted: boolean;
-    },
-    paged: boolean;
-    pageNumber: number;
-    pageSize: number;
-    unpaged: boolean;
-  },
-  first: boolean;
-  last: boolean;
-  empty: boolean;
-}
-
-export interface GetTributeListParams {
-  "size": number,
-  "content": [
-    {
-      "id": number,
-      "memorialId": number,
-      "userId": number,
-      "content": string,
-      "isPublic": boolean,
-      "createdAt": Date | string,
-      "updatedAt": Date | string,
-    }
-  ],
-  "number": number,
-  "sort": {
-    "empty": boolean,
-    "unsorted": boolean,
-    "sorted": boolean
-  },
-  "numberOfElements": number,
-  "pageable": {
-    "offset": number,
-    "sort": {
-      "empty": boolean,
-      "unsorted": boolean,
-      "sorted": boolean
-    },
-    "paged": boolean,
-    "pageNumber": number,
-    "pageSize": number,
-    "unpaged": boolean
-  },
-  "first": boolean,
-  "last": boolean,
-  "empty": boolean,
+  id: number;
+  userId: number;
+  type: string;
+  title: string;
+  message: string;
+  relatedId: number;
+  relatedType: string;
+  isRead: boolean;
+  createdAt: string;
 }

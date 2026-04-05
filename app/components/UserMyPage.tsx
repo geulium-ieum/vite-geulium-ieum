@@ -14,17 +14,21 @@ import { userContext } from '~/context/userContext';
 import { Link } from 'react-router';
 import { userService } from '~/lib/services/user';
 import { redirect } from 'react-router';
+import { getSession } from '~/lib/sessions.server';
 
-export async function loader({ context }: Route.LoaderArgs) {
+export async function loader({ request, context }: Route.LoaderArgs) {
   const user = context.get(userContext);
-  if (!user) {
+  const cookie = request.headers.get("Cookie");
+  const session = await getSession(cookie);
+  const token = session.get("token");
+  if (!user || !token) {
     return redirect('/login');
   }
   try {
-    const myTributes = await userService.get.tributeList({ id: user?.id || '' });
-    return { 
-      user, 
-      myTributes: Array.isArray(myTributes) ? myTributes : [], 
+    const myTributes = await userService.get.tributeList({ userId: user.id, token });
+    return {
+      user,
+      myTributes: myTributes.content
     };
   } catch (error) {
     console.log(error);
@@ -120,7 +124,7 @@ export default function UserMyPage({ loaderData }: Route.ComponentProps) {
         </div>
 
         <Tabs defaultValue="memorials" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="memorials">
               <Heart className="w-4 h-4 mr-2" />
               내 추모관
@@ -186,7 +190,7 @@ export default function UserMyPage({ loaderData }: Route.ComponentProps) {
                     <div className="flex items-start justify-between mb-2">
                       <h3>{tribute.content}</h3>
                       <p className="text-sm text-gray-500">
-                        {tribute.createdAt.toLocaleDateString('ko-KR')}
+                        {tribute.createdAt}
                       </p>
                     </div>
                     <p className="text-gray-700">{tribute.content}</p>

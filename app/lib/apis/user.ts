@@ -1,7 +1,8 @@
 import { http } from "~/lib/utils"
 import * as v from 'valibot';
 import { TokenSchema, UserSchema } from "~/constants/user";
-import type { PostLoginParams, PostRegisterParams, PostVerifyEmailParams, PostChangePasswordParams, PostVerifyChangePasswordParams, GetNotificationListParams, GetTributeListParams, PostNaverLoginParams, PostKakaoLoginParams } from "~/types";
+import type { PostLoginParams, PostRegisterParams, PostVerifyEmailParams, PostChangePasswordParams, PostVerifyChangePasswordParams, PostNaverLoginParams, PostKakaoLoginParams, ListParams } from "~/types";
+import { tributeListSchema } from "~/constants/tribute";
 
 export async function getMe({ token }: { token: string }) {
     try {
@@ -155,9 +156,16 @@ export async function postKakaoLogin({
     }
 }
 
-export async function getUserNotificationList() {
+export async function getUserNotificationList({
+    token
+}: {
+    token: string
+}) {
     try {
         const response = await http.post('notification/list', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
         }).json();
         return response;
     } catch (error) {
@@ -165,11 +173,20 @@ export async function getUserNotificationList() {
     }
 }
 
-export async function getUserTributeList({ id }: { id: string }) {
+export async function getTributeList({
+    userId,
+    token
+}: ListParams & {
+    userId: string;
+    token: string;
+}) {
     try {
-        const response = await http.get(`tribute/user/${id}/list`, {
+        const response = await http.get(`tribute/user/${userId}/list`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
         }).json();
-        return response;
+        return v.parse(tributeListSchema, response);
     } catch (error) {
         throw error;
     }
