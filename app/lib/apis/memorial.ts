@@ -1,7 +1,9 @@
 import { http } from "~/lib/utils";
 import * as v from 'valibot';
 import { MemorialSchema } from "~/constants/memorial";
-import type { ListParams, MemorialFilterProps } from "~/types";
+import type { ListParams, MemorialFilterProps, Status, Visibility } from "~/types";
+import { de } from "date-fns/locale";
+import { stat } from "fs";
 
 export async function getMemorialList({
   page,
@@ -42,6 +44,48 @@ export async function getMemorialFilter({
       }
     }).json();
     return v.parse(MemorialSchema, response);
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function postMemorial({
+  token,
+  deceasedName,
+  location,
+  birthDate,
+  deathDate,
+  biography,
+  visibility,
+  status,
+  photoUrl
+}: {
+  token: string
+  deceasedName: string
+  location?: string
+  birthDate: string
+  deathDate: string
+  biography?: string
+  visibility: Visibility
+  status: Status
+  photoUrl: string
+}) {
+  try {
+    await http.post('/memorial', {
+      headers: {
+        "Authorization": `Bearer ${token}`
+      },
+      json: {
+        deceasedName,
+        location,
+        birthDate,
+        deathDate,
+        biography,
+        visibility,
+        status,
+        photoUrl
+      }
+    });
   } catch (error) {
     throw error;
   }

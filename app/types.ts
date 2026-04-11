@@ -51,6 +51,9 @@ export interface ListParams {
   }[];
 }
 
+export type Status = "PENDING" | "REJECT" | "APPROVED" | "CANCEL";
+export type Visibility = "PUBLIC" | "PRIVATE";
+
 // User
 export type User = v.InferOutput<typeof UserSchema>;
 export type UserRole = "USER" | "ADMIN" | "SUPER_ADMIN";
