@@ -1,7 +1,7 @@
 import { http } from "~/lib/utils"
 import * as v from 'valibot';
 import { TokenSchema, UserSchema } from "~/constants/user";
-import type { PostLoginParams, PostRegisterParams, PostVerifyEmailParams, PostChangePasswordParams, PostVerifyChangePasswordParams, PostNaverLoginParams, PostKakaoLoginParams, ListParams } from "~/types";
+import type { PostLoginParams, PostRegisterParams, PostVerifyEmailParams, PostChangePasswordParams, PostVerifyChangePasswordParams, PostNaverLoginParams, PostKakaoLoginParams, ListParams, PutUserProfileParams } from "~/types";
 import { tributeListSchema } from "~/constants/tribute";
 
 export async function getMe({ token }: { token: string }) {
@@ -187,6 +187,26 @@ export async function getTributeList({
             }
         }).json();
         return v.parse(tributeListSchema, response);
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function putUserProfile({
+    name,
+    phone,
+    marketingAgreed,
+    userId,
+}: PutUserProfileParams) {
+    try {
+        const response = await http.put(`/user/${userId}`, {
+            json: {
+                name,
+                phone,
+                marketingAgreed
+            }
+        }).json();
+        return v.parse(UserSchema, response);
     } catch (error) {
         throw error;
     }

@@ -168,10 +168,12 @@ export default function Login({ onLogin }: LoginProps) {
               </div>
 
               <div className="space-y-3">
-                  <img src="/img/kakao_login.png" className="w-full" alt="kakao" onClick={handleKakaoLogin}/>
-                <Form method="POST" action="/auth/naver/login">
-                  <img src="/img/naver_login.png" className="w-full" alt="naver" onClick={handleNaverLogin}/>
-                </Form>
+                <Button type="button" variant="ghost" className="h-auto w-full p-0" onClick={handleKakaoLogin}>
+                  <img src="/img/kakao_login.png" className="w-full" alt="kakao" />
+                </Button>
+                <Button type="button" variant="ghost" className="h-auto w-full p-0" onClick={handleNaverLogin}>
+                  <img src="/img/naver_login.png" className="w-full" alt="naver" />
+                </Button>
               </div>
 
               <div className="text-center text-sm text-gray-600 mt-6">

@@ -15,6 +15,8 @@ import { Link } from 'react-router';
 import { userService } from '~/lib/services/user';
 import { redirect } from 'react-router';
 import { getSession } from '~/lib/sessions.server';
+import { Form } from 'react-router';
+import { Checkbox } from '~/components/ui/checkbox';
 
 export async function loader({ request, context }: Route.LoaderArgs) {
   const user = context.get(userContext);
@@ -39,12 +41,13 @@ export async function loader({ request, context }: Route.LoaderArgs) {
 export default function UserMyPage({ loaderData }: Route.ComponentProps) {
   const { user, myTributes = [] } = loaderData || {};
   const [confirmOpen, setConfirmOpen] = useState(false);
-  
+
   const [profileData, setProfileData] = useState({
     name: user?.name || '',
-    email: user?.email || '',
     phone: user?.phone || '',
+    marketingAgreed: false,
   });
+
   const [notifications, setNotifications] = useState({
     newTribute: true,
     offering: true,
@@ -233,23 +236,14 @@ export default function UserMyPage({ loaderData }: Route.ComponentProps) {
           <TabsContent value="profile">
             <Card className="p-6">
               <h2 className="text-xl mb-6">프로필 정보</h2>
-              <form onSubmit={handleUpdateProfile} className="space-y-4 max-w-md">
+              <Form method="PUT" className="space-y-4 max-w-md">
                 <div>
                   <Label htmlFor="name">이름</Label>
                   <Input
                     id="name"
+                    name="name"
                     value={profileData.name}
                     onChange={(e) => setProfileData(prev => ({ ...prev, name: e.target.value }))}
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="email">이메일</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={profileData.email}
-                    onChange={(e) => setProfileData(prev => ({ ...prev, email: e.target.value }))}
                   />
                 </div>
 
@@ -257,14 +251,28 @@ export default function UserMyPage({ loaderData }: Route.ComponentProps) {
                   <Label htmlFor="phone">휴대폰 번호</Label>
                   <Input
                     id="phone"
+                    name="phone"
                     type="tel"
                     value={profileData.phone}
                     onChange={(e) => setProfileData(prev => ({ ...prev, phone: e.target.value }))}
                   />
                 </div>
 
+                <div>
+                  <Label htmlFor="marketingAgreed">프로필 변경 동의</Label>
+                  <div className="flex items-center justify-start gap-2">
+                    <p>프로필 변경을 동의합니다.</p>
+                  <Checkbox
+                    id="marketingAgreed"
+                    name="marketingAgreed"
+                    checked={profileData.marketingAgreed}
+                    onCheckedChange={(checked) => setProfileData(prev => ({ ...prev, marketingAgreed: checked === true }))}
+                  />
+                  </div>
+                </div>
+
                 <Button type="submit">프로필 업데이트</Button>
-              </form>
+              </Form>
             </Card>
           </TabsContent>
 
@@ -331,14 +339,16 @@ export default function UserMyPage({ loaderData }: Route.ComponentProps) {
                         <h3 className="mb-1 text-red-900">로그아웃</h3>
                         <p className="text-sm text-red-700">현재 계정에서 로그아웃합니다</p>
                       </div>
-                      <Button 
-                        variant="destructive" 
-                        size="sm"
-                        // onClick={onLogout}
-                      >
-                        <LogOut className="w-4 h-4 mr-2" />
-                        로그아웃
-                      </Button>
+                      <Form method="POST" action="/auth/logout">
+                        <Button 
+                          variant="destructive" 
+                          size="sm"
+                          type="submit"
+                        >
+                          <LogOut className="w-4 h-4 mr-2" />
+                          로그아웃
+                        </Button>
+                      </Form>
                     </div>
                   </div>
 
