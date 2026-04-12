@@ -128,3 +128,10 @@ export interface GetNotificationListParams {
   isRead: boolean;
   createdAt: string;
 }
+
+export interface PutUserProfileParams {
+  name: string;
+  phone: string;
+  marketingAgreed: boolean;
+  userId: string;
+}
