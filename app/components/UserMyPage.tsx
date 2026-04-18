@@ -38,6 +38,35 @@ export async function loader({ request, context }: Route.LoaderArgs) {
   }
 }
 
+export async function action({ request, context }: Route.ActionArgs){
+  const user = context.get(userContext);
+  const formData = await request.formData();
+  const name = formData.get('name') as string;
+  const phone = formData.get('phone') as string;
+  const marketingAgreed = formData.get("marketingAgreed") === "on" ? true : false;
+  const cookie = request.headers.get("Cookie");
+  const session = await getSession(cookie);
+  const token = session.get("token");
+  console.log("name", name);
+  console.log("phone", phone);
+  console.log("marketingAgreed", marketingAgreed);
+  console.log("userId", user?.id);
+  console.log("token", token);
+  if(!user || !token) {
+      return redirect('/login');
+  }
+  if (!name || !phone || !marketingAgreed) {
+      toast.error('필수 항목을 모두 입력해주세요');
+      return;
+  }
+  try {
+      await userService.put.userProfile({ name, phone, marketingAgreed, userId: user.id, token });
+      return redirect('/');
+  } catch (error) {
+      console.error(error);
+}
+}
+
 export default function UserMyPage({ loaderData }: Route.ComponentProps) {
   const { user, myTributes = [] } = loaderData || {};
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -259,19 +288,24 @@ export default function UserMyPage({ loaderData }: Route.ComponentProps) {
                 </div>
 
                 <div>
-                  <Label htmlFor="marketingAgreed">프로필 변경 동의</Label>
+                  <Label htmlFor="marketingAgreed">개인정보 수집 및 이용 동의</Label>
                   <div className="flex items-center justify-start gap-2">
-                    <p>프로필 변경을 동의합니다.</p>
-                  <Checkbox
+                    <p>개인정보 수집 및 이용 동의를 동의합니다.</p>
+                    <Checkbox
                     id="marketingAgreed"
                     name="marketingAgreed"
                     checked={profileData.marketingAgreed}
                     onCheckedChange={(checked) => setProfileData(prev => ({ ...prev, marketingAgreed: checked === true }))}
-                  />
+                    />
                   </div>
                 </div>
 
-                <Button type="submit">프로필 업데이트</Button>
+                <Button 
+                  type="submit"
+                  disabled={profileData.name === "" || profileData.phone === "" || !profileData.marketingAgreed}
+                >
+                  프로필 업데이트
+                </Button>
               </Form>
             </Card>
           </TabsContent>

@@ -62,8 +62,8 @@ class UserService {
     }
 
     public put = {
-        userProfile: async ({name, phone, marketingAgreed, userId}: PutUserProfileParams ) => {
-            return await putUserProfile({name, phone, marketingAgreed, userId, });
+        userProfile: async ({name, phone, marketingAgreed, userId, token}: PutUserProfileParams & { token: string }) => {
+            return await putUserProfile({name, phone, marketingAgreed, userId, token });
         }
     }
 }

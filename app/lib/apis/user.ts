@@ -197,16 +197,21 @@ export async function putUserProfile({
     phone,
     marketingAgreed,
     userId,
-}: PutUserProfileParams) {
+    token
+}: PutUserProfileParams & {
+    token: string;
+}) {
     try {
-        const response = await http.put(`/user/${userId}`, {
+        await http.put(`user/${userId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
             json: {
                 name,
                 phone,
                 marketingAgreed
             }
         }).json();
-        return v.parse(UserSchema, response);
     } catch (error) {
         throw error;
     }
