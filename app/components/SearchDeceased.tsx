@@ -36,10 +36,14 @@ import { memorialService } from "~/lib/services/memorial";
 import { userContext } from "~/context/userContext";
 import type { MemorialFilter } from "~/types";
 import RegisterMemorialHallDialog from "./organisms/RegisterMemorialHallDialog";
+import { getSession } from "~/lib/sessions.server";
 
-export async function loader({ context }: Route.LoaderArgs) {
+export async function loader({ request, context }: Route.LoaderArgs) {
   const user = context.get(userContext);
-  return { user };
+  const cookie = request.headers.get("Cookie");
+  const session = await getSession(cookie);
+  const token = session.get("token");
+  return { user, token };
 }
 
 export async function action({ request }: Route.ActionArgs) {
@@ -66,7 +70,7 @@ export default function SearchDeceased({
   loaderData,
   actionData
 }: Route.ComponentProps) {
-  const { user } = loaderData;
+  const { user, token } = loaderData;
   const [searchParams, setSearchParams] = useState({
     name: "",
     birthDate: "",
@@ -298,6 +302,7 @@ export default function SearchDeceased({
 
       {/* Register Memorial Dialog */}
       <RegisterMemorialHallDialog
+        token={token}
         isOpen={isRegisterDialogOpen}
         setIsOpen={setIsRegisterDialogOpen}
       />

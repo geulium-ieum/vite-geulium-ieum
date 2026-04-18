@@ -1,67 +1,22 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
-import { Form } from "react-router";
+import { Form, useNavigate } from "react-router";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Globe, Lock } from "lucide-react";
 import { Button } from "../ui/button";
-import React, { useState } from "react";
-import type { Route } from "../+types/SearchDeceased";
-import { userContext } from "~/context/userContext";
-import { memorialService } from "~/lib/services/memorial";
-import { getSession } from "~/lib/sessions.server";
-import type { Visibility } from "~/types";
+import React, { useCallback, useState } from "react";
+import { toast } from "sonner";
 import { uploadService } from "~/lib/services/upload";
-
-export async function loader({ context }: Route.LoaderArgs) {
-  const user = context.get(userContext);
-  return { user };
-}
-
-export async function action({ request, context }: Route.ActionArgs) {
-  const user = context.get(userContext);
-  const cookie = request.headers.get("Cookie");
-  const session = await getSession(cookie);
-  const token = session.get("token");
-  const formData = await request.formData();
-  const deceasedName = formData.get("reg-name") as string;
-  const location = formData.get("reg-location") as string;
-  const birthDate = formData.get("reg-birth") as string;
-  const deathDate = formData.get("reg-death") as string;
-  const biography = formData.get("reg-bio") as string;
-  const visibility = formData.get("reg-visibility") as Visibility;
-  
-  if (!token) {
-    return
-  }
-
-  try {
-    // TODO: 추모관 이미지 업로드 진행 중
-    // const photoUrl = await uploadService.post.memorialPhoto({
-    //   token,
-    //   memorialId
-    // })
-    await memorialService.post.memorial({
-      token,
-      deceasedName,
-      location,
-      birthDate,
-      deathDate,
-      biography,
-      visibility,
-      status: "PENDING",
-      photoUrl: ""
-    });
-  } catch (error) {
-    console.error(error);
-  }
-}
+import { memorialService } from "~/lib/services/memorial";
 
 export default function RegisterMemorialHallDialog({
+  token,
   isOpen,
   setIsOpen
 }: {
+  token?: string;
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
@@ -74,31 +29,59 @@ export default function RegisterMemorialHallDialog({
     visibility: "PUBLIC" as "PUBLIC" | "PRIVATE",
   });
   
-  const handleRegisterSubmit = (e: React.FormEvent) => {
+  const navigate = useNavigate();
+
+  const handleRegisterSubmit = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!token) {
+      toast.error("로그인이 필요합니다.");
+      return navigate("/login", { replace: true });
+    };
 
     if (
       !registerData.name ||
       !registerData.birthDate ||
       !registerData.deathDate
     ) {
-      // toast.error("필수 항목을 모두 입력해주세요");
+      toast.error("필수 항목을 모두 입력해주세요");
       return;
     }
 
-    // toast.success(
-    //   "추모관 등록 신청이 완료되었습니다. 관리자 승인 후 이용 가능합니다.",
-    // );
-    setIsOpen(false);
-    setRegisterData({
-      name: "",
-      birthDate: "",
-      deathDate: "",
-      location: "",
-      biography: "",
-      visibility: "PUBLIC",
-    });
-  };
+    try {
+      // TODO: 추모관 이미지 업로드 진행 중
+      // const photoUrl = await uploadService.post.memorialPhoto({
+      //   token,
+      //   memorialId
+      // });
+      await memorialService.post.memorial({
+        token,
+        deceasedName: registerData.name,
+        location: registerData.location,
+        birthDate: registerData.birthDate,
+        deathDate: registerData.deathDate,
+        biography: registerData.biography,
+        visibility: registerData.visibility,
+        status: "PENDING",
+        photoUrl: ""
+      });
+      toast.success(
+        "추모관 등록 신청이 완료되었습니다. 관리자 승인 후 이용 가능합니다.",
+      );
+      setIsOpen(false);
+      setRegisterData({
+        name: "",
+        birthDate: "",
+        deathDate: "",
+        location: "",
+        biography: "",
+        visibility: "PUBLIC",
+      });
+    } catch (error) {
+      toast.error("오류가 발생했습니다.");
+      console.error(error);
+    }
+  }, []);
 
   return (
     <Dialog
