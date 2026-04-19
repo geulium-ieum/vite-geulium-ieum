@@ -69,7 +69,7 @@ export async function postMemorial({
   photoUrl: string
 }) {
   try {
-    await http.post('/memorial', {
+    await http.post('memorial', {
       headers: {
         "Authorization": `Bearer ${token}`
       },

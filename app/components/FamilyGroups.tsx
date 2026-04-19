@@ -136,7 +136,7 @@ export default function FamilyGroups({ loaderData }: Route.ComponentProps) {
                     />
                   </div>
                   <div className="flex justify-end gap-3">
-                    <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
+                    <Button type="button" variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
                       취소
                     </Button>
                     <Button type="submit">

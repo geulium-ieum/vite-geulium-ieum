@@ -52,7 +52,14 @@ export async function action({ request }: Route.ActionArgs) {
   const birthDate = formData.get("birthDate");
   const deathDate = formData.get("deathDate");
   if (!name || !birthDate || !deathDate) {
-    return;
+    try {
+      const response = await memorialService.get.memorialList({
+        size: 10
+      });
+      return response.content;
+    } catch (error) {
+      console.error(error);
+    }
   }
   try {
     const response = await memorialService.get.memorialFilter({

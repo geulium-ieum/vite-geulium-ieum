@@ -6,7 +6,7 @@ import { Textarea } from "../ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Globe, Lock } from "lucide-react";
 import { Button } from "../ui/button";
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import { toast } from "sonner";
 import { uploadService } from "~/lib/services/upload";
 import { memorialService } from "~/lib/services/memorial";
@@ -31,9 +31,8 @@ export default function RegisterMemorialHallDialog({
   
   const navigate = useNavigate();
 
-  const handleRegisterSubmit = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleRegisterSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     if (!token) {
       toast.error("로그인이 필요합니다.");
       return navigate("/login", { replace: true });
@@ -81,7 +80,7 @@ export default function RegisterMemorialHallDialog({
       toast.error("오류가 발생했습니다.");
       console.error(error);
     }
-  }, []);
+  };
 
   return (
     <Dialog
