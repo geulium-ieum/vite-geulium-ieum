@@ -132,9 +132,29 @@ export interface GetNotificationListParams {
   createdAt: string;
 }
 
+export interface GetMemorialListParams {
+  id: number;
+  deceasedName: string;
+  birthDate: string;
+  deathDate: string;
+  location: string;
+  biography: string;
+  photoUrl: string;
+  visibility: string;
+  status: string;
+  createdBy: string;
+  updatedBy: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface PutUserProfileParams {
   name: string;
   phone: string;
   marketingAgreed: boolean;
+  userId: string;
+}
+
+export interface DeleteUserParams {
   userId: string;
 }

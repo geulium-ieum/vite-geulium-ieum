@@ -1,8 +1,9 @@
 import { http } from "~/lib/utils"
 import * as v from 'valibot';
 import { TokenSchema, UserSchema } from "~/constants/user";
-import type { PostLoginParams, PostRegisterParams, PostVerifyEmailParams, PostChangePasswordParams, PostVerifyChangePasswordParams, PostNaverLoginParams, PostKakaoLoginParams, ListParams, PutUserProfileParams } from "~/types";
+import type { PostLoginParams, PostRegisterParams, PostVerifyEmailParams, PostChangePasswordParams, PostVerifyChangePasswordParams, PostNaverLoginParams, PostKakaoLoginParams, ListParams, PutUserProfileParams, DeleteUserParams } from "~/types";
 import { tributeListSchema } from "~/constants/tribute";
+import { MemorialSchema } from "~/constants/memorial";
 
 export async function getMe({ token }: { token: string }) {
     try {
@@ -192,6 +193,23 @@ export async function getTributeList({
     }
 }
 
+export async function getMemorialList({
+    token
+}: ListParams & {
+    token: string;
+}) {
+    try {
+        const response = await http.get(`memorial/list`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        }).json();
+        return v.parse(MemorialSchema, response);
+    } catch (error) {
+        throw error;
+    }
+}
+
 export async function putUserProfile({
     name,
     phone,
@@ -210,6 +228,24 @@ export async function putUserProfile({
                 name,
                 phone,
                 marketingAgreed
+            }
+        }).json();
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function deleteUser({
+    userId,
+    token
+}: DeleteUserParams & {
+    userId: string;
+    token: string;
+}) {
+    try {
+        await http.delete(`user/${userId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
             }
         }).json();
     } catch (error) {

@@ -4,7 +4,7 @@ export const UserSchema = v.object({
     id: v.string(),
     email: v.string(),
     name: v.string(),
-    phone: v.string(),
+    phone: v.optional(v.string()),
     role: v.picklist(['USER', 'ADMIN', 'SUPER_ADMIN']),
     isActive: v.boolean(),
 });
