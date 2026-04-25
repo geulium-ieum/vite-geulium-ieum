@@ -14,9 +14,10 @@ import { userContext } from '~/context/userContext';
 import { Link } from 'react-router';
 import { userService } from '~/lib/services/user';
 import { redirect } from 'react-router';
-import { getSession } from '~/lib/sessions.server';
+import { getSession, destroySession } from '~/lib/sessions.server';
 import { Form } from 'react-router';
 import { Checkbox } from '~/components/ui/checkbox';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogTitle } from '~/components/ui/dialog';
 
 export async function loader({ request, context }: Route.LoaderArgs) {
   const user = context.get(userContext);
@@ -28,19 +29,22 @@ export async function loader({ request, context }: Route.LoaderArgs) {
   }
   try {
     const myTributes = await userService.get.tributeList({ userId: user.id, token });
+    const myMemorials = await userService.get.memorialList({ token });
     return {
       user,
-      myTributes: myTributes.content
+      myTributes: myTributes.content,
+      myMemorials: myMemorials.content,
     };
   } catch (error) {
     console.log(error);
-    return { user, myTributes: [] };
+    return { user, myTributes: [], myMemorials: [] };
   }
 }
 
 export async function action({ request, context }: Route.ActionArgs){
   const user = context.get(userContext);
   const formData = await request.formData();
+  const requestMethod = formData.get('requestMethod') as string;
   const name = formData.get('name') as string;
   const phone = formData.get('phone') as string;
   const marketingAgreed = formData.get("marketingAgreed") === "on" ? true : false;
@@ -52,24 +56,61 @@ export async function action({ request, context }: Route.ActionArgs){
   console.log("marketingAgreed", marketingAgreed);
   console.log("userId", user?.id);
   console.log("token", token);
+  console.log("requestMethod", requestMethod);
   if(!user || !token) {
       return redirect('/login');
   }
-  if (!name || !phone || !marketingAgreed) {
-      toast.error('필수 항목을 모두 입력해주세요');
-      return;
-  }
+  if(requestMethod === 'PUT') {
   try {
       await userService.put.userProfile({ name, phone, marketingAgreed, userId: user.id, token });
       return redirect('/');
   } catch (error) {
       console.error(error);
-}
+    }
+  }
+  if(requestMethod === 'DELETE') {
+    try {
+      await userService.delete.user({ userId: user.id, token });
+      return redirect('/', {
+        headers: {
+          "Set-Cookie": await destroySession(session),
+        },
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
 }
 
 export default function UserMyPage({ loaderData }: Route.ComponentProps) {
   const { user, myTributes = [] } = loaderData || {};
-  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const ConfirmModal = () => {
+    return (
+      <Dialog open={modalOpen} onOpenChange={setModalOpen}>
+        <DialogContent>
+        <DialogTitle>회원 탈퇴</DialogTitle>
+          <DialogDescription>정말 회원 탈퇴하시겠습니까?</DialogDescription>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setModalOpen(false)}>취소</Button>
+            <Form method="DELETE">
+              <input type="hidden" name="requestMethod" value="DELETE" />
+              <Button variant="destructive" type="submit">탈퇴</Button>
+            </Form>
+          </DialogFooter>
+        </DialogContent>
+    </Dialog>
+    )
+  }
+
+  const ModalOpen = () => {
+    setModalOpen(true);
+  }
+
+  const ModalClose = () => {
+    setModalOpen(false);
+  }
 
   const [profileData, setProfileData] = useState({
     name: user?.name || '',
@@ -102,21 +143,6 @@ export default function UserMyPage({ loaderData }: Route.ComponentProps) {
       image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&h=200&fit=crop',
     },
   ];
-
-  // const myTributes = [
-  //   {
-  //     id: '1',
-  //     memorialName: '김철수',
-  //     content: '항상 따뜻한 미소로 맞아주시던 모습이 생각납니다...',
-  //     timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-  //   },
-  //   {
-  //     id: '2',
-  //     memorialName: '이영희',
-  //     content: '좋은 분이셨습니다. 하늘에서 편히 쉬시길...',
-  //     timestamp: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
-  //   },
-  // ];
 
   const upcomingAnniversaries = [
     {
@@ -266,6 +292,7 @@ export default function UserMyPage({ loaderData }: Route.ComponentProps) {
             <Card className="p-6">
               <h2 className="text-xl mb-6">프로필 정보</h2>
               <Form method="PUT" className="space-y-4 max-w-md">
+                <input type="hidden" name="requestMethod" value="PUT" />
                 <div>
                   <Label htmlFor="name">이름</Label>
                   <Input
@@ -392,9 +419,14 @@ export default function UserMyPage({ loaderData }: Route.ComponentProps) {
                         <h3 className="mb-1">회원 탈퇴</h3>
                         <p className="text-sm text-gray-600">계정을 삭제하면 모든 데이터가 영구 삭제됩니다</p>
                       </div>
-                      <Button variant="ghost" size="sm" className="text-gray-500">
-                        탈퇴하기
-                      </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="text-gray-500" 
+                          onClick={() => setModalOpen(true)}
+                        >
+                          탈퇴하기
+                        </Button>
                     </div>
                   </div>
                 </div>
@@ -403,7 +435,7 @@ export default function UserMyPage({ loaderData }: Route.ComponentProps) {
           </TabsContent>
         </Tabs>
       </div>
-
+      {modalOpen && modalOpen === true && <ConfirmModal />}
       <Footer />
     </div>
   );

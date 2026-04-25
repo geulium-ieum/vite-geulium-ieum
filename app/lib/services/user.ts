@@ -1,5 +1,5 @@
-import { getUser, postLogin, postRegister, postVerifyEmail, postChangePassword, postVerifyChangePassword, postNaverLogin, postKakaoLogin, getMe, getUserNotificationList, getTributeList, putUserProfile } from "~/lib/apis/user";
-import type { PostLoginParams, PostRegisterParams, PostVerifyEmailParams, PostChangePasswordParams, PostVerifyChangePasswordParams, PostNaverLoginParams, PostKakaoLoginParams, ListParams, PutUserProfileParams } from "~/types";
+import { getUser, postLogin, postRegister, postVerifyEmail, postChangePassword, postVerifyChangePassword, postNaverLogin, postKakaoLogin, getMe, getUserNotificationList, getTributeList, putUserProfile, deleteUser, getMemorialList } from "~/lib/apis/user";
+import type { PostLoginParams, PostRegisterParams, PostVerifyEmailParams, PostChangePasswordParams, PostVerifyChangePasswordParams, PostNaverLoginParams, PostKakaoLoginParams, ListParams, PutUserProfileParams, DeleteUserParams } from "~/types";
 
 class UserService {
     public get = {
@@ -30,6 +30,15 @@ class UserService {
                 token
             });
         },
+        memorialList: async ({
+            token
+        }:ListParams & {
+            token: string
+        }) => {
+            return await getMemorialList({ 
+                token 
+        });
+        }
     }
     
     public post = {
@@ -64,6 +73,12 @@ class UserService {
     public put = {
         userProfile: async ({name, phone, marketingAgreed, userId, token}: PutUserProfileParams & { token: string }) => {
             return await putUserProfile({name, phone, marketingAgreed, userId, token });
+        }
+    }
+
+    public delete = {
+        user: async ({ userId, token }: DeleteUserParams & { userId: string; token: string }) => {
+            return await deleteUser({ userId, token });
         }
     }
 }
