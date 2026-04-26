@@ -51,12 +51,6 @@ export async function action({ request, context }: Route.ActionArgs){
   const cookie = request.headers.get("Cookie");
   const session = await getSession(cookie);
   const token = session.get("token");
-  console.log("name", name);
-  console.log("phone", phone);
-  console.log("marketingAgreed", marketingAgreed);
-  console.log("userId", user?.id);
-  console.log("token", token);
-  console.log("requestMethod", requestMethod);
   if(!user || !token) {
       return redirect('/login');
   }
@@ -83,7 +77,7 @@ export async function action({ request, context }: Route.ActionArgs){
 }
 
 export default function UserMyPage({ loaderData }: Route.ComponentProps) {
-  const { user, myTributes = [] } = loaderData || {};
+  const { user, myTributes = [], myMemorials = [] } = loaderData || {};
   const [modalOpen, setModalOpen] = useState(false);
 
   const ConfirmModal = () => {
@@ -127,22 +121,22 @@ export default function UserMyPage({ loaderData }: Route.ComponentProps) {
 
   const navigate = useNavigate();
 
-  const myMemorials = [
-    {
-      id: '1',
-      name: '김철수',
-      relationship: '할아버지',
-      deathDate: '2024.08.20',
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop',
-    },
-    {
-      id: '2',
-      name: '이영희',
-      relationship: '할머니',
-      deathDate: '2024.09.10',
-      image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&h=200&fit=crop',
-    },
-  ];
+  // const myMemorials = [
+  //   {
+  //     id: '1',
+  //     name: '김철수',
+  //     relationship: '할아버지',
+  //     deathDate: '2024.08.20',
+  //     image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop',
+  //   },
+  //   {
+  //     id: '2',
+  //     name: '이영희',
+  //     relationship: '할머니',
+  //     deathDate: '2024.09.10',
+  //     image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&h=200&fit=crop',
+  //   },
+  // ];
 
   const upcomingAnniversaries = [
     {
@@ -210,6 +204,11 @@ export default function UserMyPage({ loaderData }: Route.ComponentProps) {
               </div>
 
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {myMemorials.length === 0 && (
+                  <div className="text-center text-gray-500">
+                    내 추모관이 없습니다.
+                  </div>
+                )}
                 {myMemorials.map(memorial => (
                   <Card 
                     key={memorial.id}
@@ -218,14 +217,14 @@ export default function UserMyPage({ loaderData }: Route.ComponentProps) {
                   >
                     <div className="aspect-square relative overflow-hidden bg-gray-200">
                       <img 
-                        src={memorial.image}
-                        alt={memorial.name}
+                        src={memorial.photoUrl || ''}
+                        // alt="추모관 사진"
                         className="w-full h-full object-cover"
                       />
                     </div>
                     <div className="p-4">
-                      <h3 className="mb-1">{memorial.name}</h3>
-                      <p className="text-sm text-gray-600 mb-1">{memorial.relationship}</p>
+                      <h3 className="mb-1">{memorial.deceasedName}</h3>
+                      <p className="text-sm text-gray-600 mb-1">{memorial.location}</p>
                       <p className="text-sm text-gray-500">{memorial.deathDate}</p>
                     </div>
                   </Card>
